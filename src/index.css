@@ -2,41 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* RJU Student Notes - Design System
+All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 */
 
 @layer base {
   :root {
+    /* RJU Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 27%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* RJU Blue Primary */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 217 91% 55%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Academic Secondary */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 215 25% 27%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217 91% 95%;
+    --accent-foreground: 217 91% 60%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* RJU Custom Design Tokens */
+    --rju-blue: 217 91% 60%;
+    --rju-blue-dark: 217 91% 45%;
+    --rju-blue-light: 217 91% 95%;
+    --rju-gray: 215 16% 47%;
+    --rju-gray-light: 210 40% 96%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--rju-blue)), hsl(var(--rju-blue-dark)));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(var(--rju-blue) / 0.1), 0 2px 4px -1px hsl(var(--rju-blue) / 0.06);
+    --shadow-hover: 0 10px 15px -3px hsl(var(--rju-blue) / 0.1), 0 4px 6px -2px hsl(var(--rju-blue) / 0.05);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +123,51 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Hero Section */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  /* Card Components */
+  .card-gradient {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+  }
+
+  .card-gradient:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Academic Badge */
+  .academic-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background: hsl(var(--rju-blue-light));
+    color: hsl(var(--rju-blue));
+  }
+
+  /* File Type Icons */
+  .file-icon {
+    @apply w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium;
+  }
+
+  .file-icon.pdf {
+    background: hsl(0 84% 95%);
+    color: hsl(0 84% 60%);
+  }
+
+  .file-icon.doc {
+    background: hsl(217 91% 95%);
+    color: hsl(217 91% 60%);
+  }
+
+  .file-icon.ppt {
+    background: hsl(24 100% 95%);
+    color: hsl(24 100% 50%);
   }
 }
