@@ -159,33 +159,33 @@ export default function NoticeBoard() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Notice Board
-          </CardTitle>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={refreshNotices}
-            disabled={refreshing}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh from RJU
-          </Button>
-        </div>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Bell className="h-5 w-5 text-primary" />
+              Latest RJU Notices
+            </CardTitle>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={refreshNotices}
+              disabled={refreshing}
+              className="bg-primary/5 hover:bg-primary/10"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
       </CardHeader>
       <CardContent>
         {notices.length === 0 ? (
           <div className="text-center py-8">
-            <Bell className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Notices</h3>
+            <Bell className="h-12 w-12 text-primary mx-auto mb-4" />
             <p className="text-muted-foreground mb-4">
-              No notices are currently available.
+              No notices available. Click refresh to fetch latest notices from RJU website.
             </p>
-            <Button onClick={refreshNotices} disabled={refreshing}>
+            <Button onClick={refreshNotices} disabled={refreshing} className="bg-primary hover:bg-primary/90">
               <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              Fetch from RJU Website
+              Fetch Notices
             </Button>
           </div>
         ) : (
@@ -226,9 +226,10 @@ export default function NoticeBoard() {
                     variant="outline"
                     size="sm"
                     onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
+                    className="text-primary hover:bg-primary/10"
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
-                    View on RJU
+                    View Details
                   </Button>
                 </div>
               </div>
@@ -236,7 +237,7 @@ export default function NoticeBoard() {
             
             <Button 
               variant="outline" 
-              className="w-full"
+              className="w-full bg-primary/5 hover:bg-primary/10 text-primary"
               onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
             >
               <ExternalLink className="h-4 w-4 mr-2" />

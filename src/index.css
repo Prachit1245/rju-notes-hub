@@ -8,8 +8,8 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* RJU Brand Colors */
-    --background: 0 0% 100%;
+    /* RJU Brand Colors - More Vibrant */
+    --background: 210 100% 99%;
     --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
@@ -18,14 +18,14 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
 
-    /* RJU Blue Primary */
+    /* RJU Vibrant Blue Primary */
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 217 91% 55%;
 
-    /* Academic Secondary */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 27%;
+    /* Colorful Secondary */
+    --secondary: 280 100% 96%;
+    --secondary-foreground: 280 60% 30%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
@@ -42,16 +42,23 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* RJU Custom Design Tokens */
+    /* RJU Custom Design Tokens - Enhanced */
     --rju-blue: 217 91% 60%;
     --rju-blue-dark: 217 91% 45%;
     --rju-blue-light: 217 91% 95%;
+    --rju-purple: 280 100% 60%;
+    --rju-purple-light: 280 100% 95%;
+    --rju-green: 142 76% 36%;
+    --rju-green-light: 142 76% 95%;
+    --rju-orange: 24 100% 50%;
+    --rju-orange-light: 24 100% 95%;
     --rju-gray: 215 16% 47%;
     --rju-gray-light: 210 40% 96%;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--rju-blue)), hsl(var(--rju-blue-dark)));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    /* Colorful Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--rju-blue)), hsl(var(--rju-purple)));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 60% 98%));
+    --gradient-vibrant: linear-gradient(120deg, hsl(var(--rju-blue)), hsl(var(--rju-purple)), hsl(var(--rju-green)));
     
     /* Shadows */
     --shadow-card: 0 4px 6px -1px hsl(var(--rju-blue) / 0.1), 0 2px 4px -1px hsl(var(--rju-blue) / 0.06);
