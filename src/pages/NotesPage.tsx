@@ -9,15 +9,18 @@ import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSup
 
 export default function NotesPage() {
   const { faculties } = useFaculties();
-  const [selectedFaculty, setSelectedFaculty] = useState<string>('');
-  const [selectedProgram, setSelectedProgram] = useState<string>('');
-  const [selectedSemester, setSelectedSemester] = useState<string>('');
-  const [selectedSubject, setSelectedSubject] = useState<string>('');
+  const [selectedFaculty, setSelectedFaculty] = useState<string>('all');
+  const [selectedProgram, setSelectedProgram] = useState<string>('all');
+  const [selectedSemester, setSelectedSemester] = useState<string>('all');
+  const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { programs } = usePrograms(selectedFaculty);
-  const { subjects } = useSubjects(selectedProgram, selectedSemester ? parseInt(selectedSemester) : undefined);
-  const { notes, loading } = useNotes(selectedSubject);
+  const { programs } = usePrograms(selectedFaculty === 'all' ? '' : selectedFaculty);
+  const { subjects } = useSubjects(
+    selectedProgram === 'all' ? '' : selectedProgram, 
+    selectedSemester === 'all' ? undefined : parseInt(selectedSemester)
+  );
+  const { notes, loading } = useNotes(selectedSubject === 'all' ? '' : selectedSubject);
 
   const getFileIcon = (type: string, size: 'sm' | 'md' = 'sm') => {
     const className = size === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
@@ -91,10 +94,10 @@ export default function NotesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Select value={selectedFaculty} onValueChange={(value) => {
-                setSelectedFaculty(value === 'all' ? '' : value);
-                setSelectedProgram('');
-                setSelectedSemester('');
-                setSelectedSubject('');
+                setSelectedFaculty(value);
+                setSelectedProgram('all');
+                setSelectedSemester('all');
+                setSelectedSubject('all');
               }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Faculty" />
@@ -112,11 +115,11 @@ export default function NotesPage() {
               <Select 
                 value={selectedProgram} 
                 onValueChange={(value) => {
-                  setSelectedProgram(value === 'all' ? '' : value);
-                  setSelectedSemester('');
-                  setSelectedSubject('');
+                  setSelectedProgram(value);
+                  setSelectedSemester('all');
+                  setSelectedSubject('all');
                 }}
-                disabled={!selectedFaculty}
+                disabled={selectedFaculty === 'all'}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Program" />
@@ -134,10 +137,10 @@ export default function NotesPage() {
               <Select 
                 value={selectedSemester} 
                 onValueChange={(value) => {
-                  setSelectedSemester(value === 'all' ? '' : value);
-                  setSelectedSubject('');
+                  setSelectedSemester(value);
+                  setSelectedSubject('all');
                 }}
-                disabled={!selectedProgram}
+                disabled={selectedProgram === 'all'}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Semester" />
@@ -154,8 +157,8 @@ export default function NotesPage() {
 
               <Select 
                 value={selectedSubject} 
-                onValueChange={(value) => setSelectedSubject(value === 'all' ? '' : value)}
-                disabled={!selectedSemester}
+                onValueChange={setSelectedSubject}
+                disabled={selectedSemester === 'all'}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Subject" />
@@ -185,7 +188,7 @@ export default function NotesPage() {
               <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No Notes Found</h3>
               <p className="text-muted-foreground mb-4">
-                {selectedSubject 
+                {selectedSubject !== 'all'
                   ? "No notes are available for the selected filters."
                   : "Please select a subject to view available notes."
                 }
