@@ -91,7 +91,7 @@ export default function NotesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Select value={selectedFaculty} onValueChange={(value) => {
-                setSelectedFaculty(value);
+                setSelectedFaculty(value === 'all' ? '' : value);
                 setSelectedProgram('');
                 setSelectedSemester('');
                 setSelectedSubject('');
@@ -100,7 +100,7 @@ export default function NotesPage() {
                   <SelectValue placeholder="Select Faculty" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Faculties</SelectItem>
+                  <SelectItem value="all">All Faculties</SelectItem>
                   {faculties.map(faculty => (
                     <SelectItem key={faculty.id} value={faculty.id}>
                       {faculty.code}
@@ -112,7 +112,7 @@ export default function NotesPage() {
               <Select 
                 value={selectedProgram} 
                 onValueChange={(value) => {
-                  setSelectedProgram(value);
+                  setSelectedProgram(value === 'all' ? '' : value);
                   setSelectedSemester('');
                   setSelectedSubject('');
                 }}
@@ -122,7 +122,7 @@ export default function NotesPage() {
                   <SelectValue placeholder="Select Program" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Programs</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
                   {programs.map(program => (
                     <SelectItem key={program.id} value={program.id}>
                       {program.code}
@@ -134,7 +134,7 @@ export default function NotesPage() {
               <Select 
                 value={selectedSemester} 
                 onValueChange={(value) => {
-                  setSelectedSemester(value);
+                  setSelectedSemester(value === 'all' ? '' : value);
                   setSelectedSubject('');
                 }}
                 disabled={!selectedProgram}
@@ -143,7 +143,7 @@ export default function NotesPage() {
                   <SelectValue placeholder="Select Semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Semesters</SelectItem>
+                  <SelectItem value="all">All Semesters</SelectItem>
                   {semesterOptions.map(sem => (
                     <SelectItem key={sem} value={sem.toString()}>
                       Sem {sem}
@@ -154,14 +154,14 @@ export default function NotesPage() {
 
               <Select 
                 value={selectedSubject} 
-                onValueChange={setSelectedSubject}
+                onValueChange={(value) => setSelectedSubject(value === 'all' ? '' : value)}
                 disabled={!selectedSemester}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Subjects</SelectItem>
+                  <SelectItem value="all">All Subjects</SelectItem>
                   {subjects.map(subject => (
                     <SelectItem key={subject.id} value={subject.id}>
                       {subject.code}
