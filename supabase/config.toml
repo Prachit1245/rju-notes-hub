@@ -1,1 +1,4 @@
 project_id = "azotpigzunsiireeabgg"
+
+[functions.fetch-rju-notices]
+verify_jwt = false
