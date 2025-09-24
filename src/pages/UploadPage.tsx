@@ -308,13 +308,24 @@ export default function UploadPage() {
                     <SelectValue placeholder="Select Subject" />
                   </SelectTrigger>
                   <SelectContent>
-                    {subjects.map(subject => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name} ({subject.code})
+                    {subjects.length === 0 && selectedSemester ? (
+                      <SelectItem value="" disabled>
+                        No subjects available for this semester
                       </SelectItem>
-                    ))}
+                    ) : (
+                      subjects.map(subject => (
+                        <SelectItem key={subject.id} value={subject.id}>
+                          {subject.name} ({subject.code})
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
+                {selectedSemester && subjects.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No subjects found for the selected semester. Please try a different semester.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -434,8 +445,26 @@ export default function UploadPage() {
                 disabled={uploading || !selectedSubject || files.length === 0}
                 className="w-full"
               >
-                {uploading ? 'Uploading...' : `Upload ${files.length} File(s)`}
+                {uploading 
+                  ? 'Uploading...' 
+                  : !selectedSubject 
+                    ? 'Please select a subject first'
+                    : files.length === 0 
+                      ? 'Select files to upload' 
+                      : `Upload ${files.length} File(s)`
+                }
               </Button>
+              
+              {(!selectedSubject || files.length === 0) && (
+                <div className="text-sm text-muted-foreground text-center">
+                  {!selectedSubject && files.length === 0 
+                    ? 'Please select a subject and add files to enable upload'
+                    : !selectedSubject 
+                      ? 'Please select a subject to enable upload'
+                      : 'Please add files to enable upload'
+                  }
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

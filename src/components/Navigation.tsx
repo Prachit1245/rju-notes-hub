@@ -23,9 +23,11 @@ const Navigation = () => {
       <nav className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <BookOpen className="h-4 w-4" />
-          </div>
+          <img 
+            src="/favicon.png" 
+            alt="RJU Notes Logo" 
+            className="h-8 w-8 rounded-lg"
+          />
           <div className="hidden font-bold sm:inline-block">
             <span className="text-primary">RJU</span> Notes
           </div>
