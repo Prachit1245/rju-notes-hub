@@ -51,6 +51,7 @@ export type Database = {
           file_type: string
           file_url: string
           id: string
+          is_public: boolean
           is_verified: boolean
           rating_count: number
           rating_sum: number
@@ -70,6 +71,7 @@ export type Database = {
           file_type: string
           file_url: string
           id?: string
+          is_public?: boolean
           is_verified?: boolean
           rating_count?: number
           rating_sum?: number
@@ -89,6 +91,7 @@ export type Database = {
           file_type?: string
           file_url?: string
           id?: string
+          is_public?: boolean
           is_verified?: boolean
           rating_count?: number
           rating_sum?: number
