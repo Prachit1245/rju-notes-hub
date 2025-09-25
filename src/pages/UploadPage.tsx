@@ -272,19 +272,13 @@ export default function UploadPage() {
                     <SelectTrigger>
                       <SelectValue placeholder="Select Subject" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {subjects.length === 0 && selectedSemester ? (
-                        <SelectItem value="" disabled>
-                          No subjects available for this semester
-                        </SelectItem>
-                      ) : (
-                        subjects.map(subject => (
-                          <SelectItem key={subject.id} value={subject.id}>
-                            {subject.name} ({subject.code})
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
+                  <SelectContent>
+                    {subjects.map(subject => (
+                      <SelectItem key={subject.id} value={subject.id}>
+                        {subject.name} ({subject.code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                   </Select>
                 ) : (
                   <div className="space-y-2">
