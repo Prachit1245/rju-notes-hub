@@ -40,6 +40,11 @@ export default function UploadPage() {
   
   const [files, setFiles] = useState<FileUpload[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [adminAuth, setAdminAuth] = useState({
+    email: '',
+    password: '',
+    isAuthenticated: false
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
@@ -168,6 +173,50 @@ export default function UploadPage() {
       setUploading(false);
     }
   };
+
+  if (!adminAuth.isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
+            <CardDescription className="text-center">
+              Enter admin credentials to access the admin panel
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={adminAuth.email}
+                  onChange={(e) => setAdminAuth(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="admin@rju.edu.np"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={adminAuth.password}
+                  onChange={(e) => setAdminAuth(prev => ({ ...prev, password: e.target.value }))}
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Login to Admin Panel
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const selectedProgramData = programs.find(p => p.id === selectedProgram);
   const semesterOptions = selectedProgramData 
