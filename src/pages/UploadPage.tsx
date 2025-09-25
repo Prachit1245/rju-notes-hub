@@ -31,16 +31,15 @@ export default function UploadPage() {
     description: '',
     uploader_name: '',
     uploader_email: '',
-    tags: ''
+    tags: '',
+    customSubjectName: '',
+    customSubjectCode: '',
   });
+  
+  const [useCustomSubject, setUseCustomSubject] = useState(false);
   
   const [files, setFiles] = useState<FileUpload[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [adminAuth, setAdminAuth] = useState({
-    email: '',
-    password: '',
-    isAuthenticated: false
-  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
@@ -60,24 +59,6 @@ export default function UploadPage() {
     if (type.startsWith('audio/')) return <FileAudio className="h-5 w-5" />;
     if (type.startsWith('video/')) return <FileVideo className="h-5 w-5" />;
     return <FileText className="h-5 w-5" />;
-  };
-
-  const handleAdminLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple admin check - in production, you'd use proper authentication
-    if (adminAuth.email === 'admin@rju.edu.np' && adminAuth.password === 'admin123') {
-      setAdminAuth(prev => ({ ...prev, isAuthenticated: true }));
-      toast({
-        title: "Authentication Successful",
-        description: "Welcome to the admin upload panel",
-      });
-    } else {
-      toast({
-        title: "Authentication Failed",
-        description: "Invalid admin credentials",
-        variant: "destructive",
-      });
-    }
   };
 
   const uploadToSupabase = async (file: File) => {
@@ -101,10 +82,12 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedSubject || files.length === 0) {
+    const hasSubject = selectedSubject || (useCustomSubject && formData.customSubjectName);
+    
+    if (!hasSubject || files.length === 0) {
       toast({
         title: "Missing Information",
-        description: "Please select a subject and upload at least one file",
+        description: "Please select/enter a subject and upload at least one file",
         variant: "destructive",
       });
       return;
@@ -113,13 +96,35 @@ export default function UploadPage() {
     setUploading(true);
 
     try {
+      // Handle custom subject creation if needed
+      let finalSubjectId = selectedSubject;
+      
+      if (useCustomSubject && formData.customSubjectName) {
+        // Insert custom subject first
+        const { data: customSubject, error: subjectError } = await supabase
+          .from('subjects')
+          .insert({
+            program_id: selectedProgram,
+            name: formData.customSubjectName,
+            code: formData.customSubjectCode || 'CUSTOM',
+            semester: parseInt(selectedSemester),
+            credits: 3,
+            description: `Custom subject: ${formData.customSubjectName}`
+          })
+          .select()
+          .single();
+          
+        if (subjectError) throw subjectError;
+        finalSubjectId = customSubject.id;
+      }
+      
       for (const fileUpload of files) {
         const { publicUrl, fileName } = await uploadToSupabase(fileUpload.file);
         
         const { error } = await supabase
           .from('notes')
           .insert({
-            subject_id: selectedSubject,
+            subject_id: finalSubjectId,
             title: formData.title || fileUpload.file.name,
             description: formData.description,
             file_url: publicUrl,
@@ -145,9 +150,12 @@ export default function UploadPage() {
         description: '',
         uploader_name: '',
         uploader_email: '',
-        tags: ''
+        tags: '',
+        customSubjectName: '',
+        customSubjectCode: '',
       });
       setFiles([]);
+      setUseCustomSubject(false);
       
     } catch (error) {
       console.error('Upload error:', error);
@@ -160,50 +168,6 @@ export default function UploadPage() {
       setUploading(false);
     }
   };
-
-  if (!adminAuth.isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
-            <CardDescription className="text-center">
-              Enter admin credentials to upload notes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAdminLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={adminAuth.email}
-                  onChange={(e) => setAdminAuth(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="admin@rju.edu.np"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={adminAuth.password}
-                  onChange={(e) => setAdminAuth(prev => ({ ...prev, password: e.target.value }))}
-                  placeholder="Enter password"
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   const selectedProgramData = programs.find(p => p.id === selectedProgram);
   const semesterOptions = selectedProgramData 
@@ -299,31 +263,67 @@ export default function UploadPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Select 
-                  value={selectedSubject} 
-                  onValueChange={setSelectedSubject}
-                  disabled={!selectedSemester}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subjects.length === 0 && selectedSemester ? (
-                      <SelectItem value="" disabled>
-                        No subjects available for this semester
-                      </SelectItem>
-                    ) : (
-                      subjects.map(subject => (
-                        <SelectItem key={subject.id} value={subject.id}>
-                          {subject.name} ({subject.code})
+                {!useCustomSubject ? (
+                  <Select 
+                    value={selectedSubject} 
+                    onValueChange={setSelectedSubject}
+                    disabled={!selectedSemester}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjects.length === 0 && selectedSemester ? (
+                        <SelectItem value="" disabled>
+                          No subjects available for this semester
                         </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-                {selectedSemester && subjects.length === 0 && (
+                      ) : (
+                        subjects.map(subject => (
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.name} ({subject.code})
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Enter custom subject name"
+                      value={formData.customSubjectName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, customSubjectName: e.target.value }))}
+                    />
+                    <Input
+                      placeholder="Enter subject code (optional)"
+                      value={formData.customSubjectCode}
+                      onChange={(e) => setFormData(prev => ({ ...prev, customSubjectCode: e.target.value }))}
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center space-x-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="useCustomSubject"
+                    checked={useCustomSubject}
+                    onChange={(e) => {
+                      setUseCustomSubject(e.target.checked);
+                      if (e.target.checked) {
+                        setSelectedSubject('');
+                      } else {
+                        setFormData(prev => ({ ...prev, customSubjectName: '', customSubjectCode: '' }));
+                      }
+                    }}
+                    className="rounded border-gray-300"
+                  />
+                  <Label htmlFor="useCustomSubject" className="text-sm">
+                    Add custom subject
+                  </Label>
+                </div>
+                
+                {selectedSemester && subjects.length === 0 && !useCustomSubject && (
                   <p className="text-sm text-muted-foreground">
-                    No subjects found for the selected semester. Please try a different semester.
+                    No subjects found for this semester. You can add a custom subject instead.
                   </p>
                 )}
               </div>
@@ -442,13 +442,13 @@ export default function UploadPage() {
 
               <Button 
                 type="submit" 
-                disabled={uploading || !selectedSubject || files.length === 0}
+                disabled={uploading || (!selectedSubject && (!useCustomSubject || !formData.customSubjectName)) || files.length === 0}
                 className="w-full"
               >
                 {uploading 
                   ? 'Uploading...' 
-                  : !selectedSubject 
-                    ? 'Please select a subject first'
+                  : (!selectedSubject && (!useCustomSubject || !formData.customSubjectName))
+                    ? 'Please select or enter a subject first'
                     : files.length === 0 
                       ? 'Select files to upload' 
                       : `Upload ${files.length} File(s)`
