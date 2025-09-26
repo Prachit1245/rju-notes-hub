@@ -44,6 +44,7 @@ export interface Note {
   rating_count: number;
   tags?: string[];
   is_verified: boolean;
+  is_public: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -166,7 +167,10 @@ export const useNotes = (subjectId?: string) => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        let query = supabase.from('notes').select('*');
+        let query = supabase
+          .from('notes')
+          .select('*')
+          .eq('is_public', true); // Only show public notes to regular users
         
         if (subjectId) {
           query = query.eq('subject_id', subjectId);
