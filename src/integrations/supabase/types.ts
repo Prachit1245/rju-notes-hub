@@ -244,7 +244,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_unique_subject_code: {
+        Args: { p_base_code?: string; p_program_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
