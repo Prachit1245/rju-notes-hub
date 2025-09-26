@@ -125,22 +125,38 @@ export default function UploadPage() {
       let finalSubjectId = selectedSubject;
       
       if (useCustomSubject && formData.customSubjectName) {
-        // Insert custom subject first
-        const { data: customSubject, error: subjectError } = await supabase
+        const subjectCode = formData.customSubjectCode || 'CUSTOM';
+        
+        // Check if custom subject already exists
+        const { data: existingSubject } = await supabase
           .from('subjects')
-          .insert({
-            program_id: selectedProgram,
-            name: formData.customSubjectName,
-            code: formData.customSubjectCode || 'CUSTOM',
-            semester: parseInt(selectedSemester),
-            credits: 3,
-            description: `Custom subject: ${formData.customSubjectName}`
-          })
-          .select()
-          .single();
+          .select('id')
+          .eq('program_id', selectedProgram)
+          .eq('code', subjectCode)
+          .eq('semester', parseInt(selectedSemester))
+          .maybeSingle();
           
-        if (subjectError) throw subjectError;
-        finalSubjectId = customSubject.id;
+        if (existingSubject) {
+          // Use existing subject
+          finalSubjectId = existingSubject.id;
+        } else {
+          // Create new custom subject
+          const { data: customSubject, error: subjectError } = await supabase
+            .from('subjects')
+            .insert({
+              program_id: selectedProgram,
+              name: formData.customSubjectName,
+              code: subjectCode,
+              semester: parseInt(selectedSemester),
+              credits: 3,
+              description: `Custom subject: ${formData.customSubjectName}`
+            })
+            .select()
+            .single();
+            
+          if (subjectError) throw subjectError;
+          finalSubjectId = customSubject.id;
+        }
       }
       
       for (const fileUpload of files) {
