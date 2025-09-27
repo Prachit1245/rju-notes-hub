@@ -96,55 +96,55 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="hero-gradient py-16 px-4">
-        <div className="container mx-auto text-center text-white">
-          <div className="mb-8">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+      <section className="hero-gradient py-20 px-4 relative overflow-hidden">
+        <div className="container mx-auto text-center text-white relative z-10">
+          <div className="mb-8 animate-slide-up">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text">
               RJU Notes
             </h1>
-            <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
               Free access to student notes, old questions, slides, and study materials 
               for Rajarshi Janak University students
             </p>
           </div>
 
           {/* Hero Search */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="flex flex-col sm:flex-row gap-3">
+          <div className="max-w-3xl mx-auto mb-12 animate-fade-in">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-4 top-4 h-5 w-5 text-rju-purple" />
                 <Input
                   type="search"
                   placeholder="Search notes, subjects, or faculty..."
-                  className="pl-10 py-3 text-black"
+                  className="pl-12 py-4 text-lg text-black bg-white/95 backdrop-blur-sm border-0 shadow-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button size="lg" variant="secondary" className="px-8">
-                <Search className="h-4 w-4 mr-2" />
+              <Button size="lg" className="btn-glow px-8 py-4">
+                <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>
             </div>
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-2xl font-bold">2,500+</div>
-              <div className="text-sm opacity-80">Notes</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-scale-in">
+            <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl float-animation">
+              <div className="text-3xl md:text-4xl font-bold glow-text">2,500+</div>
+              <div className="text-lg opacity-90">Notes</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">15</div>
-              <div className="text-sm opacity-80">Faculties</div>
+            <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl float-animation" style={{animationDelay: '0.5s'}}>
+              <div className="text-3xl md:text-4xl font-bold glow-text">15</div>
+              <div className="text-lg opacity-90">Faculties</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">5,000+</div>
-              <div className="text-sm opacity-80">Students</div>
+            <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl float-animation" style={{animationDelay: '1s'}}>
+              <div className="text-3xl md:text-4xl font-bold glow-text">5,000+</div>
+              <div className="text-lg opacity-90">Students</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">Free</div>
-              <div className="text-sm opacity-80">Always</div>
+            <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl float-animation" style={{animationDelay: '1.5s'}}>
+              <div className="text-3xl md:text-4xl font-bold glow-text">Free</div>
+              <div className="text-lg opacity-90">Always</div>
             </div>
           </div>
         </div>
@@ -152,33 +152,33 @@ const HomePage = () => {
 
       <div className="container mx-auto px-4 py-12">
         {/* Action Cards */}
-        <section className="grid md:grid-cols-3 gap-6 mb-16">
-          <Card className="card-gradient text-center p-6">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Download className="h-6 w-6 text-primary" />
+        <section className="grid md:grid-cols-3 gap-8 mb-20 -mt-10 relative z-20">
+          <Card className="rainbow-border text-center p-8 hover:scale-105 transition-all duration-500">
+            <div className="w-16 h-16 bg-gradient-to-br from-rju-purple to-rju-cyan rounded-2xl flex items-center justify-center mx-auto mb-6 pulse-glow">
+              <Download className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-semibold text-lg mb-2">Download Notes</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-xl mb-4 gradient-text">Download Notes</h3>
+            <p className="text-muted-foreground">
               Access thousands of notes, slides, and study materials from all faculties
             </p>
           </Card>
 
-          <Card className="card-gradient text-center p-6">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Upload className="h-6 w-6 text-primary" />
+          <Card className="rainbow-border text-center p-8 hover:scale-105 transition-all duration-500">
+            <div className="w-16 h-16 bg-gradient-to-br from-rju-cyan to-rju-green rounded-2xl flex items-center justify-center mx-auto mb-6 pulse-glow">
+              <Upload className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-semibold text-lg mb-2">Share Resources</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-xl mb-4 gradient-text">Share Resources</h3>
+            <p className="text-muted-foreground">
               Help fellow students by uploading your notes and study materials
             </p>
           </Card>
 
-          <Card className="card-gradient text-center p-6">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Bell className="h-6 w-6 text-primary" />
+          <Card className="rainbow-border text-center p-8 hover:scale-105 transition-all duration-500">
+            <div className="w-16 h-16 bg-gradient-to-br from-rju-orange to-rju-pink rounded-2xl flex items-center justify-center mx-auto mb-6 pulse-glow">
+              <Bell className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-semibold text-lg mb-2">Stay Updated</h3>
-            <p className="text-muted-foreground text-sm">
+            <h3 className="font-bold text-xl mb-4 gradient-text">Stay Updated</h3>
+            <p className="text-muted-foreground">
               Get the latest university notices, exam schedules, and results
             </p>
           </Card>
@@ -186,12 +186,14 @@ const HomePage = () => {
 
         {/* Latest Notes */}
         <section className="mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-5 w-5 text-primary" />
-              <h2 className="text-2xl font-bold">Latest Notes</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-rju-purple to-rju-cyan rounded-lg flex items-center justify-center">
+                <Clock className="h-5 w-5 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold gradient-text">Latest Notes</h2>
             </div>
-            <Button variant="outline">
+            <Button variant="outline" className="nav-link">
               View All
             </Button>
           </div>

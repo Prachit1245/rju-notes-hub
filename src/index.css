@@ -8,64 +8,89 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* RJU Brand Colors - More Vibrant */
-    --background: 210 100% 99%;
-    --foreground: 215 25% 27%;
+    /* Vibrant Background System */
+    --background: 240 100% 99%;
+    --foreground: 230 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 230 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 230 15% 15%;
 
-    /* RJU Vibrant Blue Primary */
-    --primary: 217 91% 60%;
+    /* Electric Primary Colors */
+    --primary: 267 84% 81%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 217 91% 55%;
+    --primary-hover: 267 84% 75%;
 
-    /* Colorful Secondary */
-    --secondary: 280 100% 96%;
-    --secondary-foreground: 280 60% 30%;
+    /* Vibrant Secondary */
+    --secondary: 172 66% 50%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 270 20% 95%;
+    --muted-foreground: 230 10% 40%;
 
-    --accent: 217 91% 95%;
-    --accent-foreground: 217 91% 60%;
+    --accent: 31 81% 91%;
+    --accent-foreground: 31 81% 20%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    --border: 270 15% 85%;
+    --input: 270 15% 90%;
+    --ring: 267 84% 81%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* RJU Custom Design Tokens - Enhanced */
+    /* Rainbow Color Palette */
+    --electric-purple: 267 84% 81%;
+    --electric-blue: 217 91% 60%;
+    --cyber-cyan: 172 66% 50%;
+    --neon-green: 142 76% 36%;
+    --sunset-orange: 31 81% 81%;
+    --hot-pink: 330 81% 60%;
+    --royal-purple: 280 100% 60%;
+    --ocean-blue: 200 100% 50%;
+    
+    /* Enhanced Design Tokens */
     --rju-blue: 217 91% 60%;
     --rju-blue-dark: 217 91% 45%;
     --rju-blue-light: 217 91% 95%;
-    --rju-purple: 280 100% 60%;
-    --rju-purple-light: 280 100% 95%;
+    --rju-purple: 267 84% 81%;
+    --rju-purple-dark: 267 84% 65%;
+    --rju-purple-light: 267 84% 95%;
+    --rju-cyan: 172 66% 50%;
+    --rju-cyan-light: 172 66% 95%;
     --rju-green: 142 76% 36%;
     --rju-green-light: 142 76% 95%;
-    --rju-orange: 24 100% 50%;
-    --rju-orange-light: 24 100% 95%;
-    --rju-gray: 215 16% 47%;
-    --rju-gray-light: 210 40% 96%;
+    --rju-orange: 31 81% 81%;
+    --rju-orange-light: 31 81% 95%;
+    --rju-pink: 330 81% 60%;
+    --rju-pink-light: 330 81% 95%;
+    --rju-gray: 230 10% 40%;
+    --rju-gray-light: 270 20% 95%;
 
-    /* Colorful Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--rju-blue)), hsl(var(--rju-purple)));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 60% 98%));
-    --gradient-vibrant: linear-gradient(120deg, hsl(var(--rju-blue)), hsl(var(--rju-purple)), hsl(var(--rju-green)));
+    /* Spectacular Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--electric-purple)), hsl(var(--cyber-cyan)), hsl(var(--electric-blue)));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(267 84% 98%), hsl(172 66% 98%));
+    --gradient-vibrant: linear-gradient(120deg, hsl(var(--electric-purple)), hsl(var(--cyber-cyan)), hsl(var(--neon-green)));
+    --gradient-sunset: linear-gradient(90deg, hsl(var(--sunset-orange)), hsl(var(--hot-pink)), hsl(var(--royal-purple)));
+    --gradient-ocean: linear-gradient(45deg, hsl(var(--cyber-cyan)), hsl(var(--ocean-blue)), hsl(var(--electric-blue)));
+    --gradient-rainbow: linear-gradient(270deg, hsl(var(--hot-pink)), hsl(var(--electric-purple)), hsl(var(--cyber-cyan)), hsl(var(--neon-green)));
+    --gradient-mesh: radial-gradient(circle at 25% 25%, hsl(var(--electric-purple) / 0.2) 0%, transparent 50%), 
+                     radial-gradient(circle at 75% 75%, hsl(var(--cyber-cyan) / 0.2) 0%, transparent 50%), 
+                     radial-gradient(circle at 50% 50%, hsl(var(--sunset-orange) / 0.1) 0%, transparent 50%);
     
-    /* Shadows */
-    --shadow-card: 0 4px 6px -1px hsl(var(--rju-blue) / 0.1), 0 2px 4px -1px hsl(var(--rju-blue) / 0.06);
-    --shadow-hover: 0 10px 15px -3px hsl(var(--rju-blue) / 0.1), 0 4px 6px -2px hsl(var(--rju-blue) / 0.05);
+    /* Enhanced Shadows & Effects */
+    --shadow-card: 0 4px 6px -1px hsl(var(--electric-purple) / 0.1), 0 2px 4px -1px hsl(var(--electric-purple) / 0.06);
+    --shadow-hover: 0 20px 25px -5px hsl(var(--electric-purple) / 0.2), 0 10px 10px -5px hsl(var(--cyber-cyan) / 0.1);
+    --shadow-glow: 0 0 20px hsl(var(--electric-purple) / 0.3), 0 0 40px hsl(var(--cyber-cyan) / 0.2);
+    --shadow-neon: 0 0 10px hsl(var(--cyber-cyan)), 0 0 20px hsl(var(--cyber-cyan) / 0.5), 0 0 30px hsl(var(--cyber-cyan) / 0.3);
     
-    /* Transitions */
+    /* Smooth Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-elastic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --sidebar-background: 0 0% 98%;
 
@@ -130,51 +155,278 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background-image: var(--gradient-mesh);
+    min-height: 100vh;
   }
 }
 
 @layer components {
+  /* Enhanced Background Patterns */
+  .mesh-background {
+    background: var(--gradient-mesh);
+  }
+
+  .rainbow-border {
+    position: relative;
+    background: white;
+    border-radius: var(--radius);
+  }
+
+  .rainbow-border::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-rainbow);
+    border-radius: var(--radius);
+    z-index: -1;
+    animation: rainbow-glow 3s ease-in-out infinite alternate;
+  }
+
   /* Hero Section */
   .hero-gradient {
     background: var(--gradient-hero);
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Card Components */
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-mesh);
+    opacity: 0.5;
+    animation: mesh-float 20s ease-in-out infinite;
+  }
+
+  /* Enhanced Card Components */
   .card-gradient {
     background: var(--gradient-card);
     box-shadow: var(--shadow-card);
-    transition: var(--transition-smooth);
+    transition: var(--transition-elastic);
+    border: 1px solid hsl(var(--electric-purple) / 0.1);
   }
 
   .card-gradient:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-8px) scale(1.02);
   }
 
-  /* Academic Badge */
-  .academic-badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    background: hsl(var(--rju-blue-light));
-    color: hsl(var(--rju-blue));
+  .card-vibrant {
+    background: var(--gradient-vibrant);
+    color: white;
+    box-shadow: var(--shadow-neon);
+    transition: var(--transition-bounce);
   }
 
-  /* File Type Icons */
+  .card-vibrant:hover {
+    transform: translateY(-5px) rotate(1deg);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Colorful Badges & Tags */
+  .badge-purple {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--rju-purple-light));
+    color: hsl(var(--rju-purple-dark));
+    border: 1px solid hsl(var(--rju-purple) / 0.3);
+  }
+
+  .badge-cyan {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--rju-cyan-light));
+    color: hsl(var(--rju-cyan));
+    border: 1px solid hsl(var(--rju-cyan) / 0.3);
+  }
+
+  .badge-orange {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--rju-orange-light));
+    color: hsl(var(--rju-orange));
+    border: 1px solid hsl(var(--rju-orange) / 0.3);
+  }
+
+  .badge-pink {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--rju-pink-light));
+    color: hsl(var(--rju-pink));
+    border: 1px solid hsl(var(--rju-pink) / 0.3);
+  }
+
+  /* Enhanced File Type Icons */
   .file-icon {
-    @apply w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium;
+    @apply w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold;
+    transition: var(--transition-bounce);
+    position: relative;
+  }
+
+  .file-icon:hover {
+    transform: scale(1.2) rotate(5deg);
   }
 
   .file-icon.pdf {
-    background: hsl(0 84% 95%);
+    background: linear-gradient(135deg, hsl(0 84% 95%), hsl(0 84% 85%));
     color: hsl(0 84% 60%);
+    box-shadow: 0 4px 8px hsl(0 84% 60% / 0.3);
   }
 
   .file-icon.doc {
-    background: hsl(217 91% 95%);
+    background: linear-gradient(135deg, hsl(217 91% 95%), hsl(217 91% 85%));
     color: hsl(217 91% 60%);
+    box-shadow: 0 4px 8px hsl(217 91% 60% / 0.3);
   }
 
   .file-icon.ppt {
-    background: hsl(24 100% 95%);
-    color: hsl(24 100% 50%);
+    background: linear-gradient(135deg, hsl(31 81% 95%), hsl(31 81% 85%));
+    color: hsl(31 81% 50%);
+    box-shadow: 0 4px 8px hsl(31 81% 50% / 0.3);
+  }
+
+  .file-icon.excel {
+    background: linear-gradient(135deg, hsl(142 76% 95%), hsl(142 76% 85%));
+    color: hsl(142 76% 36%);
+    box-shadow: 0 4px 8px hsl(142 76% 36% / 0.3);
+  }
+
+  /* Glowing Buttons */
+  .btn-glow {
+    background: var(--gradient-vibrant);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    box-shadow: 0 0 20px hsl(var(--electric-purple) / 0.4);
+  }
+
+  .btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: var(--transition-smooth);
+  }
+
+  .btn-glow:hover::before {
+    left: 100%;
+  }
+
+  .btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px hsl(var(--electric-purple) / 0.6), 0 0 40px hsl(var(--cyber-cyan) / 0.4);
+  }
+
+  /* Animated Navigation */
+  .nav-link {
+    @apply relative px-4 py-2 rounded-lg font-medium transition-all duration-300;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-ocean);
+    transition: var(--transition-smooth);
+    z-index: -1;
+  }
+
+  .nav-link:hover::before {
+    left: 0;
+  }
+
+  .nav-link:hover {
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  /* Floating Elements */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Text Effects */
+  .gradient-text {
+    background: var(--gradient-vibrant);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .glow-text {
+    color: hsl(var(--electric-purple));
+    text-shadow: 0 0 10px hsl(var(--electric-purple) / 0.5), 0 0 20px hsl(var(--electric-purple) / 0.3);
+  }
+}
+
+/* Enhanced Animations */
+@keyframes rainbow-glow {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(90deg) brightness(1.2);
+  }
+}
+
+@keyframes mesh-float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px hsl(var(--electric-purple) / 0.2);
+  }
+  100% {
+    box-shadow: 0 0 20px hsl(var(--electric-purple) / 0.6), 0 0 30px hsl(var(--cyber-cyan) / 0.4);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
