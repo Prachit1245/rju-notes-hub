@@ -125,14 +125,21 @@ export default function UploadPage() {
       let finalSubjectId = selectedSubject;
       
       if (useCustomSubject && formData.customSubjectName) {
-        const subjectCode = formData.customSubjectCode || 'CUSTOM';
+        // Generate unique subject code to avoid constraint violations
+        const { data: uniqueCode, error: codeError } = await supabase
+          .rpc('generate_unique_subject_code', {
+            p_program_id: selectedProgram,
+            p_base_code: formData.customSubjectCode || 'CUSTOM'
+          });
+          
+        if (codeError) throw codeError;
         
-        // Check if custom subject already exists
+        // Check if custom subject already exists with this exact combination
         const { data: existingSubject } = await supabase
           .from('subjects')
           .select('id')
           .eq('program_id', selectedProgram)
-          .eq('code', subjectCode)
+          .eq('name', formData.customSubjectName)
           .eq('semester', parseInt(selectedSemester))
           .maybeSingle();
           
@@ -140,13 +147,13 @@ export default function UploadPage() {
           // Use existing subject
           finalSubjectId = existingSubject.id;
         } else {
-          // Create new custom subject
+          // Create new custom subject with unique code
           const { data: customSubject, error: subjectError } = await supabase
             .from('subjects')
             .insert({
               program_id: selectedProgram,
               name: formData.customSubjectName,
-              code: subjectCode,
+              code: uniqueCode,
               semester: parseInt(selectedSemester),
               credits: 3,
               description: `Custom subject: ${formData.customSubjectName}`
@@ -200,9 +207,20 @@ export default function UploadPage() {
       
     } catch (error) {
       console.error('Upload error:', error);
+      let errorMessage = "Failed to upload files. Please try again.";
+      
+      // Provide more specific error messages
+      if (error.message?.includes('duplicate key')) {
+        errorMessage = "Subject already exists. Please use a different name or code.";
+      } else if (error.message?.includes('permission')) {
+        errorMessage = "Permission error. Please check your credentials.";
+      } else if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection.";
+      }
+      
       toast({
         title: "Upload Failed",
-        description: "Failed to upload files. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
