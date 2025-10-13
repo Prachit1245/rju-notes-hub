@@ -26,10 +26,15 @@ export default function NoticeBoard() {
 
   const fetchNotices = async () => {
     try {
+      // Calculate date 10 days ago
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+      
       const { data, error } = await supabase
         .from('notices')
         .select('*')
         .eq('is_active', true)
+        .gte('published_at', tenDaysAgo.toISOString())
         .order('published_at', { ascending: false })
         .limit(10);
 

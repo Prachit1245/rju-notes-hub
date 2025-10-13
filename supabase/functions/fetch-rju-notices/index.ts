@@ -47,7 +47,12 @@ serve(async (req) => {
       index === self.findIndex((n) => n.title === notice.title)
     );
     
-    console.log(`Total unique notices found: ${notices.length}`);
+    // Filter notices from the past 10 days only
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    notices = notices.filter(notice => new Date(notice.date) >= tenDaysAgo);
+    
+    console.log(`Total unique notices from past 10 days: ${notices.length}`);
 
     // Store new notices in database
     const newNotices = [];
