@@ -19,15 +19,35 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch the notices page
-    const response = await fetch('https://rju.edu.np/notices/');
-    const html = await response.text();
+    // Try multiple sources to get notices
+    let notices: any[] = [];
     
-    console.log('Successfully fetched RJU notices page');
-
-    // Parse HTML to extract notice information
-    const notices = parseNoticesFromHTML(html);
-    console.log(`Parsed ${notices.length} notices from RJU website`);
+    // Try fetching from the main page and examination page
+    const urls = [
+      'https://rju.edu.np/',
+      'https://rju.edu.np/examination/',
+      'https://rju.edu.np/notices/'
+    ];
+    
+    for (const url of urls) {
+      try {
+        console.log(`Fetching from ${url}...`);
+        const response = await fetch(url);
+        const html = await response.text();
+        const parsed = parseNoticesFromHTML(html);
+        notices = notices.concat(parsed);
+        console.log(`Parsed ${parsed.length} notices from ${url}`);
+      } catch (e) {
+        console.error(`Error fetching from ${url}:`, e);
+      }
+    }
+    
+    // Remove duplicates based on title
+    notices = notices.filter((notice, index, self) =>
+      index === self.findIndex((n) => n.title === notice.title)
+    );
+    
+    console.log(`Total unique notices found: ${notices.length}`);
 
     // Store new notices in database
     const newNotices = [];
@@ -92,48 +112,72 @@ serve(async (req) => {
 function parseNoticesFromHTML(html: string) {
   const notices = [];
   
-  // Extract notice sections using regex patterns
-  const noticePattern = /<article[^>]*class="[^"]*post[^"]*"[^>]*>[\s\S]*?<\/article>/gi;
-  const matches = html.match(noticePattern) || [];
+  // Try multiple patterns to extract notices
+  const patterns = [
+    // Pattern 1: Article with post class
+    /<article[^>]*class="[^"]*post[^"]*"[^>]*>([\s\S]*?)<\/article>/gi,
+    // Pattern 2: Div with notice or announcement class
+    /<div[^>]*class="[^"]*notice[^"]*"[^>]*>([\s\S]*?)<\/div>/gi,
+    // Pattern 3: Links to notice pages
+    /<a[^>]*href="([^"]*notice[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi,
+    // Pattern 4: Table rows with notice data
+    /<tr[^>]*>([\s\S]*?)<\/tr>/gi
+  ];
   
-  for (const match of matches) {
-    try {
-      // Extract title
-      const titleMatch = match.match(/<h[1-6][^>]*class="[^"]*entry-title[^"]*"[^>]*>[\s\S]*?<a[^>]*href="[^"]*"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/h[1-6]>/i);
-      const title = titleMatch ? cleanText(titleMatch[1]) : '';
-      
-      // Extract date
-      const dateMatch = match.match(/<time[^>]*datetime="([^"]*)"[^>]*>/i) || 
-                       match.match(/(\w+ \d{1,2}, \d{4})/);
-      const dateStr = dateMatch ? dateMatch[1] : new Date().toISOString();
-      
-      // Extract content/excerpt
-      const contentMatch = match.match(/<div[^>]*class="[^"]*entry-content[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
-                          match.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
-      const content = contentMatch ? cleanText(contentMatch[1]).substring(0, 500) : '';
-      
-      // Determine category based on title content
-      let category = 'general';
-      const titleLower = title.toLowerCase();
-      if (titleLower.includes('exam') || titleLower.includes('result')) {
-        category = 'examinations';
-      } else if (titleLower.includes('vacancy') || titleLower.includes('job')) {
-        category = 'vacancy';
-      } else if (titleLower.includes('admission') || titleLower.includes('entrance')) {
-        category = 'admissions';
-      }
+  for (const pattern of patterns) {
+    const matches = html.match(pattern) || [];
+    
+    for (const match of matches) {
+      try {
+        // Extract title - try multiple patterns
+        let title = '';
+        const titlePatterns = [
+          /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/i,
+          /<a[^>]*href="[^"]*"[^>]*>([\s\S]*?)<\/a>/i,
+          /<td[^>]*>([\s\S]*?)<\/td>/i
+        ];
+        
+        for (const tp of titlePatterns) {
+          const titleMatch = match.match(tp);
+          if (titleMatch) {
+            title = cleanText(titleMatch[1]);
+            if (title.length > 10) break; // Good title found
+          }
+        }
+        
+        if (!title || title.length < 10) continue;
+        
+        // Extract date
+        const dateMatch = match.match(/<time[^>]*datetime="([^"]*)"[^>]*>/i) || 
+                         match.match(/(\d{4}-\d{2}-\d{2})/i) ||
+                         match.match(/(\w+ \d{1,2}, \d{4})/);
+        const dateStr = dateMatch ? dateMatch[1] : new Date().toISOString();
+        
+        // Extract content/excerpt
+        const contentMatch = match.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+        const content = contentMatch ? cleanText(contentMatch[1]).substring(0, 500) : title;
+        
+        // Determine category based on title content
+        let category = 'general';
+        const titleLower = title.toLowerCase();
+        if (titleLower.includes('exam') || titleLower.includes('result')) {
+          category = 'examinations';
+        } else if (titleLower.includes('vacancy') || titleLower.includes('job')) {
+          category = 'vacancy';
+        } else if (titleLower.includes('admission') || titleLower.includes('entrance')) {
+          category = 'admissions';
+        }
 
-      if (title) {
         notices.push({
           title: title,
           content: content || title,
           category: category,
           date: new Date(dateStr).toISOString()
         });
+      } catch (e) {
+        console.error('Error parsing individual notice:', e);
+        continue;
       }
-    } catch (e) {
-      console.error('Error parsing individual notice:', e);
-      continue;
     }
   }
   
