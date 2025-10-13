@@ -9,38 +9,34 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
       {/* Hero Section with Logo Background */}
-      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))] via-[hsl(var(--primary-glow))] to-[hsl(var(--accent))]">
-        <div className="absolute inset-0 opacity-15">
+      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="absolute inset-0 opacity-5">
           <div 
             className="absolute inset-0 bg-center bg-no-repeat"
             style={{ 
               backgroundImage: `url(${rjuLogo})`,
-              backgroundSize: '40%',
-              filter: 'brightness(2) contrast(0.8)'
+              backgroundSize: '40%'
             }}
           ></div>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20"></div>
         
         <div className="container relative z-10 px-4">
-          <div className="text-center space-y-8 animate-fade-in">
-            <h1 className="text-6xl md:text-8xl font-black text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)] leading-tight tracking-tight">
+          <div className="text-center space-y-6 animate-fade-in">
+            <h1 className="text-6xl md:text-7xl font-bold text-black leading-tight">
               RJU Student Notes
             </h1>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-3xl mx-auto border border-white/20">
-              <p className="text-2xl md:text-3xl text-white font-bold drop-shadow-lg leading-relaxed">
-                Access comprehensive study materials organized by faculty, program, and semester. 
-                <br />
-                <span className="text-yellow-300 font-extrabold">Stay updated</span> with the latest notices from Rajarshi Janak University.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+            <p className="text-xl md:text-2xl text-black/80 max-w-2xl mx-auto font-medium leading-relaxed">
+              Access comprehensive study materials organized by faculty, program, and semester.
+              <br />
+              Stay updated with the latest notices from Rajarshi Janak University.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
               <Link to="/notes">
                 <Button 
                   size="lg" 
-                  className="bg-white text-[hsl(var(--primary))] hover:bg-yellow-300 hover:text-[hsl(var(--primary))] hover:scale-105 transition-all duration-300 shadow-2xl px-10 py-7 text-xl font-black border-4 border-white/50"
+                  className="px-8 py-6 text-lg font-semibold"
                 >
-                  <BookOpen className="mr-3 h-6 w-6" />
+                  <BookOpen className="mr-2 h-5 w-5" />
                   Browse Notes
                 </Button>
               </Link>
@@ -48,9 +44,9 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="border-4 border-white bg-[hsl(var(--primary))]/80 text-white hover:bg-white hover:text-[hsl(var(--primary))] transition-all duration-300 px-10 py-7 text-xl font-black backdrop-blur-sm shadow-2xl"
+                  className="px-8 py-6 text-lg font-semibold"
                 >
-                  <Upload className="mr-3 h-6 w-6" />
+                  <Upload className="mr-2 h-5 w-5" />
                   Upload Notes
                 </Button>
               </Link>
