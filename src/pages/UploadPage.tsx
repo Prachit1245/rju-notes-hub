@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, FileText, Image, FileAudio, FileVideo, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,11 +42,21 @@ export default function UploadPage() {
   
   const [files, setFiles] = useState<FileUpload[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [adminAuth, setAdminAuth] = useState({
-    email: '',
-    password: '',
-    isAuthenticated: false
+  const [adminAuth, setAdminAuth] = useState(() => {
+    const stored = localStorage.getItem('rju_admin_auth');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        return { email: '', password: '', isAuthenticated: false };
+      }
+    }
+    return { email: '', password: '', isAuthenticated: false };
   });
+
+  useEffect(() => {
+    localStorage.setItem('rju_admin_auth', JSON.stringify(adminAuth));
+  }, [adminAuth]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
