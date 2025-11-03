@@ -41,6 +41,24 @@ export type Database = {
         }
         Relationships: []
       }
+      heartbeat: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           created_at: string
