@@ -47,12 +47,27 @@ serve(async (req) => {
       index === self.findIndex((n) => n.title === notice.title)
     );
     
-    // Filter notices from the past 10 days only
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-    notices = notices.filter(notice => new Date(notice.date) >= tenDaysAgo);
+    // Sort by date (most recent first) and take only the 5 most recent
+    notices = notices
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
     
-    console.log(`Total unique notices from past 10 days: ${notices.length}`);
+    console.log(`Top 5 most recent notices: ${notices.length}`);
+
+    // Delete old notices (keep only the 5 most recent)
+    const { data: existingNotices } = await supabase
+      .from('notices')
+      .select('id, published_at')
+      .order('published_at', { ascending: false });
+
+    if (existingNotices && existingNotices.length > 5) {
+      const noticeIdsToDelete = existingNotices.slice(5).map(n => n.id);
+      await supabase
+        .from('notices')
+        .delete()
+        .in('id', noticeIdsToDelete);
+      console.log(`Deleted ${noticeIdsToDelete.length} old notices`);
+    }
 
     // Store new notices in database
     const newNotices = [];
