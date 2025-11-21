@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Menu, X, BookOpen, Bell, Home, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import rjuLogo from '@/assets/rju-notes-logo.png';
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,9 +25,9 @@ const Navigation = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
           <img 
-            src="/favicon.png" 
+            src={rjuLogo} 
             alt="RJU Notes Logo" 
-            className="h-8 w-8 rounded-lg"
+            className="h-10 w-10"
           />
           <div className="hidden font-bold sm:inline-block">
             <span className="text-primary">RJU</span> Notes
