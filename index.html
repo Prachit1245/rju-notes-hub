@@ -32,6 +32,7 @@
     <meta name="distribution" content="global" />
     <meta name="geo.region" content="NP" />
     <meta name="geo.placename" content="Janakpur, Nepal" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     
     <!-- Structured Data (JSON-LD) for Better SEO -->
     <script type="application/ld+json">
@@ -39,17 +40,25 @@
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "RJU Notes - Rajarshi Janak University Student Portal",
-      "alternateName": "RJU Notes",
+      "alternateName": ["RJU Notes", "Rajarshi Janak University Notes", "RJU Student Notes"],
       "url": "https://rjunotes.com",
       "logo": "https://rjunotes.com/favicon.png",
       "description": "Free study materials, notes, and exam resources for Rajarshi Janak University (RJU) students in Nepal. Digital learning hub with lecture notes, old questions, and academic resources.",
       "address": {
         "@type": "PostalAddress",
+        "addressLocality": "Janakpur",
+        "addressRegion": "Madhesh Pradesh",
         "addressCountry": "Nepal"
       },
       "sameAs": [
         "https://rjunotes.com"
-      ]
+      ],
+      "areaServed": {
+        "@type": "Place",
+        "name": "Nepal"
+      },
+      "availableLanguage": ["en", "ne"],
+      "keywords": "RJU notes, Rajarshi Janak University, study materials, lecture notes, exam papers, old questions, BCA notes, BIT notes, BSc CSIT notes, university notes Nepal"
     }
     </script>
     <script type="application/ld+json">
@@ -57,11 +66,103 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "RJU Notes",
+      "alternateName": "Rajarshi Janak University Student Notes",
       "url": "https://rjunotes.com",
+      "description": "Free study materials and notes for Rajarshi Janak University students",
+      "inLanguage": "en",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://rjunotes.com/notes?q={search_term_string}",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://rjunotes.com/notes?q={search_term_string}"
+        },
         "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://rjunotes.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Browse Notes",
+          "item": "https://rjunotes.com/notes"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Upload Notes",
+          "item": "https://rjunotes.com/upload"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Notices",
+          "item": "https://rjunotes.com/notices"
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is RJU Notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "RJU Notes is a free digital learning platform for Rajarshi Janak University students providing study materials, lecture notes, old exam questions, and university notices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I download notes from RJU Notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Browse notes by selecting your faculty, program, semester, and subject. Click on any note to download it for free. No registration required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which programs are available on RJU Notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "RJU Notes covers all major programs at Rajarshi Janak University including BCA, BIT, BSc CSIT, BBS, BBA, BA, and more across all faculties."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I upload notes to RJU Notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Visit the Upload page and submit your study materials through our secure admin-controlled system. All uploads are verified for quality before being published."
+          }
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "RJU Student Notes Collection",
+      "description": "Comprehensive collection of study materials for Rajarshi Janak University students",
+      "url": "https://rjunotes.com/notes",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "RJU Notes",
+        "url": "https://rjunotes.com"
       }
     }
     </script>
