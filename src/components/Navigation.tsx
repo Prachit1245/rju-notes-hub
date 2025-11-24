@@ -106,7 +106,7 @@ const Navigation = () => {
             </div>
 
             {/* Mobile Navigation Links */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -115,13 +115,13 @@ const Navigation = () => {
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "flex items-center justify-center space-x-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                      "flex items-center justify-center space-x-2 rounded-lg px-4 py-3 text-base font-medium transition-colors",
                       isActive(item.href)
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </Link>
                 );

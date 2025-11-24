@@ -59,25 +59,25 @@ export default function NotesPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-3 md:p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Study Notes</h1>
-          <p className="text-muted-foreground">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Study Notes</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Access study materials organized by faculty, program, and semester
           </p>
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
+        <Card className="mb-4 md:mb-6">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+              <Filter className="h-4 md:h-5 w-4 md:w-5" />
               Filter Notes
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-4 mb-4">
+          <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <div className="flex-1">
                 <Input
                   placeholder="Search notes, descriptions, or tags..."
@@ -86,13 +86,13 @@ export default function NotesPage() {
                   className="w-full"
                 />
               </div>
-              <Button variant="outline">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               <Select value={selectedFaculty} onValueChange={(value) => {
                 setSelectedFaculty(value);
                 setSelectedProgram('all');
@@ -196,14 +196,14 @@ export default function NotesPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredNotes.map((note) => (
               <Card key={note.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
+                <CardHeader className="pb-3 p-4 md:p-6">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
                       {getFileIcon(note.file_type, 'md')}
-                      <CardTitle className="text-lg line-clamp-2">{note.title}</CardTitle>
+                      <CardTitle className="text-base md:text-lg line-clamp-2">{note.title}</CardTitle>
                     </div>
                     {note.is_verified && (
                       <Badge variant="secondary" className="ml-2">
@@ -218,7 +218,7 @@ export default function NotesPage() {
                   )}
                 </CardHeader>
                 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6">
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
@@ -258,9 +258,10 @@ export default function NotesPage() {
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button 
                       className="flex-1" 
+                      size="sm"
                       onClick={() => window.open(note.file_url, '_blank')}
                     >
                       <Download className="h-4 w-4 mr-2" />
@@ -269,6 +270,8 @@ export default function NotesPage() {
                     {note.file_type === 'application/pdf' && (
                       <Button 
                         variant="outline"
+                        size="sm"
+                        className="flex-1 sm:flex-initial"
                         onClick={() => window.open(note.file_url, '_blank')}
                       >
                         Preview
