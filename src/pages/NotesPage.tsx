@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Download, Star, Calendar, FileText, Image, FileAudio, FileVideo } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 
 export default function NotesPage() {
+  const navigate = useNavigate();
   const { faculties } = useFaculties();
   const [selectedFaculty, setSelectedFaculty] = useState<string>('all');
   const [selectedProgram, setSelectedProgram] = useState<string>('all');
@@ -198,7 +200,11 @@ export default function NotesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredNotes.map((note) => (
-              <Card key={note.id} className="hover:shadow-lg transition-shadow">
+              <Card 
+                key={note.id} 
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => navigate(`/notes/${note.id}`)}
+              >
                 <CardHeader className="pb-3 p-4 md:p-6">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
