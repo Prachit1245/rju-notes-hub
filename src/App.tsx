@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import NotesPage from "./pages/NotesPage";
+import NotePage from "./pages/NotePage";
 import UploadPage from "./pages/UploadPage";
 import AboutPage from "./pages/AboutPage";
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/notes" element={<NotesPage />} />
+          <Route path="/notes/:id" element={<NotePage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/notices" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
