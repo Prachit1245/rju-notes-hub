@@ -5,6 +5,7 @@ import { Download, Star, Calendar, FileText, Image, FileAudio, FileVideo, ArrowL
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ShareButton } from '@/components/ShareButton';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Note {
@@ -463,6 +464,11 @@ export default function NotePage() {
                       Preview
                     </Button>
                   )}
+                  <ShareButton 
+                    title={note.title}
+                    url={pageUrl}
+                    className="h-11"
+                  />
                 </div>
               </CardContent>
             </Card>
