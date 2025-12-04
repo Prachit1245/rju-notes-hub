@@ -163,10 +163,10 @@ export default function NoticeBoard() {
 
   return (
     <Card>
-      <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
+      <CardHeader className="p-3 md:p-6">
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base">
+              <Bell className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               Latest RJU Notices
             </CardTitle>
             <Button 
@@ -174,43 +174,43 @@ export default function NoticeBoard() {
               size="sm"
               onClick={refreshNotices}
               disabled={refreshing}
-              className="bg-primary/5 hover:bg-primary/10"
+              className="bg-primary/5 hover:bg-primary/10 text-xs md:text-sm h-8 px-2 md:px-3"
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
+              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
             </Button>
           </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
         {notices.length === 0 ? (
-          <div className="text-center py-8">
-            <Bell className="h-12 w-12 text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">
-              No notices available. Click refresh to fetch latest notices from RJU website.
+          <div className="text-center py-6 md:py-8">
+            <Bell className="h-10 w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 md:mb-4" />
+            <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
+              No notices available. Click refresh to fetch latest notices.
             </p>
-            <Button onClick={refreshNotices} disabled={refreshing} className="bg-primary hover:bg-primary/90">
-              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <Button onClick={refreshNotices} disabled={refreshing} className="bg-primary hover:bg-primary/90 text-xs md:text-sm h-9">
+              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
               Fetch Notices
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2.5 md:space-y-4">
             {notices.map((notice) => (
               <div
                 key={notice.id}
-                className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="border rounded-lg p-2.5 md:p-4 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-1.5 md:mb-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg line-clamp-2 mb-2">
+                    <h3 className="font-semibold text-xs md:text-lg line-clamp-2 mb-1.5 md:mb-2">
                       {notice.title}
                     </h3>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge className={getCategoryColor(notice.category)}>
+                    <div className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2 flex-wrap">
+                      <Badge className={`${getCategoryColor(notice.category)} text-[10px] md:text-xs px-1.5 md:px-2`}>
                         {notice.category}
                       </Badge>
                       {notice.priority !== 'normal' && (
-                        <Badge className={getPriorityColor(notice.priority)}>
+                        <Badge className={`${getPriorityColor(notice.priority)} text-[10px] md:text-xs px-1.5 md:px-2`}>
                           {notice.priority}
                         </Badge>
                       )}
@@ -218,23 +218,23 @@ export default function NoticeBoard() {
                   </div>
                 </div>
                 
-                <p className="text-muted-foreground text-sm line-clamp-3 mb-3">
+                <p className="text-muted-foreground text-[11px] md:text-sm line-clamp-2 md:line-clamp-3 mb-2 md:mb-3">
                   {notice.content}
                 </p>
                 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
+                  <div className="flex items-center gap-1 text-[10px] md:text-sm text-muted-foreground">
+                    <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3" />
                     {formatDate(notice.published_at)}
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
-                    className="text-primary hover:bg-primary/10"
+                    className="text-primary hover:bg-primary/10 text-[10px] md:text-xs h-7 md:h-8 px-2"
                   >
-                    <ExternalLink className="h-3 w-3 mr-1" />
-                    View Details
+                    <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
+                    View
                   </Button>
                 </div>
               </div>
@@ -242,11 +242,11 @@ export default function NoticeBoard() {
             
             <Button 
               variant="outline" 
-              className="w-full bg-primary/5 hover:bg-primary/10 text-primary"
+              className="w-full bg-primary/5 hover:bg-primary/10 text-primary text-xs md:text-sm h-9 md:h-10"
               onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
             >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              View All Notices on RJU Website
+              <ExternalLink className="h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+              View All Notices
             </Button>
           </div>
         )}
