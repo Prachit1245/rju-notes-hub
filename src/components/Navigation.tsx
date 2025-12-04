@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Menu, X, BookOpen, Bell, Home, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import rjuLogo from '@/assets/rju-notes-logo.png';
 
 const Navigation = () => {
@@ -56,7 +57,7 @@ const Navigation = () => {
           })}
         </div>
 
-        {/* Search Bar - Desktop */}
+        {/* Search Bar & Theme Toggle - Desktop */}
         <div className="hidden md:flex items-center space-x-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -69,21 +70,25 @@ const Navigation = () => {
           <Button variant="outline" size="sm">
             Search
           </Button>
+          <ThemeToggle />
         </div>
 
-        {/* Mobile Menu Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden h-9 w-9"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </Button>
+        {/* Mobile: Theme Toggle + Menu Button */}
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
