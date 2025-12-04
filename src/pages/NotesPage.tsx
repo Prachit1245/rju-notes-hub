@@ -61,48 +61,48 @@ export default function NotesPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-3 md:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-2 md:p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Study Notes</h1>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Access study materials organized by faculty, program, and semester
+        <div className="mb-4 md:mb-8">
+          <h1 className="text-lg md:text-3xl font-bold text-foreground mb-1 md:mb-2">Study Notes</h1>
+          <p className="text-xs md:text-base text-muted-foreground">
+            Access study materials by faculty, program & semester
           </p>
         </div>
 
         {/* Filters */}
-        <Card className="mb-4 md:mb-6">
-          <CardHeader className="p-4 md:p-6">
-            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-              <Filter className="h-4 md:h-5 w-4 md:w-5" />
+        <Card className="mb-3 md:mb-6">
+          <CardHeader className="p-3 md:p-6 pb-2 md:pb-4">
+            <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-lg">
+              <Filter className="h-3.5 md:h-5 w-3.5 md:w-5" />
               Filter Notes
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6">
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+          <CardContent className="space-y-2.5 md:space-y-4 p-3 pt-0 md:p-6 md:pt-0">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
               <div className="flex-1">
                 <Input
-                  placeholder="Search notes, descriptions, or tags..."
+                  placeholder="Search notes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
+                  className="w-full h-9 md:h-10 text-xs md:text-sm"
                 />
               </div>
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Search className="h-4 w-4 mr-2" />
+              <Button variant="outline" className="w-full sm:w-auto h-9 md:h-10 text-xs md:text-sm">
+                <Search className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
                 Search
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
               <Select value={selectedFaculty} onValueChange={(value) => {
                 setSelectedFaculty(value);
                 setSelectedProgram('all');
                 setSelectedSemester('all');
                 setSelectedSubject('all');
               }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Faculty" />
+                <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm">
+                  <SelectValue placeholder="Faculty" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Faculties</SelectItem>
@@ -123,8 +123,8 @@ export default function NotesPage() {
                 }}
                 disabled={selectedFaculty === 'all'}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Program" />
+                <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm">
+                  <SelectValue placeholder="Program" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Programs</SelectItem>
@@ -144,8 +144,8 @@ export default function NotesPage() {
                 }}
                 disabled={selectedProgram === 'all'}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Semester" />
+                <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm">
+                  <SelectValue placeholder="Semester" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Semesters</SelectItem>
@@ -162,8 +162,8 @@ export default function NotesPage() {
                 onValueChange={setSelectedSubject}
                 disabled={selectedSemester === 'all'}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Subject" />
+                <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm">
+                  <SelectValue placeholder="Subject" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Subjects</SelectItem>
@@ -180,58 +180,58 @@ export default function NotesPage() {
 
         {/* Notes Grid */}
         {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Loading notes...</p>
+          <div className="text-center py-8 md:py-12">
+            <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-3 md:mt-4 text-xs md:text-sm text-muted-foreground">Loading notes...</p>
           </div>
         ) : filteredNotes.length === 0 ? (
           <Card>
-            <CardContent className="text-center py-12">
-              <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Notes Found</h3>
-              <p className="text-muted-foreground mb-4">
+            <CardContent className="text-center py-8 md:py-12">
+              <FileText className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground mx-auto mb-3 md:mb-4" />
+              <h3 className="text-sm md:text-lg font-semibold mb-1.5 md:mb-2">No Notes Found</h3>
+              <p className="text-xs md:text-sm text-muted-foreground mb-4">
                 {selectedSubject !== 'all'
-                  ? "No notes are available for the selected filters."
-                  : "Please select a subject to view available notes."
+                  ? "No notes available for selected filters."
+                  : "Please select a subject to view notes."
                 }
               </p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             {filteredNotes.map((note) => (
               <Card 
                 key={note.id} 
                 className="hover:shadow-lg transition-shadow cursor-pointer"
                 onClick={() => navigate(`/notes/${note.id}`)}
               >
-                <CardHeader className="pb-3 p-4 md:p-6">
+                <CardHeader className="pb-2 p-3 md:p-6 md:pb-3">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 md:gap-2 min-w-0 flex-1">
                       {getFileIcon(note.file_type, 'md')}
-                      <CardTitle className="text-base md:text-lg line-clamp-2">{note.title}</CardTitle>
+                      <CardTitle className="text-sm md:text-lg line-clamp-2">{note.title}</CardTitle>
                     </div>
                     {note.is_verified && (
-                      <Badge variant="secondary" className="ml-2">
+                      <Badge variant="secondary" className="ml-2 text-[10px] md:text-xs">
                         Verified
                       </Badge>
                     )}
                   </div>
                   {note.description && (
-                    <CardDescription className="line-clamp-2">
+                    <CardDescription className="line-clamp-2 text-xs md:text-sm">
                       {note.description}
                     </CardDescription>
                   )}
                 </CardHeader>
                 
-                <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6">
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <CardContent className="space-y-2 md:space-y-4 p-3 pt-0 md:p-6 md:pt-0">
+                  <div className="flex items-center justify-between text-[11px] md:text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
+                      <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3" />
                       {formatDate(note.created_at)}
                     </div>
                     <div className="flex items-center gap-1">
-                      <Download className="h-3 w-3" />
+                      <Download className="h-2.5 w-2.5 md:h-3 md:w-3" />
                       {note.download_count}
                     </div>
                   </div>
@@ -239,12 +239,12 @@ export default function NotesPage() {
                   {note.tags && note.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {note.tags.slice(0, 3).map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={index} variant="outline" className="text-[10px] md:text-xs px-1.5">
                           {tag}
                         </Badge>
                       ))}
                       {note.tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[10px] md:text-xs px-1.5">
                           +{note.tags.length - 3}
                         </Badge>
                       )}
@@ -252,33 +252,39 @@ export default function NotesPage() {
                   )}
 
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-[11px] md:text-sm text-muted-foreground">
                       {note.file_size && formatFileSize(note.file_size)}
                     </div>
                     {note.rating_count > 0 && (
-                      <div className="flex items-center gap-1 text-sm">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <div className="flex items-center gap-1 text-[11px] md:text-sm">
+                        <Star className="h-2.5 w-2.5 md:h-3 md:w-3 fill-yellow-400 text-yellow-400" />
                         {(note.rating_sum / note.rating_count).toFixed(1)}
                         <span className="text-muted-foreground">({note.rating_count})</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex gap-2">
                     <Button 
-                      className="flex-1" 
+                      className="flex-1 h-8 md:h-9 text-xs md:text-sm" 
                       size="sm"
-                      onClick={() => window.open(note.file_url, '_blank')}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(note.file_url, '_blank');
+                      }}
                     >
-                      <Download className="h-4 w-4 mr-2" />
+                      <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                       Download
                     </Button>
                     {note.file_type === 'application/pdf' && (
                       <Button 
                         variant="outline"
                         size="sm"
-                        className="flex-1 sm:flex-initial"
-                        onClick={() => window.open(note.file_url, '_blank')}
+                        className="flex-1 h-8 md:h-9 text-xs md:text-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(note.file_url, '_blank');
+                        }}
                       >
                         Preview
                       </Button>
@@ -286,8 +292,8 @@ export default function NotesPage() {
                   </div>
 
                   {note.uploader_name && (
-                    <div className="text-xs text-muted-foreground border-t pt-2">
-                      Uploaded by {note.uploader_name}
+                    <div className="text-[10px] md:text-xs text-muted-foreground border-t pt-2">
+                      By {note.uploader_name}
                     </div>
                   )}
                 </CardContent>

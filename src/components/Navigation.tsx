@@ -21,15 +21,15 @@ const Navigation = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-16 items-center justify-between px-4">
+      <nav className="container flex h-14 md:h-16 items-center justify-between px-3 md:px-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-1.5 md:space-x-2">
           <img 
             src={rjuLogo} 
             alt="RJU Notes Logo" 
-            className="h-10 w-10"
+            className="h-8 w-8 md:h-10 md:w-10"
           />
-          <div className="hidden font-bold sm:inline-block">
+          <div className="font-bold text-sm md:text-base">
             <span className="text-primary">RJU</span> Notes
           </div>
         </Link>
@@ -75,7 +75,7 @@ const Navigation = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className="md:hidden h-9 w-9"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? (
@@ -89,7 +89,7 @@ const Navigation = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="border-t bg-background md:hidden">
-          <div className="container space-y-4 px-4 py-4">
+          <div className="container space-y-3 px-3 py-3">
             {/* Mobile Search */}
             <div className="flex space-x-2">
               <div className="relative flex-1">
@@ -97,16 +97,16 @@ const Navigation = () => {
                 <Input
                   type="search"
                   placeholder="Search notes..."
-                  className="pl-8"
+                  className="pl-8 h-9 text-sm"
                 />
               </div>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="h-9 px-3">
                 Search
               </Button>
             </div>
 
             {/* Mobile Navigation Links */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-4 gap-1.5">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -115,13 +115,13 @@ const Navigation = () => {
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "flex items-center justify-center space-x-2 rounded-lg px-4 py-3 text-base font-medium transition-colors",
+                      "flex flex-col items-center justify-center space-y-1 rounded-lg px-2 py-2.5 text-xs font-medium transition-colors",
                       isActive(item.href)
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-accent hover:text-accent-foreground"
                     )}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4" />
                     <span>{item.label}</span>
                   </Link>
                 );
