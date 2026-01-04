@@ -62,19 +62,23 @@ export default function NotesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-2 md:p-4">
+      {/* Mobile Bottom Glow */}
+      <div className="mobile-bottom-glow" />
+      
       <div className="max-w-7xl mx-auto">
-        <div className="mb-4 md:mb-8">
-          <h1 className="text-lg md:text-3xl font-bold text-foreground mb-1 md:mb-2">Study Notes</h1>
+        {/* Header with Mobile Gradient */}
+        <div className="mb-4 md:mb-8 mobile-hero-glow">
+          <h1 className="mobile-section-title text-xl md:text-3xl mb-1 md:mb-2">Study Notes</h1>
           <p className="text-xs md:text-base text-muted-foreground">
             Access study materials by faculty, program & semester
           </p>
         </div>
 
-        {/* Filters */}
-        <Card className="mb-3 md:mb-6">
+        {/* Filters - Mobile Glass Card */}
+        <Card className="mb-3 md:mb-6 mobile-glass-card">
           <CardHeader className="p-3 md:p-6 pb-2 md:pb-4">
             <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-lg">
-              <Filter className="h-3.5 md:h-5 w-3.5 md:w-5" />
+              <Filter className="h-3.5 md:h-5 w-3.5 md:w-5 mobile-floating-badge" />
               Filter Notes
             </CardTitle>
           </CardHeader>
@@ -198,11 +202,11 @@ export default function NotesPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
             {filteredNotes.map((note) => (
               <Card 
                 key={note.id} 
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+                className="mobile-note-card mobile-glass-card hover:shadow-lg transition-all cursor-pointer active:scale-[0.98] md:active:scale-100"
                 onClick={() => navigate(`/notes/${note.id}`)}
               >
                 <CardHeader className="pb-2 p-3 md:p-6 md:pb-3">
