@@ -81,7 +81,7 @@ export default function UploadPage() {
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Simple admin check - in production, you'd use proper authentication
-    if (adminAuth.email === 'admin@rju.edu.np' && adminAuth.password === 'admin123') {
+    if (adminAuth.email === 'rjuadmin@notes.edu.np' && adminAuth.password === 'RjuNotes@2025') {
       setAdminAuth(prev => ({ ...prev, isAuthenticated: true }));
       toast({
         title: "Authentication Successful",
