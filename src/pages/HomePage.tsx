@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,9 +15,18 @@ import {
   FileText,
   Bell,
   Star,
-  Filter
+  Sparkles,
+  Zap,
+  ArrowRight,
+  GraduationCap,
+  Library,
+  Rocket,
+  Heart,
+  Eye,
+  ChevronRight
 } from 'lucide-react';
 import NoteCard from '@/components/NoteCard';
+import VisitorCounter from '@/components/VisitorCounter';
 
 // Mock data
 const mockNotes = [
@@ -92,199 +102,348 @@ const mockNotices = [
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Mobile Bottom Glow Effect */}
-      <div className="mobile-bottom-glow" />
-      
-      {/* Hero Section */}
-      <section className="hero-gradient py-8 md:py-20 px-3 md:px-4 relative overflow-hidden">
-        <div className="container mx-auto text-center text-white relative z-10">
-          {/* Mobile Hero Glow */}
-          <div className="mobile-hero-glow">
-            <div className="mb-4 md:mb-8 animate-slide-up">
-              <h1 className="text-3xl md:text-7xl font-bold mb-3 md:mb-6 gradient-text">
-                RJU Notes
-              </h1>
-              <p className="text-sm md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed px-2">
-                Free access to student notes, old questions, slides, and study materials
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background overflow-hidden">
+      {/* Animated Background Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="orb orb-1" />
+        <div className="orb orb-2" />
+        <div className="orb orb-3" />
+      </div>
 
-          {/* Hero Search - Mobile Optimized */}
-          <div className="max-w-3xl mx-auto mb-6 md:mb-12 animate-fade-in px-1">
-            <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search notes..."
-                  className="pl-9 md:pl-12 py-2.5 md:py-4 text-sm md:text-lg text-foreground bg-background/95 backdrop-blur-sm border-0 shadow-lg rounded-xl md:rounded-2xl"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+      {/* Hero Section - Completely Redesigned */}
+      <section className="relative py-16 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden">
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 hero-grid-bg" />
+        
+        {/* Glowing Lines */}
+        <div className="absolute inset-0">
+          <div className="glow-line glow-line-1" />
+          <div className="glow-line glow-line-2" />
+          <div className="glow-line glow-line-3" />
+        </div>
+
+        <div className="container relative z-10 px-4 md:px-6">
+          <div className={`text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-electric-purple/20 to-electric-cyan/20 border border-electric-purple/30 mb-6 backdrop-blur-xl">
+              <Sparkles className="h-4 w-4 text-electric-purple animate-pulse" />
+              <span className="text-sm font-medium bg-gradient-to-r from-electric-purple to-electric-cyan bg-clip-text text-transparent">
+                Nepal's #1 Student Notes Platform
+              </span>
+              <Sparkles className="h-4 w-4 text-electric-cyan animate-pulse" />
+            </div>
+
+            {/* Main Title */}
+            <h1 className="text-5xl md:text-8xl font-black mb-4 md:mb-6 leading-tight">
+              <span className="hero-title-gradient">RJU</span>
+              <br className="md:hidden" />
+              <span className="text-foreground"> Notes</span>
+            </h1>
+
+            {/* Subtitle with Typewriter Effect */}
+            <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-4">
+              Free access to <span className="text-electric-purple font-semibold">study materials</span>, 
+              <span className="text-electric-cyan font-semibold"> old questions</span>, and 
+              <span className="text-electric-green font-semibold"> lecture notes</span>
+            </p>
+
+            {/* Search Box - Premium Design */}
+            <div className="max-w-2xl mx-auto mb-8 md:mb-12 px-4">
+              <div className="search-box-premium">
+                <div className="relative flex flex-col sm:flex-row gap-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="search"
+                      placeholder="Search notes, subjects, topics..."
+                      className="pl-12 py-6 text-base bg-background/80 backdrop-blur-xl border-2 border-border/50 focus:border-electric-purple rounded-2xl"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <Button size="lg" className="btn-premium py-6 px-8 rounded-2xl">
+                    <Search className="h-5 w-5 mr-2" />
+                    Search
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
               </div>
-              <Button size="lg" className="mobile-shimmer mobile-action-btn py-2.5 md:py-4 rounded-xl md:rounded-2xl text-sm md:text-base">
-                <Search className="h-4 w-4 mr-1.5 md:mr-2" />
-                Search
-              </Button>
             </div>
-          </div>
 
-          {/* Quick Stats - Mobile Grid */}
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-6 max-w-4xl mx-auto animate-scale-in">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4 mb-10">
+              <Link to="/notes">
+                <Button size="lg" className="w-full sm:w-auto btn-glow-primary group">
+                  <BookOpen className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+                  Browse Notes
+                  <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/upload">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto btn-glow-secondary group">
+                  <Upload className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+                  Upload Notes
+                </Button>
+              </Link>
+            </div>
+
+            {/* Visitor Counter */}
+            <VisitorCounter />
+          </div>
+        </div>
+
+        {/* Floating Elements */}
+        <div className="hidden md:block">
+          <div className="floating-element floating-element-1">
+            <FileText className="h-8 w-8 text-electric-purple" />
+          </div>
+          <div className="floating-element floating-element-2">
+            <GraduationCap className="h-10 w-10 text-electric-cyan" />
+          </div>
+          <div className="floating-element floating-element-3">
+            <Library className="h-8 w-8 text-electric-green" />
+          </div>
+          <div className="floating-element floating-element-4">
+            <Star className="h-6 w-6 text-electric-orange" />
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section - Floating Cards */}
+      <section className="relative py-8 md:py-16 -mt-20 md:-mt-10">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             {[
-              { value: '2,500+', label: 'Notes', delay: '0s' },
-              { value: '15', label: 'Faculties', delay: '0.1s' },
-              { value: '5,000+', label: 'Students', delay: '0.2s' },
-              { value: 'Free', label: 'Always', delay: '0.3s' },
+              { value: '2,500+', label: 'Notes', icon: FileText, color: 'purple', delay: '0ms' },
+              { value: '15', label: 'Faculties', icon: GraduationCap, color: 'cyan', delay: '100ms' },
+              { value: '5,000+', label: 'Students', icon: Users, color: 'green', delay: '200ms' },
+              { value: '100%', label: 'Free', icon: Heart, color: 'pink', delay: '300ms' },
             ].map((stat, idx) => (
               <div 
                 key={idx}
-                className="mobile-stat-card text-center p-3 md:p-6 bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl float-animation"
+                className="stat-card-premium"
                 style={{ animationDelay: stat.delay }}
               >
-                <div className="text-xl md:text-4xl font-bold glow-text">{stat.value}</div>
-                <div className="text-xs md:text-lg opacity-90">{stat.label}</div>
+                <div className={`stat-icon stat-icon-${stat.color}`}>
+                  <stat.icon className="h-5 w-5 md:h-6 md:w-6" />
+                </div>
+                <div className="stat-value">{stat.value}</div>
+                <div className="stat-label">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-3 md:px-4 py-6 md:py-12">
-        {/* Action Cards - Mobile Horizontal Scroll */}
-        <section className="mb-8 md:mb-20 -mt-6 md:-mt-10 relative z-20">
-          <div className="flex gap-3 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-3 md:gap-8 snap-x snap-mandatory scrollbar-hide">
-            {[
-              { 
-                icon: Download, 
-                title: 'Download Notes', 
-                desc: 'Access thousands of notes and materials',
-                gradient: 'from-rju-purple to-rju-cyan',
-                mobileTag: 'Popular'
-              },
-              { 
-                icon: Upload, 
-                title: 'Share Resources', 
-                desc: 'Help fellow students by uploading',
-                gradient: 'from-rju-cyan to-rju-green',
-                mobileTag: 'New'
-              },
-              { 
-                icon: Bell, 
-                title: 'Stay Updated', 
-                desc: 'Get latest notices and schedules',
-                gradient: 'from-rju-orange to-rju-pink',
-                mobileTag: 'Live'
-              },
-            ].map((item, idx) => (
-              <Card 
-                key={idx}
-                className="mobile-gradient-card mobile-glass-card flex-shrink-0 w-[75vw] md:w-auto snap-center text-center p-4 md:p-8 hover:scale-105 transition-all duration-500 relative overflow-visible"
-              >
-                {/* Mobile Ribbon Tag */}
-                <span className="mobile-ribbon">{item.mobileTag}</span>
-                
-                <div className={`w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br ${item.gradient} rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 pulse-glow`}>
-                  <item.icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
-                </div>
-                <h3 className="font-bold text-base md:text-xl mb-2 md:mb-4 gradient-text">{item.title}</h3>
-                <p className="text-xs md:text-base text-muted-foreground line-clamp-2">
-                  {item.desc}
-                </p>
-              </Card>
-            ))}
+      {/* Features Section - Bento Grid */}
+      <section className="py-12 md:py-20">
+        <div className="container px-4 md:px-6">
+          <div className="text-center mb-10 md:mb-16">
+            <Badge className="mb-4 bg-electric-purple/10 text-electric-purple border-electric-purple/30">
+              <Zap className="h-3 w-3 mr-1" />
+              Features
+            </Badge>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Why Choose <span className="hero-title-gradient">RJU Notes?</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to excel in your studies, all in one place
+            </p>
           </div>
-        </section>
 
-        {/* Latest Notes - Mobile Optimized */}
-        <section className="mb-8 md:mb-16">
-          <div className="flex items-center justify-between mb-4 md:mb-8">
-            <div className="flex items-center space-x-2 md:space-x-3">
-              <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-br from-rju-purple to-rju-cyan rounded-lg flex items-center justify-center mobile-floating-badge">
-                <Clock className="h-4 w-4 md:h-5 md:w-5 text-white" />
+          <div className="bento-grid">
+            {/* Large Feature Card */}
+            <div className="bento-card bento-card-large group">
+              <div className="bento-card-glow bento-glow-purple" />
+              <div className="bento-icon bento-icon-purple">
+                <Download className="h-8 w-8" />
               </div>
-              <h2 className="mobile-section-title">Latest Notes</h2>
+              <h3 className="bento-title">Instant Downloads</h3>
+              <p className="bento-desc">
+                Access thousands of notes, slides, and study materials instantly. No signup required for basic access.
+              </p>
+              <div className="bento-stat">
+                <span className="bento-stat-value">50K+</span>
+                <span className="bento-stat-label">Downloads</span>
+              </div>
             </div>
-            <Button variant="outline" size="sm" className="text-xs md:text-sm nav-link">
-              View All
-            </Button>
+
+            {/* Medium Cards */}
+            <div className="bento-card bento-card-medium group">
+              <div className="bento-card-glow bento-glow-cyan" />
+              <div className="bento-icon bento-icon-cyan">
+                <Upload className="h-6 w-6" />
+              </div>
+              <h3 className="bento-title">Share & Contribute</h3>
+              <p className="bento-desc">
+                Help your juniors by uploading your notes and materials
+              </p>
+            </div>
+
+            <div className="bento-card bento-card-medium group">
+              <div className="bento-card-glow bento-glow-green" />
+              <div className="bento-icon bento-icon-green">
+                <Bell className="h-6 w-6" />
+              </div>
+              <h3 className="bento-title">Real-time Updates</h3>
+              <p className="bento-desc">
+                Get instant notifications for new materials and notices
+              </p>
+            </div>
+
+            {/* Small Cards */}
+            <div className="bento-card bento-card-small group">
+              <div className="bento-icon-small bento-icon-orange">
+                <Star className="h-5 w-5" />
+              </div>
+              <span className="bento-title-small">Top Rated</span>
+            </div>
+
+            <div className="bento-card bento-card-small group">
+              <div className="bento-icon-small bento-icon-pink">
+                <Rocket className="h-5 w-5" />
+              </div>
+              <span className="bento-title-small">Fast & Free</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Notes Section */}
+      <section className="py-12 md:py-20 bg-gradient-to-b from-background to-card/50">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-between mb-8 md:mb-12">
+            <div className="flex items-center gap-3">
+              <div className="section-icon-wrapper">
+                <Clock className="h-5 w-5 text-electric-purple" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-4xl font-bold">Latest Notes</h2>
+                <p className="text-muted-foreground text-sm md:text-base">Recently uploaded materials</p>
+              </div>
+            </div>
+            <Link to="/notes">
+              <Button variant="outline" className="btn-view-all group">
+                View All
+                <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
           
-          {/* Mobile: Horizontal Scroll, Desktop: Grid */}
-          <div className="flex gap-3 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 md:gap-4 snap-x snap-mandatory scrollbar-hide">
+          {/* Notes Grid with Horizontal Scroll on Mobile */}
+          <div className="flex gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
             {mockNotes.map((note, index) => (
-              <div key={index} className="flex-shrink-0 w-[70vw] md:w-auto snap-center">
-                <div className="mobile-note-card rounded-xl md:rounded-2xl overflow-hidden">
-                  <NoteCard {...note} />
-                </div>
+              <div key={index} className="flex-shrink-0 w-[80vw] md:w-auto snap-center">
+                <NoteCard {...note} />
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Popular Downloads */}
-        <section className="mb-8 md:mb-16">
-          <div className="flex items-center justify-between mb-4 md:mb-6">
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-primary mobile-floating-badge" />
-              <h2 className="mobile-section-title">Popular Downloads</h2>
+      {/* Trending Section */}
+      <section className="py-12 md:py-20">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-between mb-8 md:mb-12">
+            <div className="flex items-center gap-3">
+              <div className="section-icon-wrapper section-icon-trending">
+                <TrendingUp className="h-5 w-5 text-electric-orange" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-4xl font-bold">Trending Now</h2>
+                <p className="text-muted-foreground text-sm md:text-base">Most downloaded this week</p>
+              </div>
             </div>
-            <Button variant="outline" size="sm" className="text-xs md:text-sm">
-              View All
-            </Button>
+            <Link to="/notes">
+              <Button variant="outline" className="btn-view-all group">
+                View All
+                <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
           
-          <div className="flex gap-3 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 md:gap-4 snap-x snap-mandatory scrollbar-hide">
+          <div className="flex gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
             {mockNotes.slice().sort((a, b) => b.downloads - a.downloads).map((note, index) => (
-              <div key={index} className="flex-shrink-0 w-[70vw] md:w-auto snap-center">
-                <div className="mobile-note-card rounded-xl md:rounded-2xl overflow-hidden">
-                  <NoteCard {...note} />
-                </div>
+              <div key={index} className="flex-shrink-0 w-[80vw] md:w-auto snap-center">
+                <NoteCard {...note} />
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Notices - Mobile Card Style */}
-        <section>
-          <div className="flex items-center justify-between mb-4 md:mb-6">
-            <div className="flex items-center space-x-2">
-              <Bell className="h-4 w-4 md:h-5 md:w-5 text-primary mobile-floating-badge" />
-              <h2 className="mobile-section-title">Latest Notices</h2>
+      {/* Notices Section */}
+      <section className="py-12 md:py-20 bg-gradient-to-b from-card/50 to-background">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-between mb-8 md:mb-12">
+            <div className="flex items-center gap-3">
+              <div className="section-icon-wrapper section-icon-notice">
+                <Bell className="h-5 w-5 text-electric-cyan" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-4xl font-bold">Latest Notices</h2>
+                <p className="text-muted-foreground text-sm md:text-base">Important announcements</p>
+              </div>
             </div>
-            <Button variant="outline" size="sm" className="text-xs md:text-sm">
-              View All
-            </Button>
           </div>
 
-          <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {mockNotices.map((notice, index) => (
-              <Card key={index} className="mobile-glass-card card-gradient">
-                <CardHeader className="pb-2 md:pb-3 p-3 md:p-6">
+              <Card key={index} className="notice-card group">
+                <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <Badge 
                       variant={notice.urgent ? "destructive" : "secondary"}
-                      className="text-[10px] md:text-xs mobile-floating-badge"
+                      className={notice.urgent ? "notice-badge-urgent" : "notice-badge"}
                     >
+                      {notice.urgent && <Zap className="h-3 w-3 mr-1" />}
                       {notice.type}
                     </Badge>
-                    <span className="text-[10px] md:text-sm text-muted-foreground">
-                      {notice.date}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{notice.date}</span>
                   </div>
                 </CardHeader>
-                <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-                  <h3 className="font-medium leading-tight text-sm md:text-base">{notice.title}</h3>
+                <CardContent>
+                  <h3 className="font-semibold text-base md:text-lg group-hover:text-electric-purple transition-colors">
+                    {notice.title}
+                  </h3>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-24">
+        <div className="container px-4 md:px-6">
+          <div className="cta-section-premium">
+            <div className="cta-glow" />
+            <div className="relative z-10 text-center">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
+                Ready to <span className="hero-title-gradient">Start Learning?</span>
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
+                Join thousands of students who are already using RJU Notes to excel in their studies
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/notes">
+                  <Button size="lg" className="btn-premium group">
+                    <Rocket className="h-5 w-5 mr-2 group-hover:animate-bounce" />
+                    Get Started Free
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

@@ -257,6 +257,27 @@ export type Database = {
           },
         ]
       }
+      visitor_stats: {
+        Row: {
+          id: string
+          last_updated: string
+          total_visits: number
+          unique_visitors: number
+        }
+        Insert: {
+          id?: string
+          last_updated?: string
+          total_visits?: number
+          unique_visitors?: number
+        }
+        Update: {
+          id?: string
+          last_updated?: string
+          total_visits?: number
+          unique_visitors?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -266,6 +287,7 @@ export type Database = {
         Args: { p_base_code?: string; p_program_id: string }
         Returns: string
       }
+      increment_visitor_count: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

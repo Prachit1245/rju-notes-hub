@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Menu, X, BookOpen, Bell, Home, Info } from 'lucide-react';
+import { Search, Menu, X, BookOpen, Bell, Home, Info, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import rjuLogo from '@/assets/rju-notes-logo.png';
@@ -21,22 +21,26 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-14 md:h-16 items-center justify-between px-3 md:px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <nav className="container flex h-16 md:h-18 items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-1.5 md:space-x-2">
-          <img 
-            src={rjuLogo} 
-            alt="RJU Notes Logo" 
-            className="h-8 w-8 md:h-10 md:w-10"
-          />
-          <div className="font-bold text-sm md:text-base">
-            <span className="text-primary">RJU</span> Notes
+        <Link to="/" className="flex items-center space-x-2 group">
+          <div className="relative">
+            <img 
+              src={rjuLogo} 
+              alt="RJU Notes Logo" 
+              className="h-10 w-10 md:h-11 md:w-11 transition-transform group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-electric-purple/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <div className="font-bold text-lg md:text-xl">
+            <span className="hero-title-gradient">RJU</span>
+            <span className="text-foreground"> Notes</span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -44,10 +48,10 @@ const Navigation = () => {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "flex items-center space-x-1 text-sm font-medium transition-colors hover:text-primary",
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300",
                   isActive(item.href) 
-                    ? "text-primary" 
-                    : "text-muted-foreground"
+                    ? "bg-electric-purple/10 text-electric-purple" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -58,28 +62,29 @@ const Navigation = () => {
         </div>
 
         {/* Search Bar & Theme Toggle - Desktop */}
-        <div className="hidden md:flex items-center space-x-2">
+        <div className="hidden md:flex items-center space-x-3">
           <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search notes..."
-              className="w-[300px] pl-8"
+              className="w-[280px] pl-10 bg-muted/50 border-border/50 rounded-xl focus:border-electric-purple"
             />
           </div>
-          <Button variant="outline" size="sm">
+          <Button className="btn-premium rounded-xl">
+            <Sparkles className="h-4 w-4 mr-2" />
             Search
           </Button>
           <ThemeToggle />
         </div>
 
         {/* Mobile: Theme Toggle + Menu Button */}
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9"
+            className="h-10 w-10 rounded-xl"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -91,27 +96,27 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Premium Design */}
       {isMobileMenuOpen && (
-        <div className="border-t bg-background md:hidden">
-          <div className="container space-y-3 px-3 py-3">
+        <div className="border-t border-border/50 bg-background/95 backdrop-blur-xl md:hidden animate-fade-in">
+          <div className="container space-y-4 px-4 py-4">
             {/* Mobile Search */}
-            <div className="flex space-x-2">
+            <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Search notes..."
-                  className="pl-8 h-9 text-sm"
+                  className="pl-10 h-11 bg-muted/50 border-border/50 rounded-xl"
                 />
               </div>
-              <Button variant="outline" size="sm" className="h-9 px-3">
-                Search
+              <Button className="h-11 px-4 btn-premium rounded-xl">
+                <Search className="h-4 w-4" />
               </Button>
             </div>
 
-            {/* Mobile Navigation Links */}
-            <div className="grid grid-cols-4 gap-1.5">
+            {/* Mobile Navigation Links - Grid Style */}
+            <div className="grid grid-cols-4 gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -120,13 +125,13 @@ const Navigation = () => {
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "flex flex-col items-center justify-center space-y-1 rounded-lg px-2 py-2.5 text-xs font-medium transition-colors",
+                      "flex flex-col items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-xs font-medium transition-all duration-300",
                       isActive(item.href)
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-accent hover:text-accent-foreground"
+                        ? "bg-gradient-to-br from-electric-purple to-hot-pink text-white shadow-lg shadow-electric-purple/25"
+                        : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </Link>
                 );
