@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.keep-alive]
 verify_jwt = false
+
+[functions.ai-study-assistant]
+verify_jwt = false
