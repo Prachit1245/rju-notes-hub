@@ -175,7 +175,7 @@ const AboutPage = () => {
                 <div className="mt-6">
                   <Button 
                     className="bg-red-600 hover:bg-red-700 text-white"
-                    onClick={() => window.location.href = 'mailto:contact@rjunotes.com?subject=Copyright Concern'}
+                    onClick={() => window.location.href = 'mailto:prachitregmi456@gmail.com?subject=Copyright Concern'}
                   >
                     <Mail className="h-4 w-4 mr-2" />
                     Contact Us for Copyright Issues
