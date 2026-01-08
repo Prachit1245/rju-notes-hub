@@ -127,7 +127,7 @@ const HomePage = () => {
 
             {/* Main Title */}
             <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight">
-              <span className="hero-title-gradient">RJU</span>
+              <span className="hero-title-gradient animated-underline">RJU</span>
               <span className="text-foreground"> Notes</span>
             </h1>
 
@@ -184,22 +184,40 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Floating Elements - Desktop Only */}
+        {/* Floating Animated Elements - Desktop Only */}
         <div className="hidden lg:block">
-          <div className="floating-element floating-element-1">
-            <FileText className="h-8 w-8 text-electric-purple" />
+          <div className="hero-decoration floating-element-1">
+            <div className="hero-book" />
           </div>
-          <div className="floating-element floating-element-2">
-            <GraduationCap className="h-10 w-10 text-electric-cyan" />
+          <div className="hero-decoration floating-element-2">
+            <div className="hero-graduation" />
           </div>
-          <div className="floating-element floating-element-3">
-            <Library className="h-8 w-8 text-electric-green" />
+          <div className="hero-decoration floating-element-3">
+            <div className="hero-pencil" />
           </div>
-          <div className="floating-element floating-element-4">
-            <Star className="h-6 w-6 text-electric-orange" />
+          <div className="hero-decoration floating-element-4">
+            <div className="hero-notebook" />
+          </div>
+          <div className="hero-decoration" style={{ top: '15%', right: '20%' }}>
+            <div className="hero-star" />
+          </div>
+          <div className="hero-decoration" style={{ bottom: '40%', left: '8%' }}>
+            <div className="hero-star" />
           </div>
         </div>
+        
+        {/* Sparkles */}
+        <div className="sparkle-container absolute inset-0 pointer-events-none hidden lg:block">
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+          <div className="sparkle" />
+        </div>
       </section>
+
+      {/* Wave Divider */}
+      <div className="wave-divider" />
 
       {/* Stats Section */}
       <section className="relative py-6 md:py-16 -mt-8 md:-mt-10">

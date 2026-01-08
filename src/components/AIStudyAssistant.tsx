@@ -167,19 +167,30 @@ export function AIStudyAssistant() {
       <AnimatePresence>
         {!isOpen && (
           <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
+            initial={{ scale: 0, opacity: 0, rotate: -180 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            exit={{ scale: 0, opacity: 0, rotate: 180 }}
+            whileHover={{ scale: 1.15, rotate: 10 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-2xl flex items-center justify-center group"
+            className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white shadow-2xl flex items-center justify-center group overflow-hidden"
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 animate-pulse opacity-50" />
-            <Bot className="w-7 h-7 relative z-10" />
-            <span className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold animate-bounce">
+            <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
+            <motion.div
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Bot className="w-7 h-7 relative z-10" />
+            </motion.div>
+            <motion.span 
+              className="absolute -top-1 -right-1 w-7 h-7 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-[10px] font-bold shadow-lg"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
               AI
-            </span>
+            </motion.span>
+            <div className="absolute inset-0 rounded-full border-2 border-white/30 animate-ping opacity-30" />
           </motion.button>
         )}
       </AnimatePresence>
