@@ -80,16 +80,18 @@ export function StudyTimer() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 z-50 h-12 w-12 md:h-14 md:w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+        className="fixed bottom-24 right-6 z-40 h-14 w-14 rounded-full shadow-xl bg-gradient-to-br from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 transition-all duration-300 hover:scale-110 group"
         size="icon"
       >
-        <Timer className="h-5 w-5 md:h-6 md:w-6" />
+        <Timer className="h-6 w-6 text-white group-hover:animate-pulse" />
+        <span className="absolute -top-1 -left-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center animate-ping opacity-75" />
+        <span className="absolute -top-1 -left-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-[8px] font-bold text-white">⏱</span>
       </Button>
     );
   }
 
   return (
-    <Card className="fixed bottom-4 right-4 z-50 w-[280px] md:w-[320px] p-4 shadow-xl border-2 animate-in slide-in-from-bottom-5">
+    <Card className="fixed bottom-24 right-6 z-40 w-[280px] md:w-[320px] p-4 shadow-2xl border-2 border-orange-500/20 animate-in slide-in-from-bottom-5 bg-background/95 backdrop-blur-xl">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {mode === 'study' ? (
