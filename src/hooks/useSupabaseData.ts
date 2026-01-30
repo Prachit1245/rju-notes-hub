@@ -193,43 +193,6 @@ export const useNotes = (subjectId?: string) => {
   return { notes, loading, error };
 };
 
-// Hook to fetch notes for multiple subjects at once (for grouped display)
-export const useNotesBySubjects = (subjectIds: string[]) => {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchNotes = async () => {
-      if (subjectIds.length === 0) {
-        setNotes([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('notes')
-          .select('*')
-          .eq('is_public', true)
-          .in('subject_id', subjectIds)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setNotes(data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch notes');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotes();
-  }, [subjectIds.join(',')]); // Join to create a stable dependency
-
-  return { notes, loading, error };
-};
-
 export const useNotices = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
