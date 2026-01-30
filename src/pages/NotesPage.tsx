@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, Filter, Download, Star, Calendar, FileText, Image, FileAudio, FileVideo, GraduationCap, BookMarked, BookOpen, X, SlidersHorizontal } from 'lucide-react';
+import { Search, Filter, GraduationCap, BookMarked, BookOpen, X, SlidersHorizontal, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import VisitorCounter from '@/components/VisitorCounter';
-
+import NoteCardClean from '@/components/NoteCardClean';
 export default function NotesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -44,37 +43,7 @@ export default function NotesPage() {
     if (search) setSearchQuery(search);
   }, [searchParams]);
 
-  const getFileIcon = (type: string, size: 'sm' | 'md' = 'sm') => {
-    const className = size === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
-    if (type.startsWith('image/')) return <Image className={className} />;
-    if (type.startsWith('audio/')) return <FileAudio className={className} />;
-    if (type.startsWith('video/')) return <FileVideo className={className} />;
-    return <FileText className={className} />;
-  };
-
-  const getFileTypeBadge = (type: string) => {
-    if (type.includes('pdf')) return { label: 'PDF', class: 'bg-red-500/20 text-red-500' };
-    if (type.includes('doc')) return { label: 'DOC', class: 'bg-blue-500/20 text-blue-500' };
-    if (type.includes('ppt') || type.includes('presentation')) return { label: 'PPT', class: 'bg-orange-500/20 text-orange-500' };
-    if (type.includes('sheet') || type.includes('excel')) return { label: 'XLS', class: 'bg-green-500/20 text-green-500' };
-    return { label: 'FILE', class: 'bg-gray-500/20 text-gray-500' };
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
+  // Helper functions moved to NoteCardClean component
 
   const filteredNotes = notes.filter(note =>
     searchQuery === '' || 
@@ -323,111 +292,26 @@ export default function NotesPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="notes-grid">
-              {filteredNotes.map((note) => {
-                const fileType = getFileTypeBadge(note.file_type);
-                return (
-                  <Card 
-                    key={note.id} 
-                    className="note-card-premium cursor-pointer"
-                    onClick={() => navigate(`/notes/${note.id}`)}
-                  >
-                    <CardContent className="p-3 md:p-4">
-                      {/* Header */}
-                      <div className="flex items-start gap-2 md:gap-3 mb-3">
-                        <div className={`file-badge ${fileType.class}`}>
-                          {getFileIcon(note.file_type, 'md')}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm md:text-base line-clamp-2 group-hover:text-electric-purple transition-colors">
-                            {note.title}
-                          </h3>
-                          {note.description && (
-                            <p className="text-[11px] md:text-xs text-muted-foreground line-clamp-1 mt-0.5">
-                              {note.description}
-                            </p>
-                          )}
-                        </div>
-                        {note.is_verified && (
-                          <Badge variant="secondary" className="text-[9px] md:text-[10px] px-1.5 py-0.5 bg-green-500/20 text-green-600 border-green-500/30">
-                            ✓ Verified
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        <span className={`tag-badge ${fileType.class.replace('/20', '/15')}`}>
-                          {fileType.label}
-                        </span>
-                        {note.file_size && (
-                          <span className="tag-badge tag-cyan">
-                            {formatFileSize(note.file_size)}
-                          </span>
-                        )}
-                        {note.tags?.slice(0, 2).map((tag, idx) => (
-                          <span key={idx} className="tag-badge tag-purple">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Stats */}
-                      <div className="stats-row">
-                        <div className="stat-item">
-                          <Download className="h-3 w-3 text-electric-cyan" />
-                          <span>{note.download_count}</span>
-                        </div>
-                        {note.rating_count > 0 && (
-                          <div className="stat-item">
-                            <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
-                            <span>{(note.rating_sum / note.rating_count).toFixed(1)}</span>
-                          </div>
-                        )}
-                        <div className="stat-item ml-auto">
-                          <Calendar className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-muted-foreground">{formatDate(note.created_at)}</span>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex gap-2 mt-3 pt-3 border-t border-border/50">
-                        <Button 
-                          className="flex-1 h-8 md:h-9 text-xs md:text-sm btn-premium" 
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(note.file_url, '_blank');
-                          }}
-                        >
-                          <Download className="h-3 w-3 md:h-4 md:w-4 mr-1.5" />
-                          Download
-                        </Button>
-                        {note.file_type === 'application/pdf' && (
-                          <Button 
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 h-8 md:h-9 text-xs md:text-sm rounded-lg"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(note.file_url, '_blank');
-                            }}
-                          >
-                            Preview
-                          </Button>
-                        )}
-                      </div>
-
-                      {/* Uploader */}
-                      {note.uploader_name && (
-                        <div className="text-[10px] md:text-xs text-muted-foreground mt-2 pt-2 border-t border-border/30">
-                          Uploaded by <span className="font-medium">{note.uploader_name}</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredNotes.map((note) => (
+                <NoteCardClean
+                  key={note.id}
+                  id={note.id}
+                  title={note.title}
+                  description={note.description}
+                  fileType={note.file_type}
+                  fileSize={note.file_size}
+                  fileUrl={note.file_url}
+                  downloadCount={note.download_count}
+                  ratingSum={note.rating_sum}
+                  ratingCount={note.rating_count}
+                  createdAt={note.created_at}
+                  uploaderName={note.uploader_name}
+                  isVerified={note.is_verified}
+                  tags={note.tags}
+                  onClick={() => navigate(`/notes/${note.id}`)}
+                />
+              ))}
             </div>
           )}
         </div>
