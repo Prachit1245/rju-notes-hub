@@ -147,8 +147,8 @@ SELECT
   3 as credits,
   'Basic management concepts' as description
 FROM public.programs p 
-WHERE p.code IN ('BDBM', 'MBA')
-LIMIT 2;
+WHERE p.code IN ('BDBM', 'MBA','BBA')
+LIMIT 3;
 
 INSERT INTO public.subjects (program_id, name, code, semester, credits, description)
 SELECT 
