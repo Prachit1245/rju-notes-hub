@@ -6,14 +6,51 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
+import { supabase } from '@/integrations/supabase/client';
 import VisitorCounter from '@/components/VisitorCounter';
 import NoteCardClean from '@/components/NoteCardClean';
+
+// Hook to fetch notes with their subject's semester info
+function useNotesWithSemester(subjectId?: string) {
+  const { notes, loading, error } = useNotes(subjectId);
+  const [notesWithSemester, setNotesWithSemester] = useState<(typeof notes[0] & { semester?: number; subject_name?: string })[]>([]);
+  const [semesterLoading, setSemesterLoading] = useState(false);
+
+  useEffect(() => {
+    if (notes.length === 0) {
+      setNotesWithSemester([]);
+      return;
+    }
+
+    const fetchSemesters = async () => {
+      setSemesterLoading(true);
+      const subjectIds = [...new Set(notes.map(n => n.subject_id))];
+      const { data: subjects } = await supabase
+        .from('subjects')
+        .select('id, semester, name')
+        .in('id', subjectIds);
+
+      const subjectMap = new Map(subjects?.map(s => [s.id, { semester: s.semester, name: s.name }]) || []);
+      
+      setNotesWithSemester(notes.map(n => ({
+        ...n,
+        semester: subjectMap.get(n.subject_id)?.semester,
+        subject_name: subjectMap.get(n.subject_id)?.name,
+      })));
+      setSemesterLoading(false);
+    };
+
+    fetchSemesters();
+  }, [notes]);
+
+  return { notes: notesWithSemester, loading: loading || semesterLoading, error };
+}
+
 export default function NotesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { faculties } = useFaculties();
   
-  // Initialize from URL params
   const [selectedFaculty, setSelectedFaculty] = useState<string>(searchParams.get('faculty') || 'all');
   const [selectedProgram, setSelectedProgram] = useState<string>(searchParams.get('program') || 'all');
   const [selectedSemester, setSelectedSemester] = useState<string>(searchParams.get('semester') || 'all');
@@ -26,9 +63,8 @@ export default function NotesPage() {
     selectedProgram === 'all' ? '' : selectedProgram, 
     selectedSemester === 'all' ? undefined : parseInt(selectedSemester)
   );
-  const { notes, loading } = useNotes(selectedSubject === 'all' ? '' : selectedSubject);
+  const { notes, loading } = useNotesWithSemester(selectedSubject === 'all' ? '' : selectedSubject);
 
-  // Sync URL params to state on mount
   useEffect(() => {
     const faculty = searchParams.get('faculty');
     const program = searchParams.get('program');
@@ -43,14 +79,22 @@ export default function NotesPage() {
     if (search) setSearchQuery(search);
   }, [searchParams]);
 
-  // Helper functions moved to NoteCardClean component
-
   const filteredNotes = notes.filter(note =>
     searchQuery === '' || 
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  // Group by semester
+  const groupedBySemester = filteredNotes.reduce<Record<number, typeof filteredNotes>>((acc, note) => {
+    const sem = note.semester ?? 0;
+    if (!acc[sem]) acc[sem] = [];
+    acc[sem].push(note);
+    return acc;
+  }, {});
+
+  const sortedSemesters = Object.keys(groupedBySemester).map(Number).sort((a, b) => a - b);
 
   const selectedProgramData = programs.find(p => p.id === selectedProgram);
   const semesterOptions = selectedProgramData 
@@ -69,11 +113,11 @@ export default function NotesPage() {
                            selectedSemester !== 'all' || selectedSubject !== 'all' || searchQuery !== '';
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden">
+    <div className="min-h-screen bg-[hsl(220,14%,96%)] dark:bg-background overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="orb orb-1 opacity-30" />
-        <div className="orb orb-2 opacity-30" />
+        <div className="orb orb-1 opacity-20" />
+        <div className="orb orb-2 opacity-20" />
       </div>
 
       <div className="relative z-10">
@@ -95,7 +139,7 @@ export default function NotesPage() {
             </p>
           </div>
 
-          {/* Search Bar - Always Visible */}
+          {/* Search Bar */}
           <div className="mb-4 md:mb-6">
             <div className="search-box-premium">
               <div className="flex gap-2">
@@ -105,7 +149,7 @@ export default function NotesPage() {
                     placeholder="Search notes, topics..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-11 md:h-12 text-sm md:text-base bg-background/80 border-border/50 focus:border-electric-purple rounded-xl"
+                    className="pl-10 h-11 md:h-12 text-sm md:text-base bg-white dark:bg-background/80 border-border/50 focus:border-electric-purple rounded-xl"
                   />
                 </div>
                 <Button 
@@ -119,9 +163,9 @@ export default function NotesPage() {
             </div>
           </div>
 
-          {/* Filters Section */}
+          {/* Filters */}
           <div className={`mb-4 md:mb-6 ${showFilters ? 'block' : 'hidden md:block'}`}>
-            <Card className="notes-filter-card">
+            <Card className="notes-filter-card bg-white dark:bg-card">
               <CardContent className="p-3 md:p-5">
                 <div className="flex items-center justify-between mb-3 md:mb-4">
                   <div className="flex items-center gap-2">
@@ -129,12 +173,7 @@ export default function NotesPage() {
                     <span className="font-semibold text-sm md:text-base">Filters</span>
                   </div>
                   {hasActiveFilters && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={clearFilters}
-                      className="text-xs md:text-sm h-7 md:h-8"
-                    >
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs md:text-sm h-7 md:h-8">
                       <X className="h-3 w-3 mr-1" />
                       Clear
                     </Button>
@@ -142,110 +181,58 @@ export default function NotesPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-                  {/* Faculty */}
                   <div className="space-y-1.5">
-                    <label className="filter-label-small">
-                      <GraduationCap className="h-3 w-3" />
-                      Faculty
-                    </label>
+                    <label className="filter-label-small"><GraduationCap className="h-3 w-3" />Faculty</label>
                     <Select value={selectedFaculty} onValueChange={(value) => {
                       setSelectedFaculty(value);
                       setSelectedProgram('all');
                       setSelectedSemester('all');
                       setSelectedSubject('all');
                     }}>
-                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg">
-                        <SelectValue placeholder="All Faculties" />
-                      </SelectTrigger>
+                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg"><SelectValue placeholder="All Faculties" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Faculties</SelectItem>
-                        {faculties.map(faculty => (
-                          <SelectItem key={faculty.id} value={faculty.id}>
-                            {faculty.code} - {faculty.name}
-                          </SelectItem>
-                        ))}
+                        {faculties.map(f => <SelectItem key={f.id} value={f.id}>{f.code} - {f.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Program */}
                   <div className="space-y-1.5">
-                    <label className="filter-label-small">
-                      <BookMarked className="h-3 w-3" />
-                      Program
-                    </label>
-                    <Select 
-                      value={selectedProgram} 
-                      onValueChange={(value) => {
-                        setSelectedProgram(value);
-                        setSelectedSemester('all');
-                        setSelectedSubject('all');
-                      }}
-                      disabled={selectedFaculty === 'all'}
-                    >
-                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg">
-                        <SelectValue placeholder="All Programs" />
-                      </SelectTrigger>
+                    <label className="filter-label-small"><BookMarked className="h-3 w-3" />Program</label>
+                    <Select value={selectedProgram} onValueChange={(value) => {
+                      setSelectedProgram(value);
+                      setSelectedSemester('all');
+                      setSelectedSubject('all');
+                    }} disabled={selectedFaculty === 'all'}>
+                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg"><SelectValue placeholder="All Programs" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Programs</SelectItem>
-                        {programs.map(program => (
-                          <SelectItem key={program.id} value={program.id}>
-                            {program.code}
-                          </SelectItem>
-                        ))}
+                        {programs.map(p => <SelectItem key={p.id} value={p.id}>{p.code}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Semester */}
                   <div className="space-y-1.5">
-                    <label className="filter-label-small">
-                      <BookOpen className="h-3 w-3" />
-                      Semester
-                    </label>
-                    <Select 
-                      value={selectedSemester} 
-                      onValueChange={(value) => {
-                        setSelectedSemester(value);
-                        setSelectedSubject('all');
-                      }}
-                      disabled={selectedProgram === 'all'}
-                    >
-                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg">
-                        <SelectValue placeholder="All Sem" />
-                      </SelectTrigger>
+                    <label className="filter-label-small"><BookOpen className="h-3 w-3" />Semester</label>
+                    <Select value={selectedSemester} onValueChange={(value) => {
+                      setSelectedSemester(value);
+                      setSelectedSubject('all');
+                    }} disabled={selectedProgram === 'all'}>
+                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg"><SelectValue placeholder="All Sem" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Semesters</SelectItem>
-                        {semesterOptions.map(sem => (
-                          <SelectItem key={sem} value={sem.toString()}>
-                            Semester {sem}
-                          </SelectItem>
-                        ))}
+                        {semesterOptions.map(sem => <SelectItem key={sem} value={sem.toString()}>Semester {sem}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Subject */}
                   <div className="space-y-1.5">
-                    <label className="filter-label-small">
-                      <FileText className="h-3 w-3" />
-                      Subject
-                    </label>
-                    <Select 
-                      value={selectedSubject} 
-                      onValueChange={setSelectedSubject}
-                      disabled={selectedSemester === 'all'}
-                    >
-                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg">
-                        <SelectValue placeholder="All Subjects" />
-                      </SelectTrigger>
+                    <label className="filter-label-small"><FileText className="h-3 w-3" />Subject</label>
+                    <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={selectedSemester === 'all'}>
+                      <SelectTrigger className="h-9 md:h-10 text-xs md:text-sm rounded-lg"><SelectValue placeholder="All Subjects" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Subjects</SelectItem>
-                        {subjects.map(subject => (
-                          <SelectItem key={subject.id} value={subject.id}>
-                            {subject.code} - {subject.name}
-                          </SelectItem>
-                        ))}
+                        {subjects.map(s => <SelectItem key={s.id} value={s.id}>{s.code} - {s.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
@@ -263,14 +250,14 @@ export default function NotesPage() {
             </div>
           )}
 
-          {/* Notes Grid */}
+          {/* Notes - Grouped by Semester */}
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16 md:py-24">
               <div className="loading-spinner"></div>
               <p className="mt-4 text-sm text-muted-foreground">Loading notes...</p>
             </div>
           ) : filteredNotes.length === 0 ? (
-            <Card className="notes-empty-card">
+            <Card className="notes-empty-card bg-white dark:bg-card">
               <CardContent className="text-center py-12 md:py-20">
                 <div className="empty-icon-wrapper">
                   <FileText className="h-10 w-10 md:h-12 md:w-12 text-muted-foreground" />
@@ -285,38 +272,56 @@ export default function NotesPage() {
                   }
                 </p>
                 {hasActiveFilters && (
-                  <Button variant="outline" onClick={clearFilters}>
-                    Clear Filters
-                  </Button>
+                  <Button variant="outline" onClick={clearFilters}>Clear Filters</Button>
                 )}
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredNotes.map((note) => (
-                <NoteCardClean
-                  key={note.id}
-                  id={note.id}
-                  title={note.title}
-                  description={note.description}
-                  fileType={note.file_type}
-                  fileSize={note.file_size}
-                  fileUrl={note.file_url}
-                  downloadCount={note.download_count}
-                  ratingSum={note.rating_sum}
-                  ratingCount={note.rating_count}
-                  createdAt={note.created_at}
-                  uploaderName={note.uploader_name}
-                  isVerified={note.is_verified}
-                  tags={note.tags}
-                  onClick={() => navigate(`/notes/${note.id}`)}
-                />
+            <div className="space-y-8">
+              {sortedSemesters.map(sem => (
+                <section key={sem}>
+                  {/* Semester Header */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20">
+                      <BookOpen className="h-4 w-4 text-primary" />
+                      <h2 className="text-sm md:text-base font-bold text-primary">
+                        {sem === 0 ? 'Uncategorized' : `Semester ${sem}`}
+                      </h2>
+                    </div>
+                    <div className="h-px flex-1 bg-border/50" />
+                    <span className="text-xs text-muted-foreground">
+                      {groupedBySemester[sem].length} {groupedBySemester[sem].length === 1 ? 'note' : 'notes'}
+                    </span>
+                  </div>
+
+                  {/* Cards Grid - 2rem gap, single col on mobile */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {groupedBySemester[sem].map((note) => (
+                      <NoteCardClean
+                        key={note.id}
+                        id={note.id}
+                        title={note.title}
+                        description={note.description}
+                        fileType={note.file_type}
+                        fileSize={note.file_size}
+                        fileUrl={note.file_url}
+                        downloadCount={note.download_count}
+                        ratingSum={note.rating_sum}
+                        ratingCount={note.rating_count}
+                        createdAt={note.created_at}
+                        uploaderName={note.uploader_name}
+                        isVerified={note.is_verified}
+                        tags={note.tags}
+                        onClick={() => navigate(`/notes/${note.id}`)}
+                      />
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
           )}
         </div>
 
-        {/* Footer Visitor Counter */}
         <VisitorCounter variant="footer" />
       </div>
     </div>
