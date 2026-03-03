@@ -1,0 +1,2 @@
+INSERT INTO public.programs (faculty_id, name, code, level, total_semesters, description)
+VALUES ('24548b18-8f53-4e33-b006-6edc8aa27dbc', 'Bachelor of Business Administration', 'BBA', 'Undergraduate', 8, 'Four-year undergraduate program in business administration');
