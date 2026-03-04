@@ -10,40 +10,111 @@ import { supabase } from '@/integrations/supabase/client';
 import VisitorCounter from '@/components/VisitorCounter';
 import NoteCardClean from '@/components/NoteCardClean';
 
-// Hook to fetch notes with their subject's semester info
-function useNotesWithSemester(subjectId?: string) {
-  const { notes, loading, error } = useNotes(subjectId);
-  const [notesWithSemester, setNotesWithSemester] = useState<(typeof notes[0] & { semester?: number; subject_name?: string })[]>([]);
-  const [semesterLoading, setSemesterLoading] = useState(false);
+function buildSubjectMap(subjects: { id: string; semester: number; name: string }[] | null) {
+  const map = new Map<string, { semester: number; name: string }>();
+  (subjects || []).forEach(s => map.set(s.id, { semester: s.semester, name: s.name }));
+  return map;
+}
+
+// Hook to fetch notes filtered by faculty/program/semester/subject
+function useFilteredNotes(facultyId?: string, programId?: string, semesterId?: string, subjectId?: string) {
+  const [notes, setNotes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (notes.length === 0) {
-      setNotesWithSemester([]);
-      return;
-    }
+    const fetchNotes = async () => {
+      setLoading(true);
+      try {
+        // If a specific subject is selected, filter directly
+        if (subjectId) {
+          const { data, error } = await supabase
+            .from('notes')
+            .select('*')
+            .eq('is_public', true)
+            .eq('subject_id', subjectId)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
 
-    const fetchSemesters = async () => {
-      setSemesterLoading(true);
-      const subjectIds = [...new Set(notes.map(n => n.subject_id))];
-      const { data: subjects } = await supabase
-        .from('subjects')
-        .select('id, semester, name')
-        .in('id', subjectIds);
+          // Get semester/name info
+          const subjectIds = [...new Set((data || []).map(n => n.subject_id))];
+          const { data: subjects } = await supabase.from('subjects').select('id, semester, name').in('id', subjectIds);
+          const subjectMap = buildSubjectMap(subjects);
+          
+          setNotes((data || []).map(n => ({ ...n, semester: subjectMap.get(n.subject_id)?.semester, subject_name: subjectMap.get(n.subject_id)?.name })));
+        } else {
+          // Build list of subject IDs from faculty/program/semester chain
+          let subjectIds: string[] = [];
+          
+          if (facultyId || programId || semesterId) {
+            let programIds: string[] = [];
+            
+            if (programId) {
+              programIds = [programId];
+            } else if (facultyId) {
+              const { data: progs } = await supabase.from('programs').select('id').eq('faculty_id', facultyId);
+              programIds = (progs || []).map(p => p.id);
+            }
 
-      const subjectMap = new Map(subjects?.map(s => [s.id, { semester: s.semester, name: s.name }]) || []);
-      
-      setNotesWithSemester(notes.map(n => ({
-        ...n,
-        semester: subjectMap.get(n.subject_id)?.semester,
-        subject_name: subjectMap.get(n.subject_id)?.name,
-      })));
-      setSemesterLoading(false);
+            if (programIds.length > 0) {
+              let subjectsQuery = supabase.from('subjects').select('id, semester, name').in('program_id', programIds);
+              if (semesterId) subjectsQuery = subjectsQuery.eq('semester', parseInt(semesterId));
+              const { data: subs } = await subjectsQuery;
+              subjectIds = (subs || []).map(s => s.id);
+            } else if (facultyId && programIds.length === 0) {
+              // Faculty has no programs yet
+              setNotes([]);
+              setLoading(false);
+              return;
+            }
+
+            if (subjectIds.length === 0) {
+              setNotes([]);
+              setLoading(false);
+              return;
+            }
+
+            const { data, error } = await supabase
+              .from('notes')
+              .select('*')
+              .eq('is_public', true)
+              .in('subject_id', subjectIds)
+              .order('created_at', { ascending: false });
+            if (error) throw error;
+
+            const { data: allSubs } = await supabase.from('subjects').select('id, semester, name').in('id', [...new Set((data || []).map(n => n.subject_id))]);
+            const subjectMap = buildSubjectMap(allSubs);
+            
+            setNotes((data || []).map(n => ({ ...n, semester: subjectMap.get(n.subject_id)?.semester, subject_name: subjectMap.get(n.subject_id)?.name })));
+          } else {
+            // No filters - show all notes
+            const { data, error } = await supabase
+              .from('notes')
+              .select('*')
+              .eq('is_public', true)
+              .order('created_at', { ascending: false });
+            if (error) throw error;
+
+            const sIds = [...new Set((data || []).map(n => n.subject_id))];
+            const { data: allSubs } = sIds.length > 0 
+              ? await supabase.from('subjects').select('id, semester, name').in('id', sIds)
+              : { data: [] as { id: string; semester: number; name: string }[] };
+            const subjectMap = buildSubjectMap(allSubs);
+            
+            setNotes((data || []).map(n => ({ ...n, semester: subjectMap.get(n.subject_id)?.semester, subject_name: subjectMap.get(n.subject_id)?.name })));
+          }
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch notes');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchSemesters();
-  }, [notes]);
+    fetchNotes();
+  }, [facultyId, programId, semesterId, subjectId]);
 
-  return { notes: notesWithSemester, loading: loading || semesterLoading, error };
+  return { notes, loading, error };
 }
 
 export default function NotesPage() {
@@ -63,7 +134,12 @@ export default function NotesPage() {
     selectedProgram === 'all' ? '' : selectedProgram, 
     selectedSemester === 'all' ? undefined : parseInt(selectedSemester)
   );
-  const { notes, loading } = useNotesWithSemester(selectedSubject === 'all' ? '' : selectedSubject);
+  const { notes, loading } = useFilteredNotes(
+    selectedFaculty === 'all' ? undefined : selectedFaculty,
+    selectedProgram === 'all' ? undefined : selectedProgram,
+    selectedSemester === 'all' ? undefined : selectedSemester,
+    selectedSubject === 'all' ? undefined : selectedSubject
+  );
 
   useEffect(() => {
     const faculty = searchParams.get('faculty');
