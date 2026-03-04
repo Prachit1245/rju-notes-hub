@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import NoteCard from '@/components/NoteCard';
 import VisitorCounter from '@/components/VisitorCounter';
+import FacultyPickerModal from '@/components/FacultyPickerModal';
 import { useFaculties, usePrograms, useSubjects, useNotes, useNotices } from '@/hooks/useSupabaseData';
 
 const HomePage = () => {
@@ -41,6 +42,7 @@ const HomePage = () => {
   const [selectedFaculty, setSelectedFaculty] = useState<string>('');
   const [selectedProgram, setSelectedProgram] = useState<string>('');
   const [selectedSemester, setSelectedSemester] = useState<string>('');
+  const [showFacultyPicker, setShowFacultyPicker] = useState(false);
   
   // Fetch real data
   const { faculties } = useFaculties();
@@ -167,13 +169,15 @@ const HomePage = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
-              <Link to="/notes">
-                <Button size="lg" className="w-full sm:w-auto btn-glow-primary group text-sm md:text-base">
-                  <BookOpen className="h-4 w-4 md:h-5 md:w-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Browse Notes
-                  <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto btn-glow-primary group text-sm md:text-base"
+                onClick={() => setShowFacultyPicker(true)}
+              >
+                <BookOpen className="h-4 w-4 md:h-5 md:w-5 mr-2 group-hover:scale-110 transition-transform" />
+                Browse Notes
+                <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+              </Button>
               <Link to="/upload">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto btn-glow-secondary group text-sm md:text-base">
                   <Upload className="h-4 w-4 md:h-5 md:w-5 mr-2 group-hover:scale-110 transition-transform" />
@@ -629,6 +633,12 @@ const HomePage = () => {
 
       {/* Footer Visitor Counter */}
       <VisitorCounter variant="footer" />
+
+      {/* Faculty Picker Modal */}
+      <FacultyPickerModal 
+        open={showFacultyPicker} 
+        onClose={() => setShowFacultyPicker(false)} 
+      />
     </div>
   );
 };
