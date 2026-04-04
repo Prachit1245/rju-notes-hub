@@ -133,23 +133,43 @@ const NoteCardClean = ({
         {/* Footer - pushed to bottom */}
         <div className="flex items-center justify-between gap-2 mt-auto">
           {uploaderName ? (
-            <span className="text-[11px] text-muted-foreground truncate max-w-[120px]">
+            <span className="text-[11px] text-muted-foreground truncate max-w-[100px]">
               by <span className="font-medium">{uploaderName}</span>
             </span>
           ) : (
             <span />
           )}
-          <Button
-            size="sm"
-            className="h-7 px-3 text-[11px] btn-premium rounded-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              window.open(fileUrl, '_blank');
-            }}
-          >
-            <Download className="h-3 w-3 mr-1" />
-            Download
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 px-2.5 text-[11px] rounded-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(fileUrl, '_blank');
+              }}
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              Preview
+            </Button>
+            <Button
+              size="sm"
+              className="h-7 px-2.5 text-[11px] btn-premium rounded-lg"
+              onClick={(e) => {
+                e.stopPropagation();
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = '';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+            >
+              <Download className="h-3 w-3 mr-1" />
+              Download
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

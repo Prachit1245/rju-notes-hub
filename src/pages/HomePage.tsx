@@ -374,7 +374,7 @@ const HomePage = () => {
                 <Button 
                   size="lg" 
                   className="btn-premium group"
-                  onClick={handleBrowseNotes}
+                  onClick={() => setShowFacultyPicker(true)}
                 >
                   <Search className="h-5 w-5 mr-2" />
                   Browse Notes
