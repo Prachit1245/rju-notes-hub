@@ -146,7 +146,9 @@ const NoteCardClean = ({
               className="h-7 px-2.5 text-[11px] rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
-                window.open(fileUrl, '_blank');
+                // Use Google Docs Viewer for PDF/DOC preview
+                const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                window.open(viewerUrl, '_blank');
               }}
             >
               <Eye className="h-3 w-3 mr-1" />
