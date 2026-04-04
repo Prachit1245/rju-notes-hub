@@ -1,4 +1,4 @@
-import { Download, Star, Calendar, FileText, CheckCircle2 } from 'lucide-react';
+import { Download, Star, Calendar, FileText, CheckCircle2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
