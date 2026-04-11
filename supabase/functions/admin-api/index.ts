@@ -6,11 +6,33 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ADMIN_EMAIL = "rjuadmin@notes.edu.np";
-const ADMIN_PASSWORD = "RjuPrachit12@";
+async function validateManager(supabase: any, email: string, password: string) {
+  const { data: manager, error } = await supabase
+    .from("managers")
+    .select("*")
+    .eq("email", email)
+    .eq("is_active", true)
+    .maybeSingle();
 
-function validateAdmin(email: string, password: string): boolean {
-  return email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+  if (error || !manager) return null;
+
+  // Verify password using pgcrypto crypt
+  const { data: valid, error: cryptError } = await supabase.rpc("verify_manager_password", {
+    p_email: email,
+    p_password: password,
+  });
+
+  if (cryptError || !valid) return null;
+  return manager;
+}
+
+async function logAction(supabase: any, managerId: string, managerEmail: string, action: string, details: any = {}) {
+  await supabase.from("audit_logs").insert({
+    manager_id: managerId,
+    manager_email: managerEmail,
+    action,
+    details,
+  });
 }
 
 Deno.serve(async (req) => {
@@ -21,20 +43,23 @@ Deno.serve(async (req) => {
   try {
     const { action, adminEmail, adminPassword, ...payload } = await req.json();
 
-    if (!validateAdmin(adminEmail, adminPassword)) {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+    // Validate manager credentials
+    const manager = await validateManager(supabase, adminEmail, adminPassword);
+    if (!manager) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
-
     let result;
 
     switch (action) {
+      // ── Note operations (admin + manager) ──
       case "insert_note": {
         const { data, error } = await supabase
           .from("notes")
@@ -42,23 +67,23 @@ Deno.serve(async (req) => {
           .select()
           .single();
         if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "insert_note", { noteTitle: payload.note?.title });
         result = data;
         break;
       }
 
       case "delete_note": {
-        // Delete from storage
         const { error: storageError } = await supabase.storage
           .from("notes")
           .remove([`notes/${payload.fileName}`]);
         if (storageError) console.error("Storage delete error:", storageError);
 
-        // Delete from database
         const { error: dbError } = await supabase
           .from("notes")
           .delete()
           .eq("id", payload.noteId);
         if (dbError) throw dbError;
+        await logAction(supabase, manager.id, manager.email, "delete_note", { noteId: payload.noteId, fileName: payload.fileName });
         result = { success: true };
         break;
       }
@@ -69,6 +94,7 @@ Deno.serve(async (req) => {
           .update(payload.updates)
           .eq("id", payload.noteId);
         if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "update_note", { noteId: payload.noteId, updates: payload.updates });
         result = { success: true };
         break;
       }
@@ -80,6 +106,7 @@ Deno.serve(async (req) => {
           .select()
           .single();
         if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "insert_subject", { subjectName: payload.subject?.name });
         result = data;
         break;
       }
@@ -98,20 +125,143 @@ Deno.serve(async (req) => {
       }
 
       case "generate_subject_code": {
-        const { data, error } = await supabase
-          .rpc("generate_unique_subject_code", {
-            p_program_id: payload.programId,
-            p_base_code: payload.baseCode || "CUSTOM",
-          });
+        const { data, error } = await supabase.rpc("generate_unique_subject_code", {
+          p_program_id: payload.programId,
+          p_base_code: payload.baseCode || "CUSTOM",
+        });
         if (error) throw error;
         result = { code: data };
         break;
       }
 
-      case "upload_file": {
-        // File uploads still happen via client storage (public bucket)
-        // This action is not needed since storage is public
-        result = { error: "Use client-side storage upload for public bucket" };
+      // ── Manager operations (admin only) ──
+      case "add_manager": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can add managers" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { data: existing } = await supabase
+          .from("managers")
+          .select("id")
+          .eq("email", payload.managerEmail)
+          .maybeSingle();
+
+        if (existing) {
+          return new Response(JSON.stringify({ error: "A manager with this email already exists" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Hash password using pgcrypto via RPC
+        const { data: newManager, error } = await supabase.rpc("create_manager", {
+          p_email: payload.managerEmail,
+          p_name: payload.managerName,
+          p_password: payload.managerPassword,
+          p_role: payload.managerRole || "manager",
+          p_created_by: manager.id,
+        });
+
+        if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "add_manager", { newManagerEmail: payload.managerEmail, role: payload.managerRole });
+        result = newManager;
+        break;
+      }
+
+      case "list_managers": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can list managers" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { data, error } = await supabase
+          .from("managers")
+          .select("id, email, name, role, is_active, created_at")
+          .order("created_at", { ascending: true });
+        if (error) throw error;
+        result = data;
+        break;
+      }
+
+      case "toggle_manager": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can modify managers" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Prevent deactivating yourself
+        if (payload.managerId === manager.id) {
+          return new Response(JSON.stringify({ error: "Cannot deactivate yourself" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { error } = await supabase
+          .from("managers")
+          .update({ is_active: payload.isActive })
+          .eq("id", payload.managerId);
+        if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "toggle_manager", { managerId: payload.managerId, isActive: payload.isActive });
+        result = { success: true };
+        break;
+      }
+
+      case "delete_manager": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can delete managers" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        if (payload.managerId === manager.id) {
+          return new Response(JSON.stringify({ error: "Cannot delete yourself" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { error } = await supabase
+          .from("managers")
+          .delete()
+          .eq("id", payload.managerId);
+        if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "delete_manager", { managerId: payload.managerId });
+        result = { success: true };
+        break;
+      }
+
+      // ── Audit log operations (admin only) ──
+      case "get_audit_logs": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can view audit logs" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { data, error } = await supabase
+          .from("audit_logs")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (error) throw error;
+        result = data;
+        break;
+      }
+
+      // ── Auth check (returns manager info) ──
+      case "verify_login": {
+        await logAction(supabase, manager.id, manager.email, "login", {});
+        result = { id: manager.id, email: manager.email, name: manager.name, role: manager.role };
         break;
       }
 
