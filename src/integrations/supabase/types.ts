@@ -362,11 +362,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_manager: {
+        Args: {
+          p_created_by?: string
+          p_email: string
+          p_name: string
+          p_password: string
+          p_role?: string
+        }
+        Returns: Json
+      }
       generate_unique_subject_code: {
         Args: { p_base_code?: string; p_program_id: string }
         Returns: string
       }
       increment_visitor_count: { Args: never; Returns: undefined }
+      verify_manager_password: {
+        Args: { p_email: string; p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
