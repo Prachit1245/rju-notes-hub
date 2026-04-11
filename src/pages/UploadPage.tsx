@@ -51,10 +51,10 @@ export default function UploadPage() {
       try {
         return JSON.parse(stored);
       } catch {
-        return { email: '', password: '', isAuthenticated: false };
+        return { email: '', password: '', isAuthenticated: false, role: '' };
       }
     }
-    return { email: '', password: '', isAuthenticated: false };
+    return { email: '', password: '', isAuthenticated: false, role: '' };
   });
 
   useEffect(() => {
