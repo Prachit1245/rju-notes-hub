@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useFaculties, usePrograms, useSubjects } from '@/hooks/useSupabaseData';
 import AdminDashboard from '@/components/AdminDashboard';
+import { callAdminApi } from '@/lib/adminApi';
 
 interface FileUpload {
   file: File;
@@ -135,43 +136,44 @@ export default function UploadPage() {
       let finalSubjectId = selectedSubject;
       
       if (useCustomSubject && formData.customSubjectName) {
-        // Generate unique subject code to avoid constraint violations
-        const { data: uniqueCode, error: codeError } = await supabase
-          .rpc('generate_unique_subject_code', {
-            p_program_id: selectedProgram,
-            p_base_code: formData.customSubjectCode || 'CUSTOM'
-          });
-          
-        if (codeError) throw codeError;
+        // Generate unique subject code via edge function
+        const codeResult = await callAdminApi({
+          action: 'generate_subject_code',
+          adminEmail: adminAuth.email,
+          adminPassword: adminAuth.password,
+          programId: selectedProgram,
+          baseCode: formData.customSubjectCode || 'CUSTOM',
+        });
         
-        // Check if custom subject already exists with this exact combination
-        const { data: existingSubject } = await supabase
-          .from('subjects')
-          .select('id')
-          .eq('program_id', selectedProgram)
-          .eq('name', formData.customSubjectName)
-          .eq('semester', parseInt(selectedSemester))
-          .maybeSingle();
+        const uniqueCode = codeResult.code;
+        
+        // Check if custom subject already exists
+        const existingSubject = await callAdminApi({
+          action: 'find_subject',
+          adminEmail: adminAuth.email,
+          adminPassword: adminAuth.password,
+          programId: selectedProgram,
+          name: formData.customSubjectName,
+          semester: parseInt(selectedSemester),
+        });
           
         if (existingSubject) {
-          // Use existing subject
           finalSubjectId = existingSubject.id;
         } else {
-          // Create new custom subject with unique code
-          const { data: customSubject, error: subjectError } = await supabase
-            .from('subjects')
-            .insert({
+          // Create new custom subject via edge function
+          const customSubject = await callAdminApi({
+            action: 'insert_subject',
+            adminEmail: adminAuth.email,
+            adminPassword: adminAuth.password,
+            subject: {
               program_id: selectedProgram,
               name: formData.customSubjectName,
               code: uniqueCode,
               semester: parseInt(selectedSemester),
               credits: 3,
               description: `Custom subject: ${formData.customSubjectName}`
-            })
-            .select()
-            .single();
-            
-          if (subjectError) throw subjectError;
+            },
+          });
           finalSubjectId = customSubject.id;
         }
       }
@@ -179,9 +181,12 @@ export default function UploadPage() {
       for (const fileUpload of files) {
         const { publicUrl, fileName } = await uploadToSupabase(fileUpload.file);
         
-        const { error } = await supabase
-          .from('notes')
-          .insert({
+        // Insert note via edge function
+        await callAdminApi({
+          action: 'insert_note',
+          adminEmail: adminAuth.email,
+          adminPassword: adminAuth.password,
+          note: {
             subject_id: finalSubjectId,
             title: formData.title || fileUpload.file.name,
             description: formData.description,
@@ -192,9 +197,8 @@ export default function UploadPage() {
             uploader_name: formData.uploader_name,
             uploader_email: formData.uploader_email,
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
-          });
-
-        if (error) throw error;
+          },
+        });
       }
 
       toast({
@@ -584,7 +588,7 @@ export default function UploadPage() {
           </TabsContent>
           
           <TabsContent value="manage">
-            <AdminDashboard />
+            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
           </TabsContent>
         </Tabs>
       </div>

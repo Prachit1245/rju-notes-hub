@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { callAdminApi } from '@/lib/adminApi';
 
 interface Note {
   id: string;
@@ -30,7 +31,7 @@ interface Note {
   };
 }
 
-export default function AdminDashboard() {
+export default function AdminDashboard({ adminEmail, adminPassword }: { adminEmail: string; adminPassword: string }) {
   const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,20 +76,13 @@ export default function AdminDashboard() {
     if (!confirm('Are you sure you want to delete this note?')) return;
 
     try {
-      // Delete from storage first
-      const { error: storageError } = await supabase.storage
-        .from('notes')
-        .remove([`notes/${fileName}`]);
-
-      if (storageError) throw storageError;
-
-      // Delete from database
-      const { error: dbError } = await supabase
-        .from('notes')
-        .delete()
-        .eq('id', noteId);
-
-      if (dbError) throw dbError;
+      await callAdminApi({
+        action: 'delete_note',
+        adminEmail,
+        adminPassword,
+        noteId,
+        fileName,
+      });
 
       setNotes(prev => prev.filter(note => note.id !== noteId));
       
@@ -108,12 +102,13 @@ export default function AdminDashboard() {
 
   const togglePublic = async (noteId: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
-        .from('notes')
-        .update({ is_public: !currentStatus })
-        .eq('id', noteId);
-
-      if (error) throw error;
+      await callAdminApi({
+        action: 'update_note',
+        adminEmail,
+        adminPassword,
+        noteId,
+        updates: { is_public: !currentStatus },
+      });
 
       setNotes(prev => prev.map(note => 
         note.id === noteId 
