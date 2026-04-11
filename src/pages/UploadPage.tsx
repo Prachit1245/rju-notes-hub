@@ -602,6 +602,17 @@ export default function UploadPage() {
           <TabsContent value="manage">
             <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
           </TabsContent>
+
+          {adminAuth.role === 'admin' && (
+            <>
+              <TabsContent value="managers">
+                <ManagerPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
+              <TabsContent value="activity">
+                <AuditLog adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </div>
