@@ -83,17 +83,21 @@ export default function UploadPage() {
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple admin check - in production, you'd use proper authentication
-    if (adminAuth.email === 'rjuadmin@notes.edu.np' && adminAuth.password === 'RjuPrachit12@') {
-      setAdminAuth(prev => ({ ...prev, isAuthenticated: true }));
+    try {
+      const result = await callAdminApi({
+        action: 'verify_login',
+        adminEmail: adminAuth.email,
+        adminPassword: adminAuth.password,
+      });
+      setAdminAuth(prev => ({ ...prev, isAuthenticated: true, role: result.role }));
       toast({
         title: "Authentication Successful",
-        description: "Welcome to the admin panel",
+        description: `Welcome, ${result.name}`,
       });
-    } else {
+    } catch {
       toast({
         title: "Authentication Failed",
-        description: "Invalid admin credentials",
+        description: "Invalid credentials",
         variant: "destructive",
       });
     }
