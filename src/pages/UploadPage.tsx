@@ -310,7 +310,7 @@ export default function UploadPage() {
             </div>
             <Button
               variant="outline"
-              onClick={() => setAdminAuth({ email: '', password: '', isAuthenticated: false })}
+              onClick={() => setAdminAuth({ email: '', password: '', isAuthenticated: false, role: '' })}
             >
               Logout
             </Button>
