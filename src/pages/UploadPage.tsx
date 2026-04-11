@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useFaculties, usePrograms, useSubjects } from '@/hooks/useSupabaseData';
 import AdminDashboard from '@/components/AdminDashboard';
+import ManagerPanel from '@/components/ManagerPanel';
+import AuditLog from '@/components/AuditLog';
 import { callAdminApi } from '@/lib/adminApi';
 
 interface FileUpload {
@@ -49,10 +51,10 @@ export default function UploadPage() {
       try {
         return JSON.parse(stored);
       } catch {
-        return { email: '', password: '', isAuthenticated: false };
+        return { email: '', password: '', isAuthenticated: false, role: '' };
       }
     }
-    return { email: '', password: '', isAuthenticated: false };
+    return { email: '', password: '', isAuthenticated: false, role: '' };
   });
 
   useEffect(() => {
@@ -81,17 +83,21 @@ export default function UploadPage() {
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple admin check - in production, you'd use proper authentication
-    if (adminAuth.email === 'rjuadmin@notes.edu.np' && adminAuth.password === 'RjuPrachit12@') {
-      setAdminAuth(prev => ({ ...prev, isAuthenticated: true }));
+    try {
+      const result = await callAdminApi({
+        action: 'verify_login',
+        adminEmail: adminAuth.email,
+        adminPassword: adminAuth.password,
+      });
+      setAdminAuth(prev => ({ ...prev, isAuthenticated: true, role: result.role }));
       toast({
         title: "Authentication Successful",
-        description: "Welcome to the admin panel",
+        description: `Welcome, ${result.name}`,
       });
-    } else {
+    } catch {
       toast({
         title: "Authentication Failed",
-        description: "Invalid admin credentials",
+        description: "Invalid credentials",
         variant: "destructive",
       });
     }
@@ -304,7 +310,7 @@ export default function UploadPage() {
             </div>
             <Button
               variant="outline"
-              onClick={() => setAdminAuth({ email: '', password: '', isAuthenticated: false })}
+              onClick={() => setAdminAuth({ email: '', password: '', isAuthenticated: false, role: '' })}
             >
               Logout
             </Button>
@@ -312,9 +318,15 @@ export default function UploadPage() {
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className={`grid w-full ${adminAuth.role === 'admin' ? 'grid-cols-4' : 'grid-cols-2'}`}>
             <TabsTrigger value="upload">Upload Notes</TabsTrigger>
             <TabsTrigger value="manage">Manage Notes</TabsTrigger>
+            {adminAuth.role === 'admin' && (
+              <>
+                <TabsTrigger value="managers">Managers</TabsTrigger>
+                <TabsTrigger value="activity">Activity Log</TabsTrigger>
+              </>
+            )}
           </TabsList>
           
           <TabsContent value="upload" className="space-y-6">
@@ -590,6 +602,17 @@ export default function UploadPage() {
           <TabsContent value="manage">
             <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
           </TabsContent>
+
+          {adminAuth.role === 'admin' && (
+            <>
+              <TabsContent value="managers">
+                <ManagerPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
+              <TabsContent value="activity">
+                <AuditLog adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </div>
