@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useFaculties, usePrograms, useSubjects } from '@/hooks/useSupabaseData';
 import AdminDashboard from '@/components/AdminDashboard';
+import ManagerPanel from '@/components/ManagerPanel';
+import AuditLog from '@/components/AuditLog';
 import { callAdminApi } from '@/lib/adminApi';
 
 interface FileUpload {
