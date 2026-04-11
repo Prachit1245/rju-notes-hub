@@ -588,7 +588,7 @@ export default function UploadPage() {
           </TabsContent>
           
           <TabsContent value="manage">
-            <AdminDashboard />
+            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
           </TabsContent>
         </Tabs>
       </div>
