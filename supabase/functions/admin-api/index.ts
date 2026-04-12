@@ -26,6 +26,48 @@ async function validateManager(supabase: any, email: string, password: string) {
   return manager;
 }
 
+async function generateNoteSeo(supabase: any, noteId: string) {
+  // Fetch note with related data
+  const { data: note } = await supabase.from("notes").select("*").eq("id", noteId).single();
+  if (!note) return;
+
+  const { data: subject } = await supabase.from("subjects").select("*").eq("id", note.subject_id).single();
+  if (!subject) return;
+
+  const { data: program } = await supabase.from("programs").select("*").eq("id", subject.program_id).single();
+  const { data: faculty } = program
+    ? await supabase.from("faculties").select("*").eq("id", program.faculty_id).single()
+    : { data: null };
+
+  const programName = program?.name || "University Program";
+  const programCode = program?.code || "";
+  const facultyName = faculty?.name || "University Faculty";
+  const semester = subject.semester;
+  const subjectName = subject.name;
+  const subjectCode = subject.code;
+  const noteTitle = note.title;
+  const fileType = note.file_type?.split("/")[1]?.toUpperCase() || "PDF";
+  const tags = (note.tags || []).join(", ");
+
+  const seoTitle = `${noteTitle} - ${subjectName} | Sem ${semester} ${programCode} | RJU Notes`.slice(0, 60);
+
+  const seoDescription = `Download free ${noteTitle} study notes for ${subjectName} (${subjectCode}), Semester ${semester}, ${programName}, ${facultyName} at Rajarshi Janak University. ${fileType} format. Quality study materials for RJU students.`.slice(0, 160);
+
+  const keywordParts = [
+    noteTitle, subjectName, subjectCode, `semester ${semester}`,
+    programName, programCode, facultyName, "RJU notes",
+    "Rajarshi Janak University", "study materials", "free notes",
+    "download notes", fileType, tags
+  ].filter(Boolean);
+  const seoKeywords = keywordParts.join(", ").slice(0, 500);
+
+  await supabase.from("notes").update({
+    seo_title: seoTitle,
+    seo_description: seoDescription,
+    seo_keywords: seoKeywords,
+  }).eq("id", noteId);
+}
+
 async function logAction(supabase: any, managerId: string, managerEmail: string, action: string, details: any = {}) {
   await supabase.from("audit_logs").insert({
     manager_id: managerId,
