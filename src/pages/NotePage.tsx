@@ -25,6 +25,9 @@ interface Note {
   created_at: string;
   is_verified: boolean;
   subject_id: string;
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_keywords: string | null;
 }
 
 interface Subject {
