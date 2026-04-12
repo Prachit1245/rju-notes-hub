@@ -599,7 +599,37 @@ export default function UploadPage() {
             </Card>
           </TabsContent>
           
-          <TabsContent value="manage">
+          <TabsContent value="manage" className="space-y-4">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold">SEO Generation</h3>
+                    <p className="text-sm text-muted-foreground">Generate SEO metadata for all notes that don't have it yet</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      try {
+                        const result = await callAdminApi({
+                          action: 'backfill_seo',
+                          adminEmail: adminAuth.email,
+                          adminPassword: adminAuth.password,
+                        });
+                        toast({
+                          title: "SEO Generated",
+                          description: `Processed ${result.notesProcessed} notes`,
+                        });
+                      } catch (error: any) {
+                        toast({ title: "Error", description: error.message, variant: "destructive" });
+                      }
+                    }}
+                  >
+                    Generate SEO for All Notes
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
             <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
           </TabsContent>
 

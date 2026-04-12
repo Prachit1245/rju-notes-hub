@@ -25,6 +25,9 @@ interface Note {
   created_at: string;
   is_verified: boolean;
   subject_id: string;
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_keywords: string | null;
 }
 
 interface Subject {
@@ -166,8 +169,9 @@ export default function NotePage() {
   }
 
   const rating = note.rating_count > 0 ? (note.rating_sum / note.rating_count).toFixed(1) : 'No ratings';
-  const pageTitle = `${note.title} - ${subject.name} Notes | RJU Notes`;
-  const pageDescription = note.description || `Download ${note.title} for ${subject.name}, Semester ${subject.semester}, ${program.name}, ${faculty.name}. Free study materials for RJU students.`;
+  const pageTitle = note.seo_title || `${note.title} - ${subject.name} Notes | RJU Notes`;
+  const pageDescription = note.seo_description || note.description || `Download ${note.title} for ${subject.name}, Semester ${subject.semester}, ${program.name}, ${faculty.name}. Free study materials for RJU students.`;
+  const pageKeywords = note.seo_keywords || `${note.title}, ${subject.name}, ${program.name}, ${faculty.name}, RJU notes, study materials, semester ${subject.semester}, ${note.tags?.join(', ')}`;
   const pageUrl = `https://rjunotes.com/notes/${note.id}`;
 
   return (
@@ -175,7 +179,7 @@ export default function NotePage() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`${note.title}, ${subject.name}, ${program.name}, ${faculty.name}, RJU notes, study materials, semester ${subject.semester}, ${note.tags?.join(', ')}`} />
+        <meta name="keywords" content={pageKeywords} />
         
         {/* Open Graph */}
         <meta property="og:type" content="article" />
