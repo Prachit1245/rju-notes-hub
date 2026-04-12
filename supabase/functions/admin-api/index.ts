@@ -309,6 +309,32 @@ Deno.serve(async (req) => {
         break;
       }
 
+      // ── SEO operations ──
+      case "backfill_seo": {
+        const { data: allNotes, error } = await supabase
+          .from("notes")
+          .select("id")
+          .or("seo_title.is.null,seo_description.is.null");
+        if (error) throw error;
+
+        let count = 0;
+        for (const n of (allNotes || [])) {
+          try {
+            await generateNoteSeo(supabase, n.id);
+            count++;
+          } catch (e) { console.error("SEO backfill error for", n.id, e); }
+        }
+        await logAction(supabase, manager.id, manager.email, "backfill_seo", { notesProcessed: count });
+        result = { success: true, notesProcessed: count };
+        break;
+      }
+
+      case "generate_note_seo": {
+        await generateNoteSeo(supabase, payload.noteId);
+        result = { success: true };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400,
