@@ -110,6 +110,8 @@ Deno.serve(async (req) => {
           .single();
         if (error) throw error;
         await logAction(supabase, manager.id, manager.email, "insert_note", { noteTitle: payload.note?.title });
+        // Auto-generate SEO for the new note
+        try { await generateNoteSeo(supabase, data.id); } catch (e) { console.error("SEO gen error:", e); }
         result = data;
         break;
       }
