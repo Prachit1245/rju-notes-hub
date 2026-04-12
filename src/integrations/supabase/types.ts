@@ -152,6 +152,9 @@ export type Database = {
           is_verified: boolean
           rating_count: number
           rating_sum: number
+          seo_description: string | null
+          seo_keywords: string | null
+          seo_title: string | null
           subject_id: string
           tags: string[] | null
           title: string
@@ -172,6 +175,9 @@ export type Database = {
           is_verified?: boolean
           rating_count?: number
           rating_sum?: number
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
           subject_id: string
           tags?: string[] | null
           title: string
@@ -192,6 +198,9 @@ export type Database = {
           is_verified?: boolean
           rating_count?: number
           rating_sum?: number
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
           subject_id?: string
           tags?: string[] | null
           title?: string
