@@ -179,7 +179,7 @@ export default function NotePage() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`${note.title}, ${subject.name}, ${program.name}, ${faculty.name}, RJU notes, study materials, semester ${subject.semester}, ${note.tags?.join(', ')}`} />
+        <meta name="keywords" content={pageKeywords} />
         
         {/* Open Graph */}
         <meta property="og:type" content="article" />
