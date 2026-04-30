@@ -11,10 +11,32 @@ import {
   Github,
   Linkedin
 } from 'lucide-react';
+import { SEO, SITE_URL } from '@/components/SEO';
 
 const AboutPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="About – Created by Prachit Regmi for RJU Students"
+        description="Learn about RJU Notes Hub – a free, non-commercial platform created by Prachit Regmi to help Rajarshi Janak University students access quality study materials and university notices."
+        keywords="about RJU Notes Hub, Prachit Regmi, RJU student platform, Rajarshi Janak University notes creator"
+        canonical="/about"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About RJU Notes Hub",
+          "description": "RJU Notes Hub is a free, non-commercial student platform created by Prachit Regmi for Rajarshi Janak University students.",
+          "url": `${SITE_URL}/about`,
+          "isPartOf": { "@type": "WebSite", "name": "RJU Notes Hub", "url": `${SITE_URL}/` },
+          "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/` },
+              { "@type": "ListItem", "position": 2, "name": "About", "item": `${SITE_URL}/about` }
+            ]
+          }
+        }}
+      />
       {/* Hero Section */}
       <section className="hero-gradient py-12 md:py-20 px-4">
         <div className="container mx-auto text-center text-white">

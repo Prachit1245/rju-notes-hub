@@ -14,6 +14,7 @@ import AdminDashboard from '@/components/AdminDashboard';
 import ManagerPanel from '@/components/ManagerPanel';
 import AuditLog from '@/components/AuditLog';
 import { callAdminApi } from '@/lib/adminApi';
+import { SEO, SITE_URL } from '@/components/SEO';
 
 interface FileUpload {
   file: File;
@@ -299,6 +300,13 @@ export default function UploadPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
+      <SEO
+        title="Upload Notes – Share Study Materials with RJU Students"
+        description="Upload and share your study notes, lecture materials, and past exam papers with fellow Rajarshi Janak University students. All submissions are admin-verified."
+        keywords="upload RJU notes, share study materials, contribute notes RJU, Rajarshi Janak University upload"
+        canonical="/upload"
+        noindex={true}
+      />
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between">
