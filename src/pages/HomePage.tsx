@@ -32,6 +32,7 @@ import NoteCard from '@/components/NoteCard';
 import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
 import { useFaculties, usePrograms, useSubjects, useNotes, useNotices } from '@/hooks/useSupabaseData';
+import { SEO, SITE_URL } from '@/components/SEO';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -99,6 +100,28 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
+      <SEO
+        title="Free Study Notes & Resources for Rajarshi Janak University"
+        description="Download free RJU notes, old questions, lecture notes, and exam papers for BCA, BIT, BSc CSIT and all programs at Rajarshi Janak University (RJU), Nepal."
+        keywords="RJU notes, Rajarshi Janak University notes, free study materials, BCA notes RJU, BIT notes RJU, BSc CSIT notes, RJU old questions, RJU exam papers, Nepal university notes"
+        canonical="/"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "RJU Notes Hub – Free Study Notes for Rajarshi Janak University",
+            "description": "Download free study notes, old questions, and academic resources for all programs at Rajarshi Janak University.",
+            "url": `${SITE_URL}/`,
+            "isPartOf": { "@type": "WebSite", "name": "RJU Notes Hub", "url": `${SITE_URL}/` },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/` }
+              ]
+            }
+          }
+        ]}
+      />
       {/* Animated Background Orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="orb orb-1" />

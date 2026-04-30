@@ -9,6 +9,7 @@ import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSup
 import { supabase } from '@/integrations/supabase/client';
 import VisitorCounter from '@/components/VisitorCounter';
 import NoteCardClean from '@/components/NoteCardClean';
+import { SEO, SITE_URL } from '@/components/SEO';
 
 function buildSubjectMap(subjects: { id: string; semester: number; name: string }[] | null) {
   const map = new Map<string, { semester: number; name: string }>();
@@ -190,6 +191,27 @@ export default function NotesPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(220,14%,96%)] dark:bg-background overflow-hidden">
+      <SEO
+        title="Browse Study Notes – All Faculties & Programs"
+        description="Browse and download free RJU study notes, old questions, and exam materials. Filter by faculty, program, semester, and subject for Rajarshi Janak University."
+        keywords="RJU notes browse, download study notes, RJU faculty notes, RJU semester notes, Rajarshi Janak University study materials"
+        canonical="/notes"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "RJU Study Notes – Browse All Notes",
+          "description": "Browse free study notes, old questions, and exam papers for all programs at Rajarshi Janak University.",
+          "url": `${SITE_URL}/notes`,
+          "isPartOf": { "@type": "WebSite", "name": "RJU Notes Hub", "url": `${SITE_URL}/` },
+          "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": `${SITE_URL}/` },
+              { "@type": "ListItem", "position": 2, "name": "Browse Notes", "item": `${SITE_URL}/notes` }
+            ]
+          }
+        }}
+      />
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="orb orb-1 opacity-20" />

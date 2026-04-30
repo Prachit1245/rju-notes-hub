@@ -172,7 +172,7 @@ export default function NotePage() {
   const pageTitle = note.seo_title || `${note.title} - ${subject.name} Notes | RJU Notes`;
   const pageDescription = note.seo_description || note.description || `Download ${note.title} for ${subject.name}, Semester ${subject.semester}, ${program.name}, ${faculty.name}. Free study materials for RJU students.`;
   const pageKeywords = note.seo_keywords || `${note.title}, ${subject.name}, ${program.name}, ${faculty.name}, RJU notes, study materials, semester ${subject.semester}, ${note.tags?.join(', ')}`;
-  const pageUrl = `https://rjunotes.com/notes/${note.id}`;
+  const pageUrl = `https://rjunotes.prachitregmi.com.np/notes/${note.id}`;
 
   return (
     <>
@@ -186,7 +186,7 @@ export default function NotePage() {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
-        <meta property="og:site_name" content="RJU Notes" />
+        <meta property="og:site_name" content="RJU Notes Hub" />
         <meta property="article:published_time" content={note.created_at} />
         
         {/* Twitter Card */}
@@ -211,10 +211,10 @@ export default function NotePage() {
             "datePublished": note.created_at,
             "publisher": {
               "@type": "Organization",
-              "name": "RJU Notes",
+              "name": "RJU Notes Hub",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://rjunotes.com/rju-notes-logo.png"
+                "url": "https://rjunotes.prachitregmi.com.np/favicon.png"
               }
             },
             "mainEntityOfPage": {
@@ -271,31 +271,31 @@ export default function NotePage() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://rjunotes.com/"
+                "item": "https://rjunotes.prachitregmi.com.np/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Notes",
-                "item": "https://rjunotes.com/notes"
+                "item": "https://rjunotes.prachitregmi.com.np/notes"
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": faculty.name,
-                "item": `https://rjunotes.com/notes?faculty=${faculty.id}`
+                "item": `https://rjunotes.prachitregmi.com.np/notes?faculty=${faculty.id}`
               },
               {
                 "@type": "ListItem",
                 "position": 4,
                 "name": program.name,
-                "item": `https://rjunotes.com/notes?program=${program.id}`
+                "item": `https://rjunotes.prachitregmi.com.np/notes?program=${program.id}`
               },
               {
                 "@type": "ListItem",
                 "position": 5,
                 "name": subject.name,
-                "item": `https://rjunotes.com/notes?subject=${subject.id}`
+                "item": `https://rjunotes.prachitregmi.com.np/notes?subject=${subject.id}`
               },
               {
                 "@type": "ListItem",
