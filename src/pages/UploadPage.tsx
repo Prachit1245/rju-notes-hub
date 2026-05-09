@@ -201,7 +201,7 @@ export default function UploadPage() {
             file_size: fileUpload.file.size,
             file_type: fileUpload.file.type,
             uploader_name: formData.uploader_name,
-            uploader_email: formData.uploader_email,
+            
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
           },
         });
