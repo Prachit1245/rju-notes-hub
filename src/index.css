@@ -879,6 +879,71 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 }
 
 /* Notice Cards */
+.notice-board-shell {
+  background: linear-gradient(135deg, hsl(var(--card) / 0.96), hsl(var(--accent) / 0.72));
+  box-shadow: 0 20px 60px hsl(var(--foreground) / 0.08);
+}
+
+.notice-ticker-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 999px;
+  background: linear-gradient(90deg, hsl(var(--background) / 0.95), hsl(var(--accent) / 0.85));
+}
+
+.notice-ticker-shell::before,
+.notice-ticker-shell::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.notice-ticker-shell::before {
+  left: 0;
+  background: linear-gradient(90deg, hsl(var(--card)), transparent);
+}
+
+.notice-ticker-shell::after {
+  right: 0;
+  background: linear-gradient(270deg, hsl(var(--card)), transparent);
+}
+
+.notice-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  padding: 0.75rem 0;
+  animation: notice-ticker 36s linear infinite;
+}
+
+.notice-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 20rem;
+  max-width: 32rem;
+  padding-right: 0.25rem;
+  color: hsl(var(--foreground));
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.notice-ticker-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.45);
+}
+
 .notice-card {
   background: hsl(var(--card) / 0.8);
   backdrop-filter: blur(20px);
@@ -893,17 +958,48 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   box-shadow: 0 10px 30px hsl(var(--electric-purple) / 0.1);
 }
 
-.notice-badge {
-  background: hsl(var(--electric-cyan) / 0.2);
-  color: hsl(var(--cyber-cyan));
+.notice-pill {
+  background: hsl(var(--secondary) / 0.14);
+  color: hsl(var(--secondary-foreground));
   border: none;
 }
 
-.notice-badge-urgent {
+.notice-pill-danger {
+  background: hsl(var(--destructive) / 0.14);
+  color: hsl(var(--destructive));
+}
+
+.notice-pill-success {
+  background: hsl(var(--rju-green) / 0.14);
+  color: hsl(var(--rju-green));
+}
+
+.notice-pill-warning {
+  background: hsl(var(--sunset-orange) / 0.18);
+  color: hsl(var(--foreground));
+}
+
+.notice-pill-info {
+  background: hsl(var(--rju-blue) / 0.14);
+  color: hsl(var(--rju-blue-dark));
+}
+
+.notice-priority {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border: none;
+}
+
+.notice-priority-high {
   background: linear-gradient(135deg, hsl(var(--destructive)), hsl(var(--hot-pink)));
-  color: white;
+  color: hsl(var(--destructive-foreground));
   border: none;
   animation: pulse 2s infinite;
+}
+
+.notice-priority-medium {
+  background: hsl(var(--sunset-orange) / 0.22);
+  color: hsl(var(--foreground));
 }
 
 /* Visitor Counter */
@@ -1679,6 +1775,17 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 @keyframes wave-move {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@keyframes notice-ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice-ticker-track {
+    animation: none;
+  }
 }
 
 /* Pulse Ring Animation */

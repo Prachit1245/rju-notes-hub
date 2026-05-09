@@ -31,7 +31,8 @@ import {
 import NoteCard from '@/components/NoteCard';
 import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
-import { useFaculties, usePrograms, useSubjects, useNotes, useNotices } from '@/hooks/useSupabaseData';
+import NoticeBoard from '@/components/NoticeBoard';
+import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
 const HomePage = () => {
@@ -50,7 +51,6 @@ const HomePage = () => {
   const { programs } = usePrograms(selectedFaculty || undefined);
   const { subjects } = useSubjects(selectedProgram || undefined, selectedSemester ? parseInt(selectedSemester) : undefined);
   const { notes: allNotes, loading: notesLoading } = useNotes();
-  const { notices } = useNotices();
   
   // Get semester options based on selected program
   const selectedProgramData = programs.find(p => p.id === selectedProgram);
@@ -587,49 +587,23 @@ const HomePage = () => {
       </section>
 
       {/* Notices Section */}
-      {notices.length > 0 && (
-        <section className="py-8 md:py-16 bg-gradient-to-b from-card/50 to-background">
-          <div className="container px-4 md:px-6">
-            <div className="flex items-center justify-between mb-6 md:mb-10">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="section-icon-wrapper section-icon-notice">
-                  <Bell className="h-4 w-4 md:h-5 md:w-5 text-electric-cyan" />
-                </div>
-                <div>
-                  <h2 className="text-xl md:text-3xl lg:text-4xl font-bold">Latest Notices</h2>
-                  <p className="text-muted-foreground text-xs md:text-base">Important announcements</p>
-                </div>
+      <section className="py-8 md:py-16 bg-gradient-to-b from-card/50 to-background">
+        <div className="container px-4 md:px-6">
+          <div className="flex items-center justify-between mb-6 md:mb-10">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="section-icon-wrapper section-icon-notice">
+                <Bell className="h-4 w-4 md:h-5 md:w-5 text-electric-cyan" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-3xl lg:text-4xl font-bold">Latest Notices</h2>
+                <p className="text-muted-foreground text-xs md:text-base">Auto-updated from RJU with live sync</p>
               </div>
             </div>
-
-            <div className="grid gap-3 md:gap-4 md:grid-cols-3">
-              {notices.slice(0, 3).map((notice) => (
-                <Card key={notice.id} className="notice-card group">
-                  <CardHeader className="pb-2 md:pb-3">
-                    <div className="flex items-center justify-between">
-                      <Badge 
-                        variant={notice.priority === 'urgent' || notice.priority === 'high' ? "destructive" : "secondary"}
-                        className={notice.priority === 'urgent' || notice.priority === 'high' ? "notice-badge-urgent" : "notice-badge"}
-                      >
-                        {(notice.priority === 'urgent' || notice.priority === 'high') && <Zap className="h-3 w-3 mr-1" />}
-                        {notice.category}
-                      </Badge>
-                      <span className="text-[10px] md:text-xs text-muted-foreground">
-                        {new Date(notice.published_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <h3 className="font-semibold text-sm md:text-base group-hover:text-electric-purple transition-colors line-clamp-2">
-                      {notice.title}
-                    </h3>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
-        </section>
-      )}
+
+          <NoticeBoard />
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-12 md:py-20">

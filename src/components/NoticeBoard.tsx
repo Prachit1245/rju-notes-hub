@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Bell, Calendar, ExternalLink, RefreshCw } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Bell, Calendar, ExternalLink, RefreshCw, Radio } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,17 +24,12 @@ export default function NoticeBoard() {
   const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
 
-  const fetchNotices = async () => {
+  const fetchNotices = useCallback(async () => {
     try {
-      // Calculate date 10 days ago
-      const tenDaysAgo = new Date();
-      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-      
       const { data, error } = await supabase
         .from('notices')
         .select('*')
         .eq('is_active', true)
-        .gte('published_at', tenDaysAgo.toISOString())
         .order('published_at', { ascending: false })
         .limit(10);
 
@@ -51,64 +46,87 @@ export default function NoticeBoard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
-  const refreshNotices = async () => {
+  const refreshNotices = useCallback(async (showToast = true) => {
     setRefreshing(true);
     try {
-      // Call the edge function to fetch new notices from RJU
       const { data, error } = await supabase.functions.invoke('fetch-rju-notices');
       
       if (error) throw error;
       
-      // Refresh the local notices after fetching new ones
       await fetchNotices();
       
-      toast({
-        title: "Success",
-        description: `Notices updated! ${data.newNotices} new notices added.`,
-      });
+      if (showToast) {
+        toast({
+          title: 'Notices updated',
+          description: `${data?.newNotices ?? 0} new notice${data?.newNotices === 1 ? '' : 's'} synced from RJU.`,
+        });
+      }
     } catch (error) {
       console.error('Error refreshing notices:', error);
-      toast({
-        title: "Error", 
-        description: "Failed to refresh notices from RJU website",
-        variant: "destructive",
-      });
+      if (showToast) {
+        toast({
+          title: 'Error', 
+          description: 'Failed to refresh notices from RJU website',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [fetchNotices, toast]);
 
   useEffect(() => {
-    fetchNotices();
+    let isMounted = true;
 
-    // Set up real-time subscription for notice updates
+    const loadAndSyncNotices = async () => {
+      await fetchNotices();
+      if (isMounted) {
+        await refreshNotices(false);
+      }
+    };
+
+    loadAndSyncNotices();
+
+    const interval = window.setInterval(() => {
+      refreshNotices(false);
+    }, 1000 * 60 * 15);
+
     const channel = supabase
       .channel('notices-changes')
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*',
           schema: 'public',
           table: 'notices'
         },
-        (payload) => {
-          console.log('New notice received:', payload);
-          setNotices(prev => [payload.new as Notice, ...prev.slice(0, 9)]);
-          
-          toast({
-            title: "New Notice!",
-            description: (payload.new as Notice).title,
-          });
+        async (payload) => {
+          console.log('Notice change received:', payload);
+          await fetchNotices();
+
+          if (payload.eventType === 'INSERT') {
+            toast({
+              title: 'New Notice!',
+              description: (payload.new as Notice).title,
+            });
+          }
         }
       )
       .subscribe();
 
     return () => {
+      isMounted = false;
+      window.clearInterval(interval);
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [fetchNotices, refreshNotices, toast]);
+
+  const tickerItems = useMemo(() => {
+    if (notices.length === 0) return [];
+    return [...notices, ...notices];
+  }, [notices]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -120,31 +138,36 @@ export default function NoticeBoard() {
 
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
+      case 'exam':
       case 'examinations':
-        return 'bg-red-100 text-red-800';
+        return 'notice-pill notice-pill-danger';
       case 'vacancy':
-        return 'bg-green-100 text-green-800';
+        return 'notice-pill notice-pill-success';
+      case 'result':
+        return 'notice-pill notice-pill-warning';
       case 'admissions':
-        return 'bg-blue-100 text-blue-800';
+      case 'admission':
+        return 'notice-pill notice-pill-info';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'notice-pill';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
       case 'high':
-        return 'bg-red-500 text-white';
+      case 'urgent':
+        return 'notice-priority notice-priority-high';
       case 'medium':
-        return 'bg-yellow-500 text-white';
+        return 'notice-priority notice-priority-medium';
       default:
-        return 'bg-gray-500 text-white';
+        return 'notice-priority';
     }
   };
 
   if (loading) {
     return (
-      <Card>
+      <Card className="notice-board-shell overflow-hidden border-border/60 bg-card/90 backdrop-blur-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
@@ -162,17 +185,24 @@ export default function NoticeBoard() {
   }
 
   return (
-    <Card>
+    <Card className="notice-board-shell overflow-hidden border-border/60 bg-card/90 shadow-xl backdrop-blur-xl">
       <CardHeader className="p-3 md:p-6">
+        <div className="flex flex-col gap-3 md:gap-4">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base">
-              <Bell className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-              Latest RJU Notices
-            </CardTitle>
+            <div className="space-y-1">
+              <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base">
+                <Bell className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+                Latest RJU Notices
+              </CardTitle>
+              <div className="flex items-center gap-2 text-[11px] md:text-xs text-muted-foreground">
+                <Radio className={`h-3.5 w-3.5 ${refreshing ? 'animate-pulse text-primary' : 'text-primary'}`} />
+                <span>Auto-syncing recent 10 notices from RJU</span>
+              </div>
+            </div>
             <Button 
               variant="outline" 
               size="sm"
-              onClick={refreshNotices}
+              onClick={() => refreshNotices(true)}
               disabled={refreshing}
               className="bg-primary/5 hover:bg-primary/10 text-xs md:text-sm h-8 px-2 md:px-3"
             >
@@ -180,15 +210,29 @@ export default function NoticeBoard() {
               <span className="hidden sm:inline">Refresh</span>
             </Button>
           </div>
+
+          {tickerItems.length > 0 && (
+            <div className="notice-ticker-shell">
+              <div className="notice-ticker-track">
+                {tickerItems.map((notice, index) => (
+                  <div key={`${notice.id}-${index}`} className="notice-ticker-item">
+                    <span className="notice-ticker-dot" aria-hidden="true" />
+                    <span className="truncate">{notice.title}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
         {notices.length === 0 ? (
           <div className="text-center py-6 md:py-8">
             <Bell className="h-10 w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 md:mb-4" />
             <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
-              No notices available. Click refresh to fetch latest notices.
+              No notices available yet. Start a sync to fetch the latest notices.
             </p>
-            <Button onClick={refreshNotices} disabled={refreshing} className="bg-primary hover:bg-primary/90 text-xs md:text-sm h-9">
+            <Button onClick={() => refreshNotices(true)} disabled={refreshing} className="bg-primary hover:bg-primary/90 text-xs md:text-sm h-9">
               <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
               Fetch Notices
             </Button>

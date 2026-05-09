@@ -18,8 +18,13 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch the RJU homepage which has the Notice Board section
-    const response = await fetch('https://rju.edu.np/', {
+    const categoryId = await fetchNoticesCategoryId();
+    const noticesApiUrl = categoryId
+      ? `https://rju.edu.np/wp-json/wp/v2/posts?categories=${categoryId}&per_page=10&_embed`
+      : 'https://rju.edu.np/wp-json/wp/v2/posts?per_page=10&_embed';
+
+    // Fetch the latest RJU notices from the WordPress API
+    const response = await fetch(noticesApiUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
@@ -29,29 +34,15 @@ Deno.serve(async (req) => {
       throw new Error(`Failed to fetch RJU website: ${response.status}`);
     }
 
-    const html = await response.text();
-    console.log(`Fetched HTML length: ${html.length}`);
+    const posts = await response.json();
+    console.log(`Fetched ${Array.isArray(posts) ? posts.length : 0} notice posts from WordPress API`);
 
-    // Parse notices from the RJU homepage
-    // The site uses gdlr-core-blog-grid with date + title links
-    const notices = parseRJUNotices(html);
+    const notices = parseRJUNotices(posts);
     console.log(`Parsed ${notices.length} total notices`);
-
-    // Filter to only notices from the last 2 days
-    const twoDaysAgo = new Date();
-    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-    twoDaysAgo.setHours(0, 0, 0, 0);
-
-    const recentNotices = notices.filter(n => {
-      const noticeDate = new Date(n.date);
-      return noticeDate >= twoDaysAgo;
-    });
-
-    console.log(`Notices from last 2 days: ${recentNotices.length}`);
 
     // Store new notices in database
     let newCount = 0;
-    for (const notice of recentNotices) {
+    for (const notice of notices) {
       // Check if notice already exists by title
       const { data: existing } = await supabase
         .from('notices')
@@ -59,7 +50,22 @@ Deno.serve(async (req) => {
         .eq('title', notice.title)
         .maybeSingle();
 
-      if (!existing) {
+      if (existing) {
+        const { error } = await supabase
+          .from('notices')
+          .update({
+            content: notice.content,
+            category: notice.category,
+            priority: 'normal',
+            published_at: notice.date,
+            is_active: true,
+          })
+          .eq('id', existing.id);
+
+        if (error) {
+          console.error('Error updating notice:', error);
+        }
+      } else {
         const { error } = await supabase
           .from('notices')
           .insert({
@@ -81,18 +87,30 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Clean up old notices (older than 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const latestTitles = notices.map((notice) => notice.title);
+    if (latestTitles.length > 0) {
+      const { error: cleanupError } = await supabase
+        .from('notices')
+        .delete()
+        .not('title', 'in', `(${latestTitles.map(escapePostgrestValue).join(',')})`);
+
+      if (cleanupError) {
+        console.error('Error cleaning up old notices:', cleanupError);
+      }
+    }
+
+    // Clean up stale notices if the source returns fewer than 10 items
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
     await supabase
       .from('notices')
       .delete()
-      .lt('published_at', thirtyDaysAgo.toISOString());
+      .lt('published_at', tenDaysAgo.toISOString());
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Parsed ${notices.length} notices, ${recentNotices.length} from last 2 days, added ${newCount} new`,
+        message: `Parsed ${notices.length} notices and synced the latest 10, added ${newCount} new`,
         newNotices: newCount,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -109,86 +127,86 @@ Deno.serve(async (req) => {
   }
 });
 
-function parseRJUNotices(html: string) {
-  const notices: Array<{ title: string; content: string; category: string; date: string }> = [];
+async function fetchNoticesCategoryId() {
+  try {
+    const response = await fetch('https://rju.edu.np/wp-json/wp/v2/categories?search=notice&per_page=20', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+    });
 
-  // The RJU site uses gdlr-core-item-list blocks for each notice
-  // Each block has: date span with a link like "April 3, 2026" and an h3 title with link
-  // Pattern: gdlr-core-item-list containing date + title
-  const itemPattern = /<div class="gdlr-core-item-list[^"]*"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/gi;
-  const items = html.match(itemPattern) || [];
-
-  console.log(`Found ${items.length} item-list blocks`);
-
-  // Also try a simpler approach: find all blog-grid content wraps
-  const gridPattern = /<div class="gdlr-core-blog-grid-content-wrap">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi;
-  let gridMatch;
-
-  while ((gridMatch = gridPattern.exec(html)) !== null) {
-    try {
-      const block = gridMatch[1];
-
-      // Extract date - look for date link like "April 3, 2026"
-      const dateLink = block.match(/<a href="https:\/\/rju\.edu\.np\/\d{4}\/\d{2}\/\d{2}\/">(.*?)<\/a>/i);
-      let dateStr = '';
-      if (dateLink) {
-        dateStr = dateLink[1].trim(); // e.g. "April 3, 2026"
-      }
-
-      // Extract title
-      const titleMatch = block.match(/<h3[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/i);
-      if (!titleMatch) continue;
-
-      const titleUrl = titleMatch[1];
-      const title = cleanText(titleMatch[2]);
-
-      if (!title || title.length < 5) continue;
-
-      // Parse date
-      let parsedDate: Date;
-      try {
-        parsedDate = new Date(dateStr);
-        if (isNaN(parsedDate.getTime())) {
-          parsedDate = new Date();
-        }
-      } catch {
-        parsedDate = new Date();
-      }
-
-      // Determine category
-      let category = 'general';
-      const titleLower = title.toLowerCase();
-      const urlLower = titleUrl.toLowerCase();
-      if (titleLower.includes('exam') || urlLower.includes('exam') || titleLower.includes('schedule')) {
-        category = 'exam';
-      } else if (titleLower.includes('result')) {
-        category = 'result';
-      } else if (titleLower.includes('admission') || titleLower.includes('entrance')) {
-        category = 'admission';
-      } else if (titleLower.includes('vacancy') || titleLower.includes('job') || titleLower.includes('application')) {
-        category = 'vacancy';
-      } else if (titleLower.includes('event') || titleLower.includes('workshop') || titleLower.includes('seminar')) {
-        category = 'event';
-      }
-
-      notices.push({
-        title,
-        content: `${title} - Published on ${dateStr}. View full notice at: ${titleUrl}`,
-        category,
-        date: parsedDate.toISOString(),
-      });
-    } catch (e) {
-      console.error('Error parsing notice block:', e);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch categories: ${response.status}`);
     }
+
+    const categories = await response.json();
+    const noticesCategory = Array.isArray(categories)
+      ? categories.find((category) => category?.slug === 'notices' || category?.name?.toLowerCase() === 'notices')
+      : null;
+
+    return noticesCategory?.id ?? null;
+  } catch (error) {
+    console.error('Unable to resolve notices category, falling back to latest posts:', error);
+    return null;
+  }
+}
+
+function parseRJUNotices(posts: any[]) {
+  if (!Array.isArray(posts)) {
+    return [];
   }
 
-  // Deduplicate by title
-  const seen = new Set<string>();
-  return notices.filter(n => {
-    if (seen.has(n.title)) return false;
-    seen.add(n.title);
-    return true;
-  });
+  return posts
+    .map((post) => {
+      const title = cleanText(post?.title?.rendered ?? '');
+      const excerpt = cleanText(post?.excerpt?.rendered ?? post?.content?.rendered ?? '');
+      const link = post?.link ?? 'https://rju.edu.np/notices/';
+      const publishedAt = post?.date_gmt ? `${post.date_gmt}Z` : post?.date;
+
+      if (!title || !publishedAt) {
+        return null;
+      }
+
+      return {
+        title,
+        content: excerpt || `${title} - View full notice at: ${link}`,
+        category: detectCategory(title, link),
+        date: new Date(publishedAt).toISOString(),
+      };
+    })
+    .filter((notice): notice is { title: string; content: string; category: string; date: string } => Boolean(notice))
+    .slice(0, 10);
+}
+
+function detectCategory(title: string, link: string) {
+  const titleLower = title.toLowerCase();
+  const urlLower = link.toLowerCase();
+
+  if (titleLower.includes('exam') || urlLower.includes('exam') || titleLower.includes('schedule')) {
+    return 'exam';
+  }
+
+  if (titleLower.includes('result')) {
+    return 'result';
+  }
+
+  if (titleLower.includes('admission') || titleLower.includes('entrance')) {
+    return 'admission';
+  }
+
+  if (titleLower.includes('vacancy') || titleLower.includes('job') || titleLower.includes('application')) {
+    return 'vacancy';
+  }
+
+  if (titleLower.includes('event') || titleLower.includes('workshop') || titleLower.includes('seminar')) {
+    return 'event';
+  }
+
+  return 'general';
+}
+
+function escapePostgrestValue(value: string) {
+  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
 
 function cleanText(text: string): string {
