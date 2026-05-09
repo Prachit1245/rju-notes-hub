@@ -21,7 +21,7 @@ interface Note {
   rating_count: number;
   tags: string[] | null;
   uploader_name: string | null;
-  uploader_email: string | null;
+  
   created_at: string;
   is_verified: boolean;
   subject_id: string;

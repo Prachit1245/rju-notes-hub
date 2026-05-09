@@ -36,7 +36,6 @@ export default function UploadPage() {
     title: '',
     description: '',
     uploader_name: '',
-    uploader_email: '',
     tags: '',
     customSubjectName: '',
     customSubjectCode: '',
@@ -218,7 +217,6 @@ export default function UploadPage() {
         title: '',
         description: '',
         uploader_name: '',
-        uploader_email: '',
         tags: '',
         customSubjectName: '',
         customSubjectCode: '',
@@ -522,16 +520,6 @@ export default function UploadPage() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="uploader_email">Uploader Email</Label>
-                      <Input
-                        id="uploader_email"
-                        type="email"
-                        value={formData.uploader_email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, uploader_email: e.target.value }))}
-                        placeholder="your.email@example.com (optional)"
-                      />
-                    </div>
                   </div>
 
                   <div className="space-y-4">

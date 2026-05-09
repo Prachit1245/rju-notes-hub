@@ -16,7 +16,7 @@ interface Note {
   file_type: string;
   file_size: number | null;
   uploader_name: string | null;
-  uploader_email: string | null;
+  
   is_public: boolean;
   created_at: string;
   download_count: number;
