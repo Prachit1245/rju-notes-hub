@@ -17,6 +17,7 @@ import {
   Bell,
   Star,
   Sparkles,
+  Zap,
   ArrowRight,
   GraduationCap,
   Library,
