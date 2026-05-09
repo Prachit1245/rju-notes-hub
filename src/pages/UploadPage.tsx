@@ -36,7 +36,6 @@ export default function UploadPage() {
     title: '',
     description: '',
     uploader_name: '',
-    uploader_email: '',
     tags: '',
     customSubjectName: '',
     customSubjectCode: '',
@@ -202,7 +201,7 @@ export default function UploadPage() {
             file_size: fileUpload.file.size,
             file_type: fileUpload.file.type,
             uploader_name: formData.uploader_name,
-            uploader_email: formData.uploader_email,
+            
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
           },
         });
@@ -218,7 +217,6 @@ export default function UploadPage() {
         title: '',
         description: '',
         uploader_name: '',
-        uploader_email: '',
         tags: '',
         customSubjectName: '',
         customSubjectCode: '',
@@ -522,16 +520,6 @@ export default function UploadPage() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="uploader_email">Uploader Email</Label>
-                      <Input
-                        id="uploader_email"
-                        type="email"
-                        value={formData.uploader_email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, uploader_email: e.target.value }))}
-                        placeholder="your.email@example.com (optional)"
-                      />
-                    </div>
                   </div>
 
                   <div className="space-y-4">

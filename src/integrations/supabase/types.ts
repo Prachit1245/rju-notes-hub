@@ -159,7 +159,6 @@ export type Database = {
           tags: string[] | null
           title: string
           updated_at: string
-          uploader_email: string | null
           uploader_name: string | null
         }
         Insert: {
@@ -182,7 +181,6 @@ export type Database = {
           tags?: string[] | null
           title: string
           updated_at?: string
-          uploader_email?: string | null
           uploader_name?: string | null
         }
         Update: {
@@ -205,7 +203,6 @@ export type Database = {
           tags?: string[] | null
           title?: string
           updated_at?: string
-          uploader_email?: string | null
           uploader_name?: string | null
         }
         Relationships: [

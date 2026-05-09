@@ -38,7 +38,7 @@ export interface Note {
   file_size?: number;
   file_type: string;
   uploader_name?: string;
-  uploader_email?: string;
+  
   download_count: number;
   rating_sum: number;
   rating_count: number;
