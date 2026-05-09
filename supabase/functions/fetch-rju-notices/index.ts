@@ -50,7 +50,22 @@ Deno.serve(async (req) => {
         .eq('title', notice.title)
         .maybeSingle();
 
-      if (!existing) {
+      if (existing) {
+        const { error } = await supabase
+          .from('notices')
+          .update({
+            content: notice.content,
+            category: notice.category,
+            priority: 'normal',
+            published_at: notice.date,
+            is_active: true,
+          })
+          .eq('id', existing.id);
+
+        if (error) {
+          console.error('Error updating notice:', error);
+        }
+      } else {
         const { error } = await supabase
           .from('notices')
           .insert({
