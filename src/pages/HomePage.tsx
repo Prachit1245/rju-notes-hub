@@ -409,6 +409,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
 
