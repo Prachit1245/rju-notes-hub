@@ -222,9 +222,11 @@ export type Database = {
           created_at: string
           expires_at: string | null
           id: string
+          image_url: string | null
           is_active: boolean
           priority: string
           published_at: string
+          source_url: string | null
           title: string
           updated_at: string
         }
@@ -234,9 +236,11 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean
           priority?: string
           published_at?: string
+          source_url?: string | null
           title: string
           updated_at?: string
         }
@@ -246,9 +250,11 @@ export type Database = {
           created_at?: string
           expires_at?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean
           priority?: string
           published_at?: string
+          source_url?: string | null
           title?: string
           updated_at?: string
         }
