@@ -59,6 +59,8 @@ Deno.serve(async (req) => {
             priority: 'normal',
             published_at: notice.date,
             is_active: true,
+            image_url: notice.image_url,
+            source_url: notice.source_url,
           })
           .eq('id', existing.id);
 
@@ -76,6 +78,8 @@ Deno.serve(async (req) => {
             published_at: notice.date,
             expires_at: null,
             is_active: true,
+            image_url: notice.image_url,
+            source_url: notice.source_url,
           });
 
         if (error) {
