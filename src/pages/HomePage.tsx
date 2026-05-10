@@ -513,8 +513,8 @@ const HomePage = () => {
             </div>
           ) : latestNotes.length > 0 ? (
             <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
-              {latestNotes.map((note) => (
-                <div key={note.id} className="flex-shrink-0 w-[75vw] md:w-auto snap-center">
+              {latestNotes.map((note, idx) => (
+                <Reveal key={note.id} variant="up" delay={idx * 90} className="flex-shrink-0 w-[75vw] md:w-auto snap-center hover-lift">
                   <NoteCard 
                     title={note.title}
                     subject={note.description || "Study Material"}
@@ -528,7 +528,7 @@ const HomePage = () => {
                     contributor={note.uploader_name}
                     noteId={note.id}
                   />
-                </div>
+                </Reveal>
               ))}
             </div>
           ) : (
