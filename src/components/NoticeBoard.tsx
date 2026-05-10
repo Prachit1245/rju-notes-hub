@@ -238,55 +238,65 @@ export default function NoticeBoard() {
             </Button>
           </div>
         ) : (
-          <div className="space-y-2.5 md:space-y-4">
-            {notices.map((notice) => (
-              <div
-                key={notice.id}
-                className="border rounded-lg p-2.5 md:p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-1.5 md:mb-2">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-xs md:text-lg line-clamp-2 mb-1.5 md:mb-2">
-                      {notice.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2 flex-wrap">
-                      <Badge className={`${getCategoryColor(notice.category)} text-[10px] md:text-xs px-1.5 md:px-2`}>
-                        {notice.category}
-                      </Badge>
-                      {notice.priority !== 'normal' && (
-                        <Badge className={`${getPriorityColor(notice.priority)} text-[10px] md:text-xs px-1.5 md:px-2`}>
-                          {notice.priority}
+          <div className="space-y-2.5 md:space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2 text-[11px] md:text-xs text-muted-foreground">
+                <span className="notice-live-dot" aria-hidden="true" />
+                <span className="font-medium tracking-wide uppercase">Live · Top {notices.length}</span>
+              </div>
+              <span className="text-[10px] md:text-xs text-muted-foreground/80">Scroll for more ↓</span>
+            </div>
+            <div className="notice-list-scroll space-y-2.5 md:space-y-3">
+              {notices.map((notice, idx) => (
+                <div
+                  key={notice.id}
+                  className="notice-item-anim notice-card-hover border rounded-lg p-2.5 md:p-3.5 hover:shadow-md transition-all duration-300"
+                  style={{ animationDelay: `${idx * 60}ms` }}
+                >
+                  <div className="flex items-start justify-between mb-1.5">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-xs md:text-sm line-clamp-2 mb-1.5">
+                        {notice.title}
+                      </h3>
+                      <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                        <Badge className={`${getCategoryColor(notice.category)} text-[10px] px-1.5`}>
+                          {notice.category}
                         </Badge>
-                      )}
+                        {notice.priority !== 'normal' && (
+                          <Badge className={`${getPriorityColor(notice.priority)} text-[10px] px-1.5`}>
+                            {notice.priority}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <p className="text-muted-foreground text-[11px] md:text-sm line-clamp-2 md:line-clamp-3 mb-2 md:mb-3">
-                  {notice.content}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-[10px] md:text-sm text-muted-foreground">
-                    <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                    {formatDate(notice.published_at)}
+
+                  <p className="text-muted-foreground text-[11px] md:text-xs line-clamp-2 mb-2">
+                    {notice.content}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-[10px] md:text-xs text-muted-foreground">
+                      <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3" />
+                      {formatDate(notice.published_at)}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
+                      className="text-primary hover:bg-primary/10 text-[10px] md:text-xs h-7 px-2 hover-scale"
+                    >
+                      <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
+                      View
+                    </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
-                    className="text-primary hover:bg-primary/10 text-[10px] md:text-xs h-7 md:h-8 px-2"
-                  >
-                    <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
-                    View
-                  </Button>
                 </div>
-              </div>
-            ))}
-            
-            <Button 
-              variant="outline" 
-              className="w-full bg-primary/5 hover:bg-primary/10 text-primary text-xs md:text-sm h-9 md:h-10"
+              ))}
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full bg-primary/5 hover:bg-primary/10 text-primary text-xs md:text-sm h-9 md:h-10 hover-scale"
               onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
             >
               <ExternalLink className="h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2" />
