@@ -32,6 +32,7 @@ import NoteCard from '@/components/NoteCard';
 import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
 import NoticeBoard from '@/components/NoticeBoard';
+import { Reveal } from '@/components/Reveal';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
