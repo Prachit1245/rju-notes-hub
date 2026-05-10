@@ -257,17 +257,18 @@ const HomePage = () => {
               { value: '5,000+', label: 'Students', icon: Users, color: 'green', delay: '200ms' },
               { value: '100%', label: 'Free', icon: Heart, color: 'pink', delay: '300ms' },
             ].map((stat, idx) => (
-              <div 
+              <Reveal
                 key={idx}
-                className="stat-card-premium"
-                style={{ animationDelay: stat.delay }}
+                variant="up"
+                delay={idx * 90}
+                className="stat-card-premium hover-lift"
               >
-                <div className={`stat-icon stat-icon-${stat.color}`}>
+                <div className={`stat-icon stat-icon-${stat.color} icon-pop float-soft`}>
                   <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
                 </div>
                 <div className="stat-value">{stat.value}</div>
                 <div className="stat-label">{stat.label}</div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
