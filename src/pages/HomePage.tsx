@@ -489,9 +489,9 @@ const HomePage = () => {
       {/* Latest Notes Section */}
       <section className="py-8 md:py-16 bg-gradient-to-b from-background to-card/50">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="left" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper">
+              <div className="section-icon-wrapper icon-pop float-soft">
                 <Clock className="h-4 w-4 md:h-5 md:w-5 text-electric-purple" />
               </div>
               <div>
@@ -505,7 +505,7 @@ const HomePage = () => {
                 <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
+          </Reveal>
           
           {notesLoading ? (
             <div className="flex justify-center py-12">
