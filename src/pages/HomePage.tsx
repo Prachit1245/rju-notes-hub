@@ -32,6 +32,7 @@ import NoteCard from '@/components/NoteCard';
 import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
 import NoticeBoard from '@/components/NoticeBoard';
+import { Reveal } from '@/components/Reveal';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
@@ -256,17 +257,18 @@ const HomePage = () => {
               { value: '5,000+', label: 'Students', icon: Users, color: 'green', delay: '200ms' },
               { value: '100%', label: 'Free', icon: Heart, color: 'pink', delay: '300ms' },
             ].map((stat, idx) => (
-              <div 
+              <Reveal
                 key={idx}
-                className="stat-card-premium"
-                style={{ animationDelay: stat.delay }}
+                variant="up"
+                delay={idx * 90}
+                className="stat-card-premium hover-lift"
               >
-                <div className={`stat-icon stat-icon-${stat.color}`}>
+                <div className={`stat-icon stat-icon-${stat.color} icon-pop float-soft`}>
                   <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
                 </div>
                 <div className="stat-value">{stat.value}</div>
                 <div className="stat-label">{stat.label}</div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -275,20 +277,21 @@ const HomePage = () => {
       {/* Browse Notes by Faculty Section - NEW DESIGN */}
       <section className="py-8 md:py-16 relative">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-6 md:mb-10">
+          <Reveal variant="up" className="text-center mb-6 md:mb-10">
             <Badge className="mb-3 md:mb-4 bg-electric-cyan/10 text-electric-cyan border-electric-cyan/30">
               <Folder className="h-3 w-3 mr-1" />
               Browse
             </Badge>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
-              Study <span className="hero-title-gradient">Notes</span>
+              Study <span className="hero-title-gradient text-shimmer">Notes</span>
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
               Access study materials by faculty, program & semester
             </p>
-          </div>
+          </Reveal>
 
-          <div className="browse-section-card">
+          <Reveal variant="zoom" delay={120}>
+          <div className="browse-section-card hover-lift">
             <div className="browse-section-inner">
               {/* Faculty Selection */}
               <div className="browse-filters">
@@ -406,29 +409,30 @@ const HomePage = () => {
               </div>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Features Bento Grid */}
       <section className="py-8 md:py-16">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-8 md:mb-12">
+          <Reveal variant="up" className="text-center mb-8 md:mb-12">
             <Badge className="mb-3 md:mb-4 bg-electric-purple/10 text-electric-purple border-electric-purple/30">
               <Zap className="h-3 w-3 mr-1" />
               Features
             </Badge>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
-              Why Choose <span className="hero-title-gradient">RJU Notes?</span>
+              Why Choose <span className="hero-title-gradient text-shimmer">RJU Notes?</span>
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
               Everything you need to excel in your studies
             </p>
-          </div>
+          </Reveal>
 
           <div className="bento-grid">
-            <div className="bento-card bento-card-large group">
+            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift">
               <div className="bento-card-glow bento-glow-purple" />
-              <div className="bento-icon bento-icon-purple">
+              <div className="bento-icon bento-icon-purple icon-pop float-soft">
                 <Download className="h-6 w-6 md:h-8 md:w-8" />
               </div>
               <h3 className="bento-title">Instant Downloads</h3>
@@ -441,43 +445,43 @@ const HomePage = () => {
                 </span>
                 <span className="bento-stat-label">Downloads</span>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-medium group">
+            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift">
               <div className="bento-card-glow bento-glow-cyan" />
-              <div className="bento-icon bento-icon-cyan">
+              <div className="bento-icon bento-icon-cyan icon-pop float-soft-delay">
                 <Upload className="h-5 w-5 md:h-6 md:w-6" />
               </div>
               <h3 className="bento-title">Share & Contribute</h3>
               <p className="bento-desc">
                 Help your juniors by uploading your notes
               </p>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-medium group">
+            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift">
               <div className="bento-card-glow bento-glow-green" />
-              <div className="bento-icon bento-icon-green">
+              <div className="bento-icon bento-icon-green icon-pop float-soft">
                 <Bell className="h-5 w-5 md:h-6 md:w-6" />
               </div>
               <h3 className="bento-title">Latest Updates</h3>
               <p className="bento-desc">
                 Get instant notifications for new materials
               </p>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-small group">
-              <div className="bento-icon-small bento-icon-orange">
+            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift">
+              <div className="bento-icon-small bento-icon-orange icon-pop">
                 <Star className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Top Rated</span>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-small group">
-              <div className="bento-icon-small bento-icon-pink">
+            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift">
+              <div className="bento-icon-small bento-icon-pink icon-pop">
                 <Rocket className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Fast & Free</span>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -485,9 +489,9 @@ const HomePage = () => {
       {/* Latest Notes Section */}
       <section className="py-8 md:py-16 bg-gradient-to-b from-background to-card/50">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="left" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper">
+              <div className="section-icon-wrapper icon-pop float-soft">
                 <Clock className="h-4 w-4 md:h-5 md:w-5 text-electric-purple" />
               </div>
               <div>
@@ -501,7 +505,7 @@ const HomePage = () => {
                 <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
+          </Reveal>
           
           {notesLoading ? (
             <div className="flex justify-center py-12">
@@ -509,8 +513,8 @@ const HomePage = () => {
             </div>
           ) : latestNotes.length > 0 ? (
             <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
-              {latestNotes.map((note) => (
-                <div key={note.id} className="flex-shrink-0 w-[75vw] md:w-auto snap-center">
+              {latestNotes.map((note, idx) => (
+                <Reveal key={note.id} variant="up" delay={idx * 90} className="flex-shrink-0 w-[75vw] md:w-auto snap-center hover-lift">
                   <NoteCard 
                     title={note.title}
                     subject={note.description || "Study Material"}
@@ -524,7 +528,7 @@ const HomePage = () => {
                     contributor={note.uploader_name}
                     noteId={note.id}
                   />
-                </div>
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -544,9 +548,9 @@ const HomePage = () => {
       {/* Trending Section */}
       <section className="py-8 md:py-16">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="right" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper section-icon-trending">
+              <div className="section-icon-wrapper section-icon-trending icon-pop float-soft-delay">
                 <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-electric-orange" />
               </div>
               <div>
@@ -560,12 +564,12 @@ const HomePage = () => {
                 <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
+          </Reveal>
           
           {trendingNotes.length > 0 && (
             <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
-              {trendingNotes.map((note) => (
-                <div key={note.id} className="flex-shrink-0 w-[75vw] md:w-auto snap-center">
+              {trendingNotes.map((note, idx) => (
+                <Reveal key={note.id} variant="up" delay={idx * 90} className="flex-shrink-0 w-[75vw] md:w-auto snap-center hover-lift">
                   <NoteCard 
                     title={note.title}
                     subject={note.description || "Study Material"}
@@ -579,7 +583,7 @@ const HomePage = () => {
                     contributor={note.uploader_name}
                     noteId={note.id}
                   />
-                </div>
+                </Reveal>
               ))}
             </div>
           )}
@@ -589,9 +593,9 @@ const HomePage = () => {
       {/* Notices Section */}
       <section className="py-8 md:py-16 bg-gradient-to-b from-card/50 to-background">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="left" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper section-icon-notice">
+              <div className="section-icon-wrapper section-icon-notice icon-pop float-soft">
                 <Bell className="h-4 w-4 md:h-5 md:w-5 text-electric-cyan" />
               </div>
               <div>
@@ -599,20 +603,22 @@ const HomePage = () => {
                 <p className="text-muted-foreground text-xs md:text-base">Auto-updated from RJU with live sync</p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <NoticeBoard />
+          <Reveal variant="zoom" delay={120}>
+            <NoticeBoard />
+          </Reveal>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-12 md:py-20">
         <div className="container px-4 md:px-6">
-          <div className="cta-section-premium">
+          <Reveal variant="zoom" className="cta-section-premium hover-lift">
             <div className="cta-glow" />
             <div className="relative z-10 text-center">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-foreground">
-                Ready to <span className="hero-title-gradient">Start Learning?</span>
+                Ready to <span className="hero-title-gradient text-shimmer">Start Learning?</span>
               </h2>
               <p className="text-muted-foreground text-sm md:text-lg mb-6 md:mb-8 max-w-xl mx-auto">
                 Join thousands of students who are already using RJU Notes
@@ -624,7 +630,7 @@ const HomePage = () => {
                 </Button>
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 

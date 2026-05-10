@@ -1883,3 +1883,81 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   0% { transform: scale(0.8); opacity: 1; }
   100% { transform: scale(1.5); opacity: 0; }
 }
+/* ============== Scroll reveal animations ============== */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: blur(6px);
+  will-change: opacity, transform, filter;
+}
+.reveal-up    { transform: translate3d(0, 40px, 0); }
+.reveal-down  { transform: translate3d(0, -40px, 0); }
+.reveal-left  { transform: translate3d(-50px, 0, 0); }
+.reveal-right { transform: translate3d(50px, 0, 0); }
+.reveal-zoom  { transform: scale(0.92); }
+.reveal-fade  { transform: none; }
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+/* Hover micro-interactions */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px -18px hsl(var(--electric-purple) / 0.45);
+}
+.hover-tilt {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hover-tilt:hover {
+  transform: perspective(800px) rotateX(4deg) rotateY(-4deg) translateY(-4px);
+}
+
+/* Continuous floating helpers */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-soft { animation: float-soft 5s ease-in-out infinite; }
+.float-soft-delay { animation: float-soft 6s ease-in-out infinite; animation-delay: 1s; }
+
+/* Animated gradient text shimmer */
+@keyframes text-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.text-shimmer {
+  background: linear-gradient(90deg,
+    hsl(var(--electric-purple)),
+    hsl(var(--cyber-cyan)),
+    hsl(var(--hot-pink)),
+    hsl(var(--electric-purple)));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 4s linear infinite;
+}
+
+/* Pop on hover for icon wrappers */
+.icon-pop { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.icon-pop:hover { transform: scale(1.15) rotate(-6deg); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .float-soft, .float-soft-delay, .text-shimmer, .hover-lift, .hover-tilt, .icon-pop {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}
