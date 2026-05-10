@@ -593,9 +593,9 @@ const HomePage = () => {
       {/* Notices Section */}
       <section className="py-8 md:py-16 bg-gradient-to-b from-card/50 to-background">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="left" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper section-icon-notice">
+              <div className="section-icon-wrapper section-icon-notice icon-pop float-soft">
                 <Bell className="h-4 w-4 md:h-5 md:w-5 text-electric-cyan" />
               </div>
               <div>
@@ -603,9 +603,11 @@ const HomePage = () => {
                 <p className="text-muted-foreground text-xs md:text-base">Auto-updated from RJU with live sync</p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <NoticeBoard />
+          <Reveal variant="zoom" delay={120}>
+            <NoticeBoard />
+          </Reveal>
         </div>
       </section>
 
