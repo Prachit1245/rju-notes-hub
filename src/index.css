@@ -958,6 +958,78 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   box-shadow: 0 10px 30px hsl(var(--electric-purple) / 0.1);
 }
 
+/* Scrollable notices list */
+.notice-list-scroll {
+  max-height: 22rem;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding-right: 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.5) transparent;
+  mask-image: linear-gradient(180deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+}
+.notice-list-scroll::-webkit-scrollbar { width: 6px; }
+.notice-list-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--primary) / 0.7), hsl(var(--electric-purple) / 0.7));
+  border-radius: 999px;
+}
+.notice-list-scroll::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes notice-item-in {
+  0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.notice-item-anim {
+  animation: notice-item-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes notice-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.notice-live-dot {
+  position: relative;
+  display: inline-flex;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  box-shadow: 0 0 0 0 hsl(var(--primary) / 0.6);
+  animation: pulse-glow 1.6s ease-out infinite;
+}
+.notice-live-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 2px solid hsl(var(--primary) / 0.5);
+  animation: notice-ring 1.6s ease-out infinite;
+}
+@keyframes notice-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.notice-card-hover {
+  position: relative;
+  overflow: hidden;
+}
+.notice-card-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, hsl(var(--primary) / 0.12) 50%, transparent 70%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.notice-card-hover:hover::before {
+  opacity: 1;
+  animation: notice-shimmer 1.4s linear infinite;
+}
+
 .notice-pill {
   background: hsl(var(--secondary) / 0.14);
   color: hsl(var(--secondary-foreground));
