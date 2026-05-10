@@ -416,23 +416,23 @@ const HomePage = () => {
       {/* Features Bento Grid */}
       <section className="py-8 md:py-16">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-8 md:mb-12">
+          <Reveal variant="up" className="text-center mb-8 md:mb-12">
             <Badge className="mb-3 md:mb-4 bg-electric-purple/10 text-electric-purple border-electric-purple/30">
               <Zap className="h-3 w-3 mr-1" />
               Features
             </Badge>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
-              Why Choose <span className="hero-title-gradient">RJU Notes?</span>
+              Why Choose <span className="hero-title-gradient text-shimmer">RJU Notes?</span>
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
               Everything you need to excel in your studies
             </p>
-          </div>
+          </Reveal>
 
           <div className="bento-grid">
-            <div className="bento-card bento-card-large group">
+            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift">
               <div className="bento-card-glow bento-glow-purple" />
-              <div className="bento-icon bento-icon-purple">
+              <div className="bento-icon bento-icon-purple icon-pop float-soft">
                 <Download className="h-6 w-6 md:h-8 md:w-8" />
               </div>
               <h3 className="bento-title">Instant Downloads</h3>
@@ -445,43 +445,43 @@ const HomePage = () => {
                 </span>
                 <span className="bento-stat-label">Downloads</span>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-medium group">
+            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift">
               <div className="bento-card-glow bento-glow-cyan" />
-              <div className="bento-icon bento-icon-cyan">
+              <div className="bento-icon bento-icon-cyan icon-pop float-soft-delay">
                 <Upload className="h-5 w-5 md:h-6 md:w-6" />
               </div>
               <h3 className="bento-title">Share & Contribute</h3>
               <p className="bento-desc">
                 Help your juniors by uploading your notes
               </p>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-medium group">
+            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift">
               <div className="bento-card-glow bento-glow-green" />
-              <div className="bento-icon bento-icon-green">
+              <div className="bento-icon bento-icon-green icon-pop float-soft">
                 <Bell className="h-5 w-5 md:h-6 md:w-6" />
               </div>
               <h3 className="bento-title">Latest Updates</h3>
               <p className="bento-desc">
                 Get instant notifications for new materials
               </p>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-small group">
-              <div className="bento-icon-small bento-icon-orange">
+            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift">
+              <div className="bento-icon-small bento-icon-orange icon-pop">
                 <Star className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Top Rated</span>
-            </div>
+            </Reveal>
 
-            <div className="bento-card bento-card-small group">
-              <div className="bento-icon-small bento-icon-pink">
+            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift">
+              <div className="bento-icon-small bento-icon-pink icon-pop">
                 <Rocket className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Fast & Free</span>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
