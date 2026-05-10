@@ -290,7 +290,7 @@ const HomePage = () => {
             </p>
           </Reveal>
 
-          <Reveal variant="zoom" delay={120} className="browse-section-card">
+          <div className="browse-section-card reveal reveal-zoom is-visible">
             <div className="browse-section-inner">
               {/* Faculty Selection */}
               <div className="browse-filters">
