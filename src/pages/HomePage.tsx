@@ -548,9 +548,9 @@ const HomePage = () => {
       {/* Trending Section */}
       <section className="py-8 md:py-16">
         <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between mb-6 md:mb-10">
+          <Reveal variant="right" className="flex items-center justify-between mb-6 md:mb-10">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="section-icon-wrapper section-icon-trending">
+              <div className="section-icon-wrapper section-icon-trending icon-pop float-soft-delay">
                 <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-electric-orange" />
               </div>
               <div>
@@ -564,7 +564,7 @@ const HomePage = () => {
                 <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
+          </Reveal>
           
           {trendingNotes.length > 0 && (
             <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-0 md:grid md:grid-cols-4 snap-x snap-mandatory scrollbar-hide">
