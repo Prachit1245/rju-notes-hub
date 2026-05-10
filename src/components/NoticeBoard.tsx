@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Bell, Calendar, ExternalLink, RefreshCw, Radio } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Bell, RefreshCw, Radio, ImageOff, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,7 +15,11 @@ interface Notice {
   expires_at: string | null;
   is_active: boolean;
   created_at: string;
+  image_url?: string | null;
+  source_url?: string | null;
 }
+
+const FALLBACK_URL = 'https://rju.edu.np/notices/';
 
 export default function NoticeBoard() {
   const [notices, setNotices] = useState<Notice[]>([]);
@@ -34,43 +37,30 @@ export default function NoticeBoard() {
         .limit(10);
 
       if (error) throw error;
-      
-      setNotices(data || []);
+      setNotices((data || []) as Notice[]);
     } catch (error) {
       console.error('Error fetching notices:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch notices",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   const refreshNotices = useCallback(async (showToast = true) => {
     setRefreshing(true);
     try {
       const { data, error } = await supabase.functions.invoke('fetch-rju-notices');
-      
       if (error) throw error;
-      
       await fetchNotices();
-      
       if (showToast) {
         toast({
           title: 'Notices updated',
-          description: `${data?.newNotices ?? 0} new notice${data?.newNotices === 1 ? '' : 's'} synced from RJU.`,
+          description: `${data?.newNotices ?? 0} new notice${data?.newNotices === 1 ? '' : 's'} synced.`,
         });
       }
     } catch (error) {
       console.error('Error refreshing notices:', error);
       if (showToast) {
-        toast({
-          title: 'Error', 
-          description: 'Failed to refresh notices from RJU website',
-          variant: 'destructive',
-        });
+        toast({ title: 'Error', description: 'Failed to refresh notices', variant: 'destructive' });
       }
     } finally {
       setRefreshing(false);
@@ -79,41 +69,21 @@ export default function NoticeBoard() {
 
   useEffect(() => {
     let isMounted = true;
-
-    const loadAndSyncNotices = async () => {
+    (async () => {
       await fetchNotices();
-      if (isMounted) {
-        await refreshNotices(false);
-      }
-    };
+      if (isMounted) await refreshNotices(false);
+    })();
 
-    loadAndSyncNotices();
-
-    const interval = window.setInterval(() => {
-      refreshNotices(false);
-    }, 1000 * 60 * 15);
+    const interval = window.setInterval(() => refreshNotices(false), 1000 * 60 * 30);
 
     const channel = supabase
       .channel('notices-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'notices'
-        },
-        async (payload) => {
-          console.log('Notice change received:', payload);
-          await fetchNotices();
-
-          if (payload.eventType === 'INSERT') {
-            toast({
-              title: 'New Notice!',
-              description: (payload.new as Notice).title,
-            });
-          }
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notices' }, async (payload) => {
+        await fetchNotices();
+        if (payload.eventType === 'INSERT') {
+          toast({ title: 'New Notice', description: (payload.new as Notice).title });
         }
-      )
+      })
       .subscribe();
 
     return () => {
@@ -123,186 +93,109 @@ export default function NoticeBoard() {
     };
   }, [fetchNotices, refreshNotices, toast]);
 
-  const tickerItems = useMemo(() => {
-    if (notices.length === 0) return [];
-    return [...notices, ...notices];
-  }, [notices]);
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+  const openNotice = (n: Notice) => {
+    window.open(n.source_url || FALLBACK_URL, '_blank', 'noopener,noreferrer');
   };
-
-  const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'exam':
-      case 'examinations':
-        return 'notice-pill notice-pill-danger';
-      case 'vacancy':
-        return 'notice-pill notice-pill-success';
-      case 'result':
-        return 'notice-pill notice-pill-warning';
-      case 'admissions':
-      case 'admission':
-        return 'notice-pill notice-pill-info';
-      default:
-        return 'notice-pill';
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority.toLowerCase()) {
-      case 'high':
-      case 'urgent':
-        return 'notice-priority notice-priority-high';
-      case 'medium':
-        return 'notice-priority notice-priority-medium';
-      default:
-        return 'notice-priority';
-    }
-  };
-
-  if (loading) {
-    return (
-      <Card className="notice-board-shell overflow-hidden border-border/60 bg-card/90 backdrop-blur-xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Notice Board
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Loading notices...</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
-    <Card className="notice-board-shell overflow-hidden border-border/60 bg-card/90 shadow-xl backdrop-blur-xl">
-      <CardHeader className="p-3 md:p-6">
-        <div className="flex flex-col gap-3 md:gap-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="space-y-1">
-              <CardTitle className="flex items-center gap-1.5 md:gap-2 text-sm md:text-base">
-                <Bell className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                Latest RJU Notices
-              </CardTitle>
-              <div className="flex items-center gap-2 text-[11px] md:text-xs text-muted-foreground">
-                <Radio className={`h-3.5 w-3.5 ${refreshing ? 'animate-pulse text-primary' : 'text-primary'}`} />
-                <span>Auto-syncing recent 10 notices from RJU</span>
-              </div>
+    <Card className="notice-board-shell overflow-hidden border-border/60 bg-card/90 shadow-lg backdrop-blur-xl">
+      <CardHeader className="p-3 md:p-4">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <CardTitle className="flex items-center gap-2 text-sm md:text-base">
+              <Bell className="h-4 w-4 text-primary" />
+              Latest RJU Notices
+            </CardTitle>
+            <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-muted-foreground mt-1">
+              <Radio className={`h-3 w-3 ${refreshing ? 'animate-pulse' : ''} text-primary`} />
+              <span>Auto-syncs daily · 8:00 PM NPT</span>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => refreshNotices(true)}
-              disabled={refreshing}
-              className="bg-primary/5 hover:bg-primary/10 text-xs md:text-sm h-8 px-2 md:px-3"
-            >
-              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Refresh</span>
-            </Button>
           </div>
-
-          {tickerItems.length > 0 && (
-            <div className="notice-ticker-shell">
-              <div className="notice-ticker-track">
-                {tickerItems.map((notice, index) => (
-                  <div key={`${notice.id}-${index}`} className="notice-ticker-item">
-                    <span className="notice-ticker-dot" aria-hidden="true" />
-                    <span className="truncate">{notice.title}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refreshNotices(true)}
+            disabled={refreshing}
+            className="h-8 px-2 text-xs"
+          >
+            <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
+          </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-        {notices.length === 0 ? (
-          <div className="text-center py-6 md:py-8">
-            <Bell className="h-10 w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 md:mb-4" />
-            <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
-              No notices available yet. Start a sync to fetch the latest notices.
-            </p>
-            <Button onClick={() => refreshNotices(true)} disabled={refreshing} className="bg-primary hover:bg-primary/90 text-xs md:text-sm h-9">
-              <RefreshCw className={`h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              Fetch Notices
+
+      <CardContent className="p-3 pt-0 md:p-4 md:pt-0">
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
+            ))}
+          </div>
+        ) : notices.length === 0 ? (
+          <div className="text-center py-6">
+            <Bell className="h-10 w-10 text-primary mx-auto mb-3" />
+            <p className="text-xs text-muted-foreground mb-3">No notices yet.</p>
+            <Button onClick={() => refreshNotices(true)} disabled={refreshing} size="sm">
+              <RefreshCw className={`h-3 w-3 mr-1.5 ${refreshing ? 'animate-spin' : ''}`} />
+              Fetch Now
             </Button>
           </div>
         ) : (
-          <div className="space-y-2.5 md:space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2 text-[11px] md:text-xs text-muted-foreground">
-                <span className="notice-live-dot" aria-hidden="true" />
-                <span className="font-medium tracking-wide uppercase">Live · Top {notices.length}</span>
-              </div>
-              <span className="text-[10px] md:text-xs text-muted-foreground/80">Scroll for more ↓</span>
-            </div>
-            <div className="notice-list-scroll space-y-2.5 md:space-y-3">
-              {notices.map((notice, idx) => (
-                <div
-                  key={notice.id}
-                  className="notice-item-anim notice-card-hover border rounded-lg p-2.5 md:p-3.5 hover:shadow-md transition-all duration-300"
-                  style={{ animationDelay: `${idx * 60}ms` }}
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-2.5">
+              {notices.map((n, idx) => (
+                <button
+                  key={n.id}
+                  onClick={() => openNotice(n)}
+                  className="notice-tile group relative aspect-square rounded-lg overflow-hidden border border-border/60 bg-muted/40 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary"
+                  style={{ animation: `fade-in 0.4s ease-out both`, animationDelay: `${idx * 50}ms` }}
+                  title={n.title}
                 >
-                  <div className="flex items-start justify-between mb-1.5">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-xs md:text-sm line-clamp-2 mb-1.5">
-                        {notice.title}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                        <Badge className={`${getCategoryColor(notice.category)} text-[10px] px-1.5`}>
-                          {notice.category}
-                        </Badge>
-                        {notice.priority !== 'normal' && (
-                          <Badge className={`${getPriorityColor(notice.priority)} text-[10px] px-1.5`}>
-                            {notice.priority}
-                          </Badge>
-                        )}
-                      </div>
+                  {n.image_url ? (
+                    <img
+                      src={n.image_url}
+                      alt={n.title}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                      <ImageOff className="h-6 w-6 text-primary/40" />
                     </div>
+                  )}
+
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+                  {/* Title */}
+                  <div className="absolute inset-x-0 bottom-0 p-2">
+                    <p className="text-white text-[10px] md:text-[11px] font-semibold leading-tight line-clamp-3 drop-shadow">
+                      {n.title}
+                    </p>
                   </div>
 
-                  <p className="text-muted-foreground text-[11px] md:text-xs line-clamp-2 mb-2">
-                    {notice.content}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-[10px] md:text-xs text-muted-foreground">
-                      <Calendar className="h-2.5 w-2.5 md:h-3 md:w-3" />
-                      {formatDate(notice.published_at)}
+                  {/* Hover icon */}
+                  <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-primary text-primary-foreground rounded-full p-1 shadow-lg">
+                      <ExternalLink className="h-2.5 w-2.5" />
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
-                      className="text-primary hover:bg-primary/10 text-[10px] md:text-xs h-7 px-2 hover-scale"
-                    >
-                      <ExternalLink className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1" />
-                      View
-                    </Button>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
             <Button
               variant="outline"
-              className="w-full bg-primary/5 hover:bg-primary/10 text-primary text-xs md:text-sm h-9 md:h-10 hover-scale"
-              onClick={() => window.open('https://rju.edu.np/notices/', '_blank')}
+              size="sm"
+              className="w-full mt-3 text-xs h-8"
+              onClick={() => window.open(FALLBACK_URL, '_blank')}
             >
-              <ExternalLink className="h-3 w-3 md:h-4 md:w-4 mr-1.5 md:mr-2" />
-              View All Notices
+              <ExternalLink className="h-3 w-3 mr-1.5" />
+              View All on rju.edu.np
             </Button>
-          </div>
+          </>
         )}
       </CardContent>
     </Card>
