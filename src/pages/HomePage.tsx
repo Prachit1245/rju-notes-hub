@@ -618,7 +618,7 @@ const HomePage = () => {
             <div className="cta-glow" />
             <div className="relative z-10 text-center">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-foreground">
-                Ready to <span className="hero-title-gradient">Start Learning?</span>
+                Ready to <span className="hero-title-gradient text-shimmer">Start Learning?</span>
               </h2>
               <p className="text-muted-foreground text-sm md:text-lg mb-6 md:mb-8 max-w-xl mx-auto">
                 Join thousands of students who are already using RJU Notes
@@ -630,7 +630,7 @@ const HomePage = () => {
                 </Button>
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
