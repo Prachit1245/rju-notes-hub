@@ -167,6 +167,25 @@ function parseRJUNotices(posts: any[]) {
       const link = post?.link ?? 'https://rju.edu.np/notices/';
       const publishedAt = post?.date_gmt ? `${post.date_gmt}Z` : post?.date;
 
+      // Extract featured image from _embedded data
+      let imageUrl: string | null = null;
+      const media = post?._embedded?.['wp:featuredmedia'];
+      if (Array.isArray(media) && media.length > 0) {
+        const m = media[0];
+        imageUrl =
+          m?.media_details?.sizes?.medium_large?.source_url ??
+          m?.media_details?.sizes?.medium?.source_url ??
+          m?.media_details?.sizes?.full?.source_url ??
+          m?.source_url ??
+          null;
+      }
+
+      // Fallback: try to extract first <img> from content
+      if (!imageUrl && typeof post?.content?.rendered === 'string') {
+        const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (match) imageUrl = match[1];
+      }
+
       if (!title || !publishedAt) {
         return null;
       }
@@ -176,9 +195,11 @@ function parseRJUNotices(posts: any[]) {
         content: excerpt || `${title} - View full notice at: ${link}`,
         category: detectCategory(title, link),
         date: new Date(publishedAt).toISOString(),
+        image_url: imageUrl,
+        source_url: link,
       };
     })
-    .filter((notice): notice is { title: string; content: string; category: string; date: string } => Boolean(notice))
+    .filter((notice): notice is { title: string; content: string; category: string; date: string; image_url: string | null; source_url: string } => Boolean(notice))
     .slice(0, 10);
 }
 
