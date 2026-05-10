@@ -277,18 +277,18 @@ const HomePage = () => {
       {/* Browse Notes by Faculty Section - NEW DESIGN */}
       <section className="py-8 md:py-16 relative">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-6 md:mb-10">
+          <Reveal variant="up" className="text-center mb-6 md:mb-10">
             <Badge className="mb-3 md:mb-4 bg-electric-cyan/10 text-electric-cyan border-electric-cyan/30">
               <Folder className="h-3 w-3 mr-1" />
               Browse
             </Badge>
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
-              Study <span className="hero-title-gradient">Notes</span>
+              Study <span className="hero-title-gradient text-shimmer">Notes</span>
             </h2>
             <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto">
               Access study materials by faculty, program & semester
             </p>
-          </div>
+          </Reveal>
 
           <div className="browse-section-card">
             <div className="browse-section-inner">
