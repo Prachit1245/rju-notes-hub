@@ -33,6 +33,7 @@ import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
 import NoticeBoard from '@/components/NoticeBoard';
 import { Reveal } from '@/components/Reveal';
+import Tilt3D from '@/components/Tilt3D';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
@@ -131,7 +132,7 @@ const HomePage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden">
+      <section className="relative py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden aurora-bg perspective-scene">
         <div className="absolute inset-0 hero-grid-bg" />
         
         <div className="absolute inset-0">
@@ -152,8 +153,8 @@ const HomePage = () => {
             </div>
 
             {/* Main Title */}
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight">
-              <span className="hero-title-gradient animated-underline">RJU</span>
+            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight float-3d-slow">
+              <span className="hero-title-gradient animated-underline text-sweep">RJU</span>
               <span className="text-foreground"> Notes</span>
             </h1>
 
@@ -261,18 +262,48 @@ const HomePage = () => {
                 key={idx}
                 variant="up"
                 delay={idx * 90}
-                className="stat-card-premium hover-lift"
               >
-                <div className={`stat-icon stat-icon-${stat.color} icon-pop float-soft`}>
-                  <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
-                </div>
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+                <Tilt3D max={12} className="h-full">
+                  <div className="stat-card-premium hover-lift depth-shadow holo-shine ring-conic h-full">
+                    <div className={`stat-icon stat-icon-${stat.color} icon-pop float-3d`}>
+                      <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
+                    </div>
+                    <div className="stat-value text-sweep">{stat.value}</div>
+                    <div className="stat-label">{stat.label}</div>
+                  </div>
+                </Tilt3D>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Animated Marquee Strip */}
+      <div className="py-4 md:py-6 overflow-hidden">
+        <div className="marquee">
+          <div className="marquee-track text-xs md:text-sm uppercase tracking-[0.25em] font-semibold text-muted-foreground/70">
+            {Array.from({ length: 2 }).map((_, k) => (
+              <div key={k} className="flex items-center gap-8 pr-8">
+                <span className="text-sweep">RJU Notes</span>
+                <span>•</span>
+                <span>Free Forever</span>
+                <span>•</span>
+                <span className="text-sweep">Daily Updates</span>
+                <span>•</span>
+                <span>5,000+ Students</span>
+                <span>•</span>
+                <span className="text-sweep">Made for Nepal</span>
+                <span>•</span>
+                <span>Auto-Sync Notices</span>
+                <span>•</span>
+                <span className="text-sweep">AI Study Assistant</span>
+                <span>•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="dash-divider mt-4 max-w-5xl mx-auto" />
+      </div>
 
       {/* Browse Notes by Faculty Section - NEW DESIGN */}
       <section className="py-8 md:py-16 relative">
@@ -430,7 +461,7 @@ const HomePage = () => {
           </Reveal>
 
           <div className="bento-grid">
-            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift">
+            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift card-3d holo-shine depth-shadow">
               <div className="bento-card-glow bento-glow-purple" />
               <div className="bento-icon bento-icon-purple icon-pop float-soft">
                 <Download className="h-6 w-6 md:h-8 md:w-8" />
@@ -447,7 +478,7 @@ const HomePage = () => {
               </div>
             </Reveal>
 
-            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift">
+            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift card-3d holo-shine">
               <div className="bento-card-glow bento-glow-cyan" />
               <div className="bento-icon bento-icon-cyan icon-pop float-soft-delay">
                 <Upload className="h-5 w-5 md:h-6 md:w-6" />
@@ -458,7 +489,7 @@ const HomePage = () => {
               </p>
             </Reveal>
 
-            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift">
+            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift card-3d holo-shine">
               <div className="bento-card-glow bento-glow-green" />
               <div className="bento-icon bento-icon-green icon-pop float-soft">
                 <Bell className="h-5 w-5 md:h-6 md:w-6" />
@@ -469,14 +500,14 @@ const HomePage = () => {
               </p>
             </Reveal>
 
-            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift">
+            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift card-3d holo-shine magnetic">
               <div className="bento-icon-small bento-icon-orange icon-pop">
                 <Star className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Top Rated</span>
             </Reveal>
 
-            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift">
+            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift card-3d holo-shine magnetic">
               <div className="bento-icon-small bento-icon-pink icon-pop">
                 <Rocket className="h-4 w-4 md:h-5 md:w-5" />
               </div>
@@ -614,7 +645,7 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="py-12 md:py-20">
         <div className="container px-4 md:px-6">
-          <Reveal variant="zoom" className="cta-section-premium hover-lift">
+          <Reveal variant="zoom" className="cta-section-premium hover-lift breathe-glow ring-conic holo-shine">
             <div className="cta-glow" />
             <div className="relative z-10 text-center">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-foreground">

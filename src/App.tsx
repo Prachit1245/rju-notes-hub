@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import { StudyTimer } from "./components/StudyTimer";
 import { AIStudyAssistant } from "./components/AIStudyAssistant";
+import ScrollProgress from "./components/ScrollProgress";
+import CursorGlow from "./components/CursorGlow";
 import HomePage from "./pages/HomePage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -22,6 +24,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollProgress />
+        <CursorGlow />
         <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />

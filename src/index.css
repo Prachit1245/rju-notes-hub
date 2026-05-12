@@ -1961,3 +1961,326 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
     opacity: 1 !important;
   }
 }
+
+/* ============================================================
+   NEXT-LEVEL 3D ANIMATION SYSTEM
+   Lightweight, GPU-friendly, prefers-reduced-motion aware
+   ============================================================ */
+
+/* Global perspective so 3D transforms feel deep */
+.perspective-scene { perspective: 1400px; perspective-origin: 50% 30%; }
+
+/* 1. Mouse-driven 3D tilt (used by <Tilt3D />) */
+.tilt-3d-root {
+  --rx: 0deg; --ry: 0deg; --tilt-scale: 1; --mx: 50%; --my: 50%;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  position: relative;
+  isolation: isolate;
+}
+.tilt-3d-inner {
+  transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--tilt-scale));
+  transition: transform 280ms cubic-bezier(.2,.8,.2,1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-3d-glare::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    400px circle at var(--mx) var(--my),
+    hsl(var(--electric-purple) / 0.25),
+    transparent 45%
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 280ms ease;
+  z-index: 2;
+}
+.tilt-3d-root:hover .tilt-3d-glare::after,
+.tilt-3d-glare:hover::after { opacity: 1; }
+
+/* 2. Scroll progress bar (top of viewport) */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; z-index: 9999;
+  background: hsl(var(--background) / 0.4);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+.scroll-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg,
+    hsl(var(--electric-purple)),
+    hsl(var(--cyber-cyan)),
+    hsl(var(--neon-green)),
+    hsl(var(--hot-pink))
+  );
+  background-size: 300% 100%;
+  animation: progress-shimmer 4s linear infinite;
+  box-shadow: 0 0 12px hsl(var(--electric-purple) / 0.6);
+  transition: width 120ms ease-out;
+}
+@keyframes progress-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* 3. Cursor glow halo */
+.cursor-glow {
+  position: fixed; top: 0; left: 0;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  background: radial-gradient(circle,
+    hsl(var(--electric-purple) / 0.18),
+    hsl(var(--cyber-cyan) / 0.08) 35%,
+    transparent 65%);
+  mix-blend-mode: screen;
+  filter: blur(20px);
+  transition: opacity 300ms ease;
+  will-change: transform;
+}
+
+/* 4. Holographic shine sweep */
+.holo-shine { position: relative; overflow: hidden; isolation: isolate; }
+.holo-shine::before {
+  content: "";
+  position: absolute; inset: -50%;
+  background: linear-gradient(115deg,
+    transparent 30%,
+    hsl(var(--electric-purple) / 0.18) 45%,
+    hsl(var(--cyber-cyan) / 0.18) 50%,
+    hsl(var(--hot-pink) / 0.18) 55%,
+    transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 900ms cubic-bezier(.2,.8,.2,1);
+  pointer-events: none; z-index: 1;
+}
+.holo-shine:hover::before { transform: translateX(100%); }
+
+/* 5. Magnetic hover (subtle pull toward cursor on hover) */
+.magnetic { transition: transform 380ms cubic-bezier(.2,.8,.2,1); }
+.magnetic:hover { transform: translateY(-3px) scale(1.03); }
+
+/* 6. Float in 3D (subtle continuous Y/Z drift) */
+@keyframes float-3d {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); }
+  50%      { transform: translate3d(0, -10px, 20px) rotateX(2deg) rotateY(-2deg); }
+}
+.float-3d { animation: float-3d 7s ease-in-out infinite; transform-style: preserve-3d; }
+.float-3d-slow { animation: float-3d 11s ease-in-out infinite; transform-style: preserve-3d; }
+
+/* 7. Rotating conic ring */
+@keyframes spin-conic { to { transform: rotate(360deg); } }
+.ring-conic {
+  position: relative;
+}
+.ring-conic::before {
+  content: "";
+  position: absolute; inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg,
+    hsl(var(--electric-purple)),
+    hsl(var(--cyber-cyan)),
+    hsl(var(--hot-pink)),
+    hsl(var(--electric-purple)));
+  filter: blur(6px); opacity: 0;
+  transition: opacity 400ms ease;
+  z-index: -1;
+  animation: spin-conic 6s linear infinite;
+}
+.ring-conic:hover::before { opacity: 0.55; }
+
+/* 8. Breathing border glow */
+@keyframes breathe-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--electric-purple) / 0.0), 0 0 24px hsl(var(--electric-purple) / 0.15); }
+  50%      { box-shadow: 0 0 0 4px hsl(var(--electric-purple) / 0.10), 0 0 36px hsl(var(--electric-purple) / 0.35); }
+}
+.breathe-glow { animation: breathe-glow 4s ease-in-out infinite; }
+
+/* 9. Gradient sweep text */
+@keyframes text-sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.text-sweep {
+  background: linear-gradient(90deg,
+    hsl(var(--electric-purple)),
+    hsl(var(--cyber-cyan)),
+    hsl(var(--hot-pink)),
+    hsl(var(--electric-purple)));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-sweep 5s linear infinite;
+}
+
+/* 10. Marquee (horizontal infinite) */
+@keyframes marquee-x {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee { display: flex; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track { display: flex; gap: 2rem; animation: marquee-x 30s linear infinite; min-width: 200%; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* 11. 3D flip card */
+.flip-3d { perspective: 1000px; }
+.flip-3d-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(.2,.8,.2,1);
+}
+.flip-3d:hover .flip-3d-inner { transform: rotateY(180deg); }
+.flip-3d-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-3d-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+
+/* 12. Pop-in scale (intersection-aware via .reveal already, this is a bounce variant) */
+@keyframes pop-bounce {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.pop-bounce { animation: pop-bounce 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+
+/* 13. Depth shadow (layered shadows for 3D feel) */
+.depth-shadow {
+  box-shadow:
+    0 1px 2px hsl(240 5% 10% / 0.06),
+    0 4px 10px hsl(240 5% 10% / 0.08),
+    0 16px 32px hsl(var(--electric-purple) / 0.10),
+    0 32px 64px hsl(var(--electric-purple) / 0.06);
+  transition: box-shadow 400ms ease, transform 400ms ease;
+}
+.depth-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 2px 4px hsl(240 5% 10% / 0.10),
+    0 10px 20px hsl(240 5% 10% / 0.12),
+    0 24px 48px hsl(var(--electric-purple) / 0.18),
+    0 48px 96px hsl(var(--electric-purple) / 0.12);
+}
+
+/* 14. Aurora drifting mesh background (use as ::before on a section) */
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-5%, -5%, 0) rotate(0deg); }
+  50%  { transform: translate3d(5%, 5%, 0) rotate(180deg); }
+  100% { transform: translate3d(-5%, -5%, 0) rotate(360deg); }
+}
+.aurora-bg { position: relative; isolation: isolate; }
+.aurora-bg::before {
+  content: ""; position: absolute; inset: -20%;
+  background:
+    radial-gradient(40% 40% at 20% 30%, hsl(var(--electric-purple) / 0.30), transparent 60%),
+    radial-gradient(40% 40% at 80% 20%, hsl(var(--cyber-cyan) / 0.25), transparent 60%),
+    radial-gradient(40% 40% at 60% 80%, hsl(var(--hot-pink) / 0.22), transparent 60%);
+  filter: blur(60px);
+  z-index: -1;
+  animation: aurora-drift 22s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* 15. Parallax orb pulse */
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1) translate3d(0,0,0); opacity: 0.6; }
+  50%      { transform: scale(1.15) translate3d(10px,-10px,0); opacity: 0.9; }
+}
+.orb-pulse { animation: orb-pulse 8s ease-in-out infinite; }
+
+/* 16. Neon underline draw on hover */
+.underline-draw { position: relative; }
+.underline-draw::after {
+  content: ""; position: absolute; left: 0; bottom: -2px;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, hsl(var(--electric-purple)), hsl(var(--cyber-cyan)));
+  transition: width 350ms cubic-bezier(.2,.8,.2,1);
+  box-shadow: 0 0 8px hsl(var(--electric-purple) / 0.6);
+}
+.underline-draw:hover::after { width: 100%; }
+
+/* 17. Spotlight cursor follower (apply on a wrapper, uses CSS vars set via JS or hover) */
+.spotlight {
+  position: relative; isolation: isolate;
+}
+.spotlight::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(600px circle at var(--sx,50%) var(--sy,50%),
+    hsl(var(--electric-purple) / 0.12), transparent 40%);
+  pointer-events: none; opacity: 0; transition: opacity 300ms ease;
+  z-index: 1;
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* 18. Tilt-on-scroll (gentle skew/translate as element enters) */
+.reveal-tilt {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(20deg) translateY(40px);
+  transform-origin: center bottom;
+  transition: opacity 700ms ease, transform 900ms cubic-bezier(.2,.8,.2,1);
+}
+.reveal-tilt.is-visible {
+  opacity: 1;
+  transform: perspective(1000px) rotateX(0) translateY(0);
+}
+
+/* 19. Card lift with rotateY hint on hover */
+.card-3d {
+  transition: transform 400ms cubic-bezier(.2,.8,.2,1), box-shadow 400ms ease;
+  transform-style: preserve-3d;
+}
+.card-3d:hover {
+  transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+}
+
+/* 20. Section divider with animated dashes */
+@keyframes dash-flow { to { background-position: 40px 0; } }
+.dash-divider {
+  height: 2px;
+  background-image: linear-gradient(90deg,
+    hsl(var(--electric-purple)) 50%, transparent 50%);
+  background-size: 20px 2px;
+  animation: dash-flow 2s linear infinite;
+  opacity: 0.5;
+}
+
+/* 21. Number counter scale-pop (apply when number changes) */
+@keyframes number-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); color: hsl(var(--electric-purple)); }
+  100% { transform: scale(1); }
+}
+.number-pop { animation: number-pop 600ms ease; }
+
+/* 22. Soft jitter (very subtle, for "live" badges) */
+@keyframes jitter {
+  0%, 100% { transform: translate(0,0); }
+  25% { transform: translate(0.5px, -0.5px); }
+  50% { transform: translate(-0.5px, 0.5px); }
+  75% { transform: translate(0.5px, 0.5px); }
+}
+.jitter { animation: jitter 1.6s steps(4) infinite; }
+
+/* 23. Reveal stagger helper (use with [style] inline delay) */
+.stagger-child { opacity: 0; transform: translateY(14px); animation: stagger-up 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+@keyframes stagger-up { to { opacity: 1; transform: translateY(0); } }
+
+/* Reduced-motion: kill all the heavy stuff */
+@media (prefers-reduced-motion: reduce) {
+  .tilt-3d-inner, .float-3d, .float-3d-slow, .ring-conic::before,
+  .breathe-glow, .text-sweep, .marquee-track, .flip-3d-inner,
+  .pop-bounce, .aurora-bg::before, .orb-pulse, .reveal-tilt,
+  .card-3d, .dash-divider, .number-pop, .jitter, .stagger-child,
+  .scroll-progress-fill, .cursor-glow {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  .cursor-glow { display: none !important; }
+}
