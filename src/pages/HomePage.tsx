@@ -278,6 +278,35 @@ const HomePage = () => {
         </div>
       </section>
 
+      </section>
+
+      {/* Animated Marquee Strip */}
+      <div className="py-4 md:py-6 overflow-hidden">
+        <div className="marquee">
+          <div className="marquee-track text-xs md:text-sm uppercase tracking-[0.25em] font-semibold text-muted-foreground/70">
+            {Array.from({ length: 2 }).map((_, k) => (
+              <div key={k} className="flex items-center gap-8 pr-8">
+                <span className="text-sweep">RJU Notes</span>
+                <span>•</span>
+                <span>Free Forever</span>
+                <span>•</span>
+                <span className="text-sweep">Daily Updates</span>
+                <span>•</span>
+                <span>5,000+ Students</span>
+                <span>•</span>
+                <span className="text-sweep">Made for Nepal</span>
+                <span>•</span>
+                <span>Auto-Sync Notices</span>
+                <span>•</span>
+                <span className="text-sweep">AI Study Assistant</span>
+                <span>•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="dash-divider mt-4 max-w-5xl mx-auto" />
+      </div>
+
       {/* Browse Notes by Faculty Section - NEW DESIGN */}
       <section className="py-8 md:py-16 relative">
         <div className="container px-4 md:px-6">
