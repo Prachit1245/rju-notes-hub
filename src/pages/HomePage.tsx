@@ -153,8 +153,8 @@ const HomePage = () => {
             </div>
 
             {/* Main Title */}
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight">
-              <span className="hero-title-gradient animated-underline">RJU</span>
+            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight float-3d-slow">
+              <span className="hero-title-gradient animated-underline text-sweep">RJU</span>
               <span className="text-foreground"> Notes</span>
             </h1>
 
