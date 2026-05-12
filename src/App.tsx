@@ -24,6 +24,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollProgress />
+        <CursorGlow />
         <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
