@@ -33,6 +33,7 @@ import VisitorCounter from '@/components/VisitorCounter';
 import FacultyPickerModal from '@/components/FacultyPickerModal';
 import NoticeBoard from '@/components/NoticeBoard';
 import { Reveal } from '@/components/Reveal';
+import Tilt3D from '@/components/Tilt3D';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
