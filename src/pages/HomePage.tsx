@@ -262,13 +262,16 @@ const HomePage = () => {
                 key={idx}
                 variant="up"
                 delay={idx * 90}
-                className="stat-card-premium hover-lift"
               >
-                <div className={`stat-icon stat-icon-${stat.color} icon-pop float-soft`}>
-                  <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
-                </div>
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
+                <Tilt3D max={12} className="h-full">
+                  <div className="stat-card-premium hover-lift depth-shadow holo-shine ring-conic h-full">
+                    <div className={`stat-icon stat-icon-${stat.color} icon-pop float-3d`}>
+                      <stat.icon className="h-4 w-4 md:h-6 md:w-6" />
+                    </div>
+                    <div className="stat-value text-sweep">{stat.value}</div>
+                    <div className="stat-label">{stat.label}</div>
+                  </div>
+                </Tilt3D>
               </Reveal>
             ))}
           </div>
