@@ -618,7 +618,7 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="py-12 md:py-20">
         <div className="container px-4 md:px-6">
-          <Reveal variant="zoom" className="cta-section-premium hover-lift">
+          <Reveal variant="zoom" className="cta-section-premium hover-lift breathe-glow ring-conic holo-shine">
             <div className="cta-glow" />
             <div className="relative z-10 text-center">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-foreground">
