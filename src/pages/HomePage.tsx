@@ -278,8 +278,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      </section>
-
       {/* Animated Marquee Strip */}
       <div className="py-4 md:py-6 overflow-hidden">
         <div className="marquee">
