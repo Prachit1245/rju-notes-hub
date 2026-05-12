@@ -434,7 +434,7 @@ const HomePage = () => {
           </Reveal>
 
           <div className="bento-grid">
-            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift">
+            <Reveal variant="up" delay={0} className="bento-card bento-card-large group hover-lift card-3d holo-shine depth-shadow">
               <div className="bento-card-glow bento-glow-purple" />
               <div className="bento-icon bento-icon-purple icon-pop float-soft">
                 <Download className="h-6 w-6 md:h-8 md:w-8" />
@@ -451,7 +451,7 @@ const HomePage = () => {
               </div>
             </Reveal>
 
-            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift">
+            <Reveal variant="up" delay={120} className="bento-card bento-card-medium group hover-lift card-3d holo-shine">
               <div className="bento-card-glow bento-glow-cyan" />
               <div className="bento-icon bento-icon-cyan icon-pop float-soft-delay">
                 <Upload className="h-5 w-5 md:h-6 md:w-6" />
@@ -462,7 +462,7 @@ const HomePage = () => {
               </p>
             </Reveal>
 
-            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift">
+            <Reveal variant="up" delay={200} className="bento-card bento-card-medium group hover-lift card-3d holo-shine">
               <div className="bento-card-glow bento-glow-green" />
               <div className="bento-icon bento-icon-green icon-pop float-soft">
                 <Bell className="h-5 w-5 md:h-6 md:w-6" />
@@ -473,14 +473,14 @@ const HomePage = () => {
               </p>
             </Reveal>
 
-            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift">
+            <Reveal variant="zoom" delay={280} className="bento-card bento-card-small group hover-lift card-3d holo-shine magnetic">
               <div className="bento-icon-small bento-icon-orange icon-pop">
                 <Star className="h-4 w-4 md:h-5 md:w-5" />
               </div>
               <span className="bento-title-small">Top Rated</span>
             </Reveal>
 
-            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift">
+            <Reveal variant="zoom" delay={340} className="bento-card bento-card-small group hover-lift card-3d holo-shine magnetic">
               <div className="bento-icon-small bento-icon-pink icon-pop">
                 <Rocket className="h-4 w-4 md:h-5 md:w-5" />
               </div>
