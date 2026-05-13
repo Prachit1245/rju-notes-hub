@@ -1978,6 +1978,7 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   position: relative;
   isolation: isolate;
 }
+.tilt-3d-root, .tilt-3d-inner { height: 100%; }
 .tilt-3d-inner {
   transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--tilt-scale));
   transition: transform 280ms cubic-bezier(.2,.8,.2,1);

@@ -9,6 +9,7 @@ import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSup
 import { supabase } from '@/integrations/supabase/client';
 import VisitorCounter from '@/components/VisitorCounter';
 import NoteCardClean from '@/components/NoteCardClean';
+import Tilt3D from '@/components/Tilt3D';
 import { SEO, SITE_URL } from '@/components/SEO';
 
 function buildSubjectMap(subjects: { id: string; semester: number; name: string }[] | null) {
@@ -393,25 +394,33 @@ export default function NotesPage() {
                   </div>
 
                   {/* Cards Grid - 2rem gap, single col on mobile */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {groupedBySemester[sem].map((note) => (
-                      <NoteCardClean
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 perspective-scene">
+                    {groupedBySemester[sem].map((note, idx) => (
+                      <Tilt3D
                         key={note.id}
-                        id={note.id}
-                        title={note.title}
-                        description={note.description}
-                        fileType={note.file_type}
-                        fileSize={note.file_size}
-                        fileUrl={note.file_url}
-                        downloadCount={note.download_count}
-                        ratingSum={note.rating_sum}
-                        ratingCount={note.rating_count}
-                        createdAt={note.created_at}
-                        uploaderName={note.uploader_name}
-                        isVerified={note.is_verified}
-                        tags={note.tags}
-                        onClick={() => navigate(`/notes/${note.id}`)}
-                      />
+                        max={6}
+                        scale={1.015}
+                        glare
+                        className="stagger-child h-full"
+                        style={{ animationDelay: `${Math.min(idx, 8) * 60}ms` }}
+                      >
+                        <NoteCardClean
+                          id={note.id}
+                          title={note.title}
+                          description={note.description}
+                          fileType={note.file_type}
+                          fileSize={note.file_size}
+                          fileUrl={note.file_url}
+                          downloadCount={note.download_count}
+                          ratingSum={note.rating_sum}
+                          ratingCount={note.rating_count}
+                          createdAt={note.created_at}
+                          uploaderName={note.uploader_name}
+                          isVerified={note.is_verified}
+                          tags={note.tags}
+                          onClick={() => navigate(`/notes/${note.id}`)}
+                        />
+                      </Tilt3D>
                     ))}
                   </div>
                 </section>
