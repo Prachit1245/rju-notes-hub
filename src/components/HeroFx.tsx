@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react';
 
 /**
  * Extreme hero FX layer:
- * - Mouse-driven parallax on multiple depth layers
- * - 3D-rotating glass shards / orbs orbiting in space
- * - Pointer-events: none so it never blocks UI
+ * - Mouse-driven parallax across multiple depth layers
+ * - True 3D rotating glass cubes orbiting in space
+ * - Soft ambient orbs and a dashed conic ring
+ * Pointer-events: none — never blocks UI. Disabled when reduced-motion.
  */
 export const HeroFx = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,7 +23,7 @@ export const HeroFx = () => {
 
     const onMove = (e: MouseEvent) => {
       const r = parent.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2; // -1..1
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
       ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
     };
     const onLeave = () => { tx = 0; ty = 0; };
@@ -43,25 +44,24 @@ export const HeroFx = () => {
     };
   }, []);
 
+  const Cube = ({ className, depth, spin }: { className: string; depth: number; spin: string }) => (
+    <div className={`fx-shard ${className}`} style={{ ['--depth' as any]: depth }}>
+      <div className="fx-shard-spin" style={{ animationDuration: spin }}>
+        <span /><span /><span /><span /><span /><span />
+      </div>
+    </div>
+  );
+
   return (
     <div ref={ref} className="hero-fx" aria-hidden="true">
-      {/* Far-back ambient orbs */}
       <span className="fx-orb fx-orb-a" style={{ ['--depth' as any]: 8 }} />
       <span className="fx-orb fx-orb-b" style={{ ['--depth' as any]: 14 }} />
       <span className="fx-orb fx-orb-c" style={{ ['--depth' as any]: 6 }} />
 
-      {/* 3D rotating glass shards */}
-      <span className="fx-shard fx-shard-1" style={{ ['--depth' as any]: 22 }}>
-        <span /><span /><span /><span /><span /><span />
-      </span>
-      <span className="fx-shard fx-shard-2" style={{ ['--depth' as any]: 30 }}>
-        <span /><span /><span /><span /><span /><span />
-      </span>
-      <span className="fx-shard fx-shard-3" style={{ ['--depth' as any]: 18 }}>
-        <span /><span /><span /><span /><span /><span />
-      </span>
+      <Cube className="fx-shard-1" depth={22} spin="22s" />
+      <Cube className="fx-shard-2" depth={30} spin="16s" />
+      <Cube className="fx-shard-3" depth={18} spin="26s" />
 
-      {/* Foreground sparkle ring */}
       <span className="fx-ring" style={{ ['--depth' as any]: 40 }} />
     </div>
   );
