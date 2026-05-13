@@ -9,6 +9,7 @@ import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSup
 import { supabase } from '@/integrations/supabase/client';
 import VisitorCounter from '@/components/VisitorCounter';
 import NoteCardClean from '@/components/NoteCardClean';
+import Tilt3D from '@/components/Tilt3D';
 import { SEO, SITE_URL } from '@/components/SEO';
 
 function buildSubjectMap(subjects: { id: string; semester: number; name: string }[] | null) {
