@@ -135,6 +135,7 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="relative py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden aurora-bg perspective-scene">
         <div className="absolute inset-0 hero-grid-bg" />
+        <HeroFx />
         
         <div className="absolute inset-0">
           <div className="glow-line glow-line-1" />
