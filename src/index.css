@@ -2272,16 +2272,139 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 .stagger-child { opacity: 0; transform: translateY(14px); animation: stagger-up 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
 @keyframes stagger-up { to { opacity: 1; transform: translateY(0); } }
 
+/* ============================================================
+   HERO FX — extreme 3D parallax layer (used by HeroFx.tsx)
+   ============================================================ */
+.hero-fx {
+  --px: 0; --py: 0;
+  position: absolute; inset: 0;
+  pointer-events: none;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Soft glowing orbs at varying depths */
+.fx-orb {
+  position: absolute;
+  width: 320px; height: 320px;
+  border-radius: 999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  transform: translate3d(
+    calc(var(--px) * var(--depth, 10) * -1px),
+    calc(var(--py) * var(--depth, 10) * -1px),
+    0
+  );
+  transition: transform 200ms ease-out;
+  will-change: transform;
+}
+.fx-orb-a { top: -80px; left: -60px;
+  background: radial-gradient(circle, hsl(var(--electric-purple) / 0.9), transparent 70%); }
+.fx-orb-b { bottom: -120px; right: -80px;
+  background: radial-gradient(circle, hsl(var(--cyber-cyan) / 0.85), transparent 70%); }
+.fx-orb-c { top: 30%; right: 20%; width: 220px; height: 220px;
+  background: radial-gradient(circle, hsl(var(--hot-pink) / 0.7), transparent 70%); }
+
+/* True 3D rotating glass cubes — outer = parallax, inner = spin */
+.fx-shard {
+  position: absolute;
+  width: 90px; height: 90px;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform: translate3d(
+    calc(var(--px) * var(--depth, 20) * -1px),
+    calc(var(--py) * var(--depth, 20) * -1px),
+    0
+  );
+  transition: transform 220ms ease-out;
+}
+.fx-shard-spin {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  animation: fx-spin 20s linear infinite;
+  will-change: transform;
+}
+.fx-shard-spin > span {
+  position: absolute; inset: 0;
+  border-radius: 14px;
+  border: 1px solid hsl(var(--electric-purple) / 0.55);
+  background: linear-gradient(135deg,
+    hsl(var(--electric-purple) / 0.20),
+    hsl(var(--cyber-cyan) / 0.14));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 30px hsl(var(--electric-purple) / 0.25),
+              inset 0 0 30px hsl(var(--cyber-cyan) / 0.18);
+}
+.fx-shard-spin > span:nth-child(1) { transform: translateZ(45px); }
+.fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(45px); }
+.fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(45px); }
+.fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(45px); }
+.fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(45px); }
+.fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(45px); }
+
+.fx-shard-1 { top: 14%; left: 8%; }
+.fx-shard-2 { bottom: 18%; right: 10%; width: 70px; height: 70px; }
+.fx-shard-2 .fx-shard-spin { animation-direction: reverse; }
+.fx-shard-2 .fx-shard-spin > span { border-radius: 50%; }
+.fx-shard-2 .fx-shard-spin > span:nth-child(1) { transform: translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(35px); }
+.fx-shard-3 { top: 60%; left: 14%; width: 60px; height: 60px; }
+.fx-shard-3 .fx-shard-spin > span:nth-child(1) { transform: translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(30px); }
+
+@keyframes fx-spin {
+  0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+}
+
+/* Rotating dashed ring foreground */
+.fx-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 540px; height: 540px;
+  margin-top: -270px; margin-left: -270px;
+  border-radius: 999px;
+  border: 1.5px dashed hsl(var(--electric-purple) / 0.35);
+  animation: fx-ring-spin 40s linear infinite;
+  transform: translate3d(var(--tx, 0), var(--ty, 0), 0);
+  opacity: 0.7;
+}
+.fx-ring::after {
+  content: "";
+  position: absolute; inset: 30px;
+  border-radius: 999px;
+  border: 1px dashed hsl(var(--cyber-cyan) / 0.35);
+  animation: fx-ring-spin 60s linear infinite reverse;
+}
+@keyframes fx-ring-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .fx-shard, .fx-ring { display: none; }
+  .fx-orb { opacity: 0.4; filter: blur(80px); }
+}
+
 /* Reduced-motion: kill all the heavy stuff */
 @media (prefers-reduced-motion: reduce) {
   .tilt-3d-inner, .float-3d, .float-3d-slow, .ring-conic::before,
   .breathe-glow, .text-sweep, .marquee-track, .flip-3d-inner,
   .pop-bounce, .aurora-bg::before, .orb-pulse, .reveal-tilt,
   .card-3d, .dash-divider, .number-pop, .jitter, .stagger-child,
-  .scroll-progress-fill, .cursor-glow {
+  .scroll-progress-fill, .cursor-glow,
+  .hero-fx, .fx-orb, .fx-shard, .fx-shard > span, .fx-ring {
     animation: none !important;
     transition: none !important;
-    transform: none !important;
   }
   .cursor-glow { display: none !important; }
 }
+
