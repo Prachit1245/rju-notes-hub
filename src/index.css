@@ -2307,90 +2307,66 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 .fx-orb-c { top: 30%; right: 20%; width: 220px; height: 220px;
   background: radial-gradient(circle, hsl(var(--hot-pink) / 0.7), transparent 70%); }
 
-/* True 3D rotating glass cubes (built from 6 faces) */
+/* True 3D rotating glass cubes — outer = parallax, inner = spin */
 .fx-shard {
   position: absolute;
   width: 90px; height: 90px;
   transform-style: preserve-3d;
-  animation: fx-spin 18s linear infinite;
-  transition: transform 240ms ease-out;
+  will-change: transform;
+  transform: translate3d(
+    calc(var(--px) * var(--depth, 20) * -1px),
+    calc(var(--py) * var(--depth, 20) * -1px),
+    0
+  );
+  transition: transform 220ms ease-out;
+}
+.fx-shard-spin {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  animation: fx-spin 20s linear infinite;
   will-change: transform;
 }
-.fx-shard > span {
+.fx-shard-spin > span {
   position: absolute; inset: 0;
   border-radius: 14px;
   border: 1px solid hsl(var(--electric-purple) / 0.55);
   background: linear-gradient(135deg,
-    hsl(var(--electric-purple) / 0.18),
-    hsl(var(--cyber-cyan) / 0.12));
+    hsl(var(--electric-purple) / 0.20),
+    hsl(var(--cyber-cyan) / 0.14));
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 8px 30px hsl(var(--electric-purple) / 0.25),
               inset 0 0 30px hsl(var(--cyber-cyan) / 0.18);
 }
-.fx-shard > span:nth-child(1) { transform: translateZ(45px); }
-.fx-shard > span:nth-child(2) { transform: rotateY(180deg) translateZ(45px); }
-.fx-shard > span:nth-child(3) { transform: rotateY(90deg)  translateZ(45px); }
-.fx-shard > span:nth-child(4) { transform: rotateY(-90deg) translateZ(45px); }
-.fx-shard > span:nth-child(5) { transform: rotateX(90deg)  translateZ(45px); }
-.fx-shard > span:nth-child(6) { transform: rotateX(-90deg) translateZ(45px); }
+.fx-shard-spin > span:nth-child(1) { transform: translateZ(45px); }
+.fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(45px); }
+.fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(45px); }
+.fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(45px); }
+.fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(45px); }
+.fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(45px); }
 
-.fx-shard-1 { top: 14%; left: 8%;  animation-duration: 22s; }
-.fx-shard-2 { bottom: 18%; right: 10%; width: 70px; height: 70px; animation-duration: 16s; animation-direction: reverse; }
-.fx-shard-2 > span { border-radius: 50%; }
-.fx-shard-2 > span:nth-child(n) { transform-origin: center; }
-.fx-shard-2 > span:nth-child(1) { transform: translateZ(35px); }
-.fx-shard-2 > span:nth-child(2) { transform: rotateY(180deg) translateZ(35px); }
-.fx-shard-2 > span:nth-child(3) { transform: rotateY(90deg)  translateZ(35px); }
-.fx-shard-2 > span:nth-child(4) { transform: rotateY(-90deg) translateZ(35px); }
-.fx-shard-2 > span:nth-child(5) { transform: rotateX(90deg)  translateZ(35px); }
-.fx-shard-2 > span:nth-child(6) { transform: rotateX(-90deg) translateZ(35px); }
-.fx-shard-3 { top: 60%; left: 14%; width: 60px; height: 60px; animation-duration: 26s; }
-.fx-shard-3 > span:nth-child(1) { transform: translateZ(30px); }
-.fx-shard-3 > span:nth-child(2) { transform: rotateY(180deg) translateZ(30px); }
-.fx-shard-3 > span:nth-child(3) { transform: rotateY(90deg)  translateZ(30px); }
-.fx-shard-3 > span:nth-child(4) { transform: rotateY(-90deg) translateZ(30px); }
-.fx-shard-3 > span:nth-child(5) { transform: rotateX(90deg)  translateZ(30px); }
-.fx-shard-3 > span:nth-child(6) { transform: rotateX(-90deg) translateZ(30px); }
+.fx-shard-1 { top: 14%; left: 8%; }
+.fx-shard-2 { bottom: 18%; right: 10%; width: 70px; height: 70px; }
+.fx-shard-2 .fx-shard-spin { animation-direction: reverse; }
+.fx-shard-2 .fx-shard-spin > span { border-radius: 50%; }
+.fx-shard-2 .fx-shard-spin > span:nth-child(1) { transform: translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(35px); }
+.fx-shard-2 .fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(35px); }
+.fx-shard-3 { top: 60%; left: 14%; width: 60px; height: 60px; }
+.fx-shard-3 .fx-shard-spin > span:nth-child(1) { transform: translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(2) { transform: rotateY(180deg) translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(3) { transform: rotateY(90deg)  translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(4) { transform: rotateY(-90deg) translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(5) { transform: rotateX(90deg)  translateZ(30px); }
+.fx-shard-3 .fx-shard-spin > span:nth-child(6) { transform: rotateX(-90deg) translateZ(30px); }
 
 @keyframes fx-spin {
   0%   { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
   100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
 }
-
-/* Mouse parallax: shards translate based on --px/--py from JS */
-.hero-fx .fx-shard {
-  /* compose parallax translation while keeping spin animation via wrapper */
-}
-.hero-fx .fx-shard,
-.hero-fx .fx-orb,
-.hero-fx .fx-ring {
-  --tx: calc(var(--px) * var(--depth, 10) * -1px);
-  --ty: calc(var(--py) * var(--depth, 10) * -1px);
-}
-.hero-fx .fx-shard { transform: translate3d(var(--tx), var(--ty), 0); }
-.hero-fx .fx-shard > * { /* inner faces handled by spin animation on parent */ }
-
-/* Wrap shards in their own spinning inner so we can compose parallax on outer */
-.fx-shard { animation: none; }
-.fx-shard::before {
-  /* unused: kept as fallback */
-}
-.fx-shard {
-  position: absolute;
-}
-.fx-shard {
-  animation: fx-parallax-noop 1s linear infinite paused;
-}
-@keyframes fx-parallax-noop { to {} }
-
-/* Rotation actually applied to the inner faces collectively via a child wrap */
-.fx-shard > span {
-  animation: fx-spin var(--spin, 20s) linear infinite;
-  transform-origin: center;
-}
-.fx-shard-1 > span { --spin: 22s; }
-.fx-shard-2 > span { --spin: 16s; animation-direction: reverse; }
-.fx-shard-3 > span { --spin: 26s; }
 
 /* Rotating dashed ring foreground */
 .fx-ring {
