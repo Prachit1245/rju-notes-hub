@@ -1,5 +1,4 @@
 import { useRef, MouseEvent } from 'react';
-import logo from '@/assets/rju-university-logo.webp';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -53,14 +52,10 @@ export const UniversityLogo3D = ({ className, size = 168 }: Props) => {
           <span className="uni-logo-3d-dot" />
           <span className="uni-logo-3d-dot" />
         </div>
-        <img
-          src={logo}
-          alt="Rajarshi Janak University crest"
-          className="uni-logo-3d-img"
-          loading="eager"
-          decoding="async"
-          draggable={false}
-        />
+        <div className="uni-logo-3d-text" aria-hidden="true">
+          <span className="uni-logo-3d-text-main">RJU</span>
+          <span className="uni-logo-3d-text-sub">NOTES</span>
+        </div>
         <div className="uni-logo-3d-shine" />
       </div>
     </div>

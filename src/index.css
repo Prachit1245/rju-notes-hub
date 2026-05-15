@@ -2415,3 +2415,42 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   .hero-decoration,
   .glow-line { display: none !important; }
 }
+
+/* Logo center text (replaces external crest image) */
+.uni-logo-3d-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(50px);
+  animation: uni-logo-bob 6s ease-in-out infinite;
+  text-align: center;
+  line-height: 1;
+}
+.uni-logo-3d-text-main {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg,
+    hsl(var(--electric-purple)),
+    hsl(var(--electric-cyan)) 50%,
+    hsl(var(--electric-pink)));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  text-shadow: 0 6px 18px hsl(var(--electric-purple) / 0.45);
+  animation: gradient-shift 4s ease infinite;
+}
+.uni-logo-3d-text-sub {
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  letter-spacing: 0.45em;
+  padding-left: 0.45em;
+  color: hsl(var(--foreground) / 0.85);
+}
