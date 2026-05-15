@@ -2285,3 +2285,133 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   }
   .cursor-glow { display: none !important; }
 }
+
+/* ============================================================
+   University Logo 3D — official RJU crest with halo + tilt
+   ============================================================ */
+.uni-logo-3d {
+  position: relative;
+  display: inline-block;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  --lrx: 0deg;
+  --lry: 0deg;
+  filter: drop-shadow(0 18px 30px hsl(var(--electric-purple) / 0.35));
+}
+.uni-logo-3d-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--lrx)) rotateY(var(--lry));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.uni-logo-3d-img {
+  position: absolute;
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+  transform: translateZ(40px);
+  animation: uni-logo-bob 6s ease-in-out infinite;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.uni-logo-3d-halo {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--electric-purple) / 0.35), hsl(var(--electric-cyan) / 0.18) 45%, transparent 70%);
+  filter: blur(18px);
+  animation: uni-logo-pulse 3.5s ease-in-out infinite;
+  transform: translateZ(-30px);
+}
+.uni-logo-3d-ring {
+  position: absolute;
+  inset: -4%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    hsl(var(--electric-purple)) 0%,
+    hsl(var(--electric-cyan)) 25%,
+    hsl(var(--electric-pink)) 50%,
+    hsl(var(--electric-cyan)) 75%,
+    hsl(var(--electric-purple)) 100%);
+  -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%, #000 64%, transparent 66%);
+          mask: radial-gradient(circle, transparent 56%, #000 58%, #000 64%, transparent 66%);
+  animation: uni-logo-spin 12s linear infinite;
+  transform: translateZ(10px);
+  opacity: 0.85;
+}
+.uni-logo-3d-orbit {
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  animation: uni-logo-spin 18s linear infinite reverse;
+  transform: translateZ(20px);
+}
+.uni-logo-3d-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: hsl(var(--electric-cyan));
+  box-shadow: 0 0 14px hsl(var(--electric-cyan));
+  top: 50%;
+  left: 50%;
+  margin: -5px 0 0 -5px;
+}
+.uni-logo-3d-dot:nth-child(1) { transform: rotate(0deg) translateX(50%) rotate(0deg); background: hsl(var(--electric-purple)); box-shadow: 0 0 14px hsl(var(--electric-purple)); }
+.uni-logo-3d-dot:nth-child(2) { transform: rotate(120deg) translateX(50%) rotate(-120deg); background: hsl(var(--electric-pink)); box-shadow: 0 0 14px hsl(var(--electric-pink)); }
+.uni-logo-3d-dot:nth-child(3) { transform: rotate(240deg) translateX(50%) rotate(-240deg); background: hsl(var(--electric-cyan)); box-shadow: 0 0 14px hsl(var(--electric-cyan)); }
+.uni-logo-3d-shine {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, hsl(0 0% 100% / 0.35) 0%, transparent 40%, transparent 60%, hsl(0 0% 100% / 0.15) 100%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  transform: translateZ(60px);
+  opacity: 0.7;
+}
+@keyframes uni-logo-spin { to { transform: rotate(360deg) translateZ(10px); } }
+@keyframes uni-logo-bob {
+  0%, 100% { transform: translateZ(40px) translateY(0); }
+  50%      { transform: translateZ(48px) translateY(-6px); }
+}
+@keyframes uni-logo-pulse {
+  0%, 100% { opacity: 0.7; transform: translateZ(-30px) scale(1); }
+  50%      { opacity: 1;   transform: translateZ(-30px) scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .uni-logo-3d-stage,
+  .uni-logo-3d-img,
+  .uni-logo-3d-ring,
+  .uni-logo-3d-orbit,
+  .uni-logo-3d-halo {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   Smoothness pass — reduce repaint cost from heavy backgrounds
+   ============================================================ */
+.aurora-bg,
+.hero-grid-bg,
+.glow-line,
+.orb,
+.sparkle,
+.hero-decoration,
+.tilt-3d-inner,
+.uni-logo-3d-stage {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* Hide expensive decorative layers on small screens to keep mobile silky */
+@media (max-width: 768px) {
+  .sparkle-container,
+  .hero-decoration,
+  .glow-line { display: none !important; }
+}

@@ -34,6 +34,7 @@ import FacultyPickerModal from '@/components/FacultyPickerModal';
 import NoticeBoard from '@/components/NoticeBoard';
 import { Reveal } from '@/components/Reveal';
 import Tilt3D from '@/components/Tilt3D';
+import UniversityLogo3D from '@/components/UniversityLogo3D';
 import { useFaculties, usePrograms, useSubjects, useNotes } from '@/hooks/useSupabaseData';
 import { SEO, SITE_URL } from '@/components/SEO';
 
@@ -143,6 +144,10 @@ const HomePage = () => {
 
         <div className="container relative z-10 px-4 md:px-6">
           <div className={`text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {/* Official RJU University Crest — 3D animated */}
+            <div className="flex justify-center mb-5 md:mb-7">
+              <UniversityLogo3D size={160} className="md:!w-[200px] md:!h-[200px]" />
+            </div>
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-electric-purple/20 to-electric-cyan/20 border border-electric-purple/30 mb-4 md:mb-6 backdrop-blur-xl">
               <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-electric-purple animate-pulse" />
