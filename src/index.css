@@ -2454,3 +2454,24 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
   padding-left: 0.45em;
   color: hsl(var(--foreground) / 0.85);
 }
+
+/* Circular rotating tagline behind the crest */
+.uni-logo-3d-circular-text {
+  position: absolute;
+  inset: -18%;
+  width: 136%;
+  height: 136%;
+  transform: translateZ(-10px);
+  animation: uni-logo-spin 28s linear infinite;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.uni-logo-3d-circular-text text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  fill: hsl(var(--electric-purple));
+}
+/* Override earlier center-text rule (no longer rendered) */
+.uni-logo-3d-text { display: none; }
