@@ -145,8 +145,11 @@ const HomePage = () => {
         <div className="container relative z-10 px-4 md:px-6">
           <div className={`text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Official RJU University Crest — 3D animated with circular tagline */}
-            <div className="flex justify-center mb-5 md:mb-7">
+            <div className="flex flex-col items-center mb-5 md:mb-7">
               <UniversityLogo3D size={200} className="md:!w-[260px] md:!h-[260px]" />
+              <p className="uni-logo-disclaimer">
+                <strong>Disclaimer:</strong> RJU Notes is an independent, student-led platform created to share study materials and resources. This website is <strong>not officially affiliated with, endorsed by, or sponsored by</strong> Rajarshi Janak University (RJU). The RJU logo is the property of the university and is used here for identification purposes only.
+              </p>
             </div>
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-electric-purple/20 to-electric-cyan/20 border border-electric-purple/30 mb-4 md:mb-6 backdrop-blur-xl">
