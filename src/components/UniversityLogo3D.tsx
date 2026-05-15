@@ -49,7 +49,7 @@ export const UniversityLogo3D = ({ className, size = 220 }: Props) => {
       aria-label="Rajarshi Janak University crest"
     >
       <div className="uni-logo-3d-stage">
-        {/* Rotating circular tagline behind the crest */}
+        {/* Rotating circular tagline hugging the crest */}
         <svg
           className="uni-logo-3d-circular-text"
           viewBox="0 0 300 300"
@@ -58,7 +58,7 @@ export const UniversityLogo3D = ({ className, size = 220 }: Props) => {
           <defs>
             <path
               id="uni-logo-circle-path"
-              d="M 150,150 m -132,0 a 132,132 0 1,1 264,0 a 132,132 0 1,1 -264,0"
+              d="M 150,150 m -118,0 a 118,118 0 1,1 236,0 a 118,118 0 1,1 -236,0"
             />
           </defs>
           <text>

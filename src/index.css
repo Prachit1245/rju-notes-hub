@@ -2475,3 +2475,30 @@ All colors, gradients, fonts, etc defined here. All colors MUST be HSL.
 }
 /* Override earlier center-text rule (no longer rendered) */
 .uni-logo-3d-text { display: none; }
+
+/* Tighten circular text to a smaller radius hugging the crest */
+.uni-logo-3d-circular-text {
+  inset: -6% !important;
+  width: 112% !important;
+  height: 112% !important;
+}
+.uni-logo-3d-circular-text text {
+  font-size: 11px !important;
+  letter-spacing: 0.22em !important;
+}
+
+/* Disclaimer panel sitting behind/under the logo */
+.uni-logo-disclaimer {
+  max-width: 640px;
+  margin: 14px auto 0;
+  padding: 10px 16px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  border-radius: 12px;
+  background: hsl(var(--card) / 0.55);
+  border: 1px solid hsl(var(--border) / 0.6);
+  backdrop-filter: blur(10px);
+}
+.uni-logo-disclaimer strong { color: hsl(var(--foreground)); font-weight: 600; }
