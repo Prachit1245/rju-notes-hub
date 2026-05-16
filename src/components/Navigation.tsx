@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,12 +14,12 @@ const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  useState(() => {
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  });
+  }, []);
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
