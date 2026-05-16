@@ -40,8 +40,11 @@ const Navigation = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-        <nav className="container flex h-16 md:h-18 items-center justify-between px-4 md:px-6">
+      <header className={cn(
+        "sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 nav-shrink",
+        scrolled && "nav-shrink-active"
+      )}>
+        <nav className="container flex items-center justify-between px-4 md:px-6 nav-shrink-row">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <div className="relative">
