@@ -8,6 +8,9 @@ import { StudyTimer } from "./components/StudyTimer";
 import { AIStudyAssistant } from "./components/AIStudyAssistant";
 import ScrollProgress from "./components/ScrollProgress";
 import CursorGlow from "./components/CursorGlow";
+import ScrollToTop from "./components/ScrollToTop";
+import BackToTop from "./components/BackToTop";
+import PageTransition from "./components/PageTransition";
 import HomePage from "./pages/HomePage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -27,17 +30,21 @@ const App = () => (
       <BrowserRouter>
         <ScrollProgress />
         <CursorGlow />
+        <ScrollToTop />
         <Navigation />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/notes" element={<NotesPage />} />
-          <Route path="/notes/:id" element={<NotePage />} />
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/notices" element={<NoticesPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/notes/:id" element={<NotePage />} />
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/notices" element={<NoticesPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </PageTransition>
+        <BackToTop />
         <StudyTimer />
         <AIStudyAssistant />
       </BrowserRouter>
