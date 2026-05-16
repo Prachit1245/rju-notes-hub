@@ -11,7 +11,15 @@ import rjuLogo from '@/assets/rju-notes-logo.png';
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showFacultyPicker, setShowFacultyPicker] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useState(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  });
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
