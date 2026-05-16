@@ -133,7 +133,7 @@ const HomePage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden aurora-bg perspective-scene">
+      <section className="relative pt-4 pb-10 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20 flex items-start justify-center overflow-hidden aurora-bg perspective-scene">
         <div className="absolute inset-0 hero-grid-bg" />
         
         <div className="absolute inset-0">
@@ -145,9 +145,9 @@ const HomePage = () => {
         <div className="container relative z-10 px-4 md:px-6">
           <div className={`text-center transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Official RJU University Crest — 3D animated with circular tagline */}
-            <div className="flex flex-col items-center mb-5 md:mb-7">
-              <UniversityLogo3D size={200} className="md:!w-[260px] md:!h-[260px]" />
-              <p className="uni-logo-disclaimer">
+            <div className="flex flex-col items-center mb-3 md:mb-4 -mt-2">
+              <UniversityLogo3D size={170} className="md:!w-[210px] md:!h-[210px]" />
+              <p className="uni-logo-disclaimer mt-2 md:mt-3">
                 <strong>Disclaimer:</strong> RJU Notes is an independent, student-led platform created to share study materials and resources. This website is <strong>not officially affiliated with, endorsed by, or sponsored by</strong> Rajarshi Janak University (RJU). The RJU logo is the property of the university and is used here for identification purposes only.
               </p>
             </div>
