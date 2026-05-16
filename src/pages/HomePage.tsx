@@ -133,7 +133,7 @@ const HomePage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden aurora-bg perspective-scene">
+      <section className="relative pt-4 pb-10 md:pt-6 md:pb-16 lg:pt-8 lg:pb-20 flex items-start justify-center overflow-hidden aurora-bg perspective-scene">
         <div className="absolute inset-0 hero-grid-bg" />
         
         <div className="absolute inset-0">
