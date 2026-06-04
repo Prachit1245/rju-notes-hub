@@ -160,17 +160,21 @@ const HomePage = () => {
               <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-electric-cyan animate-pulse" />
             </div>
 
-            {/* Main Title */}
+            {/* Main Title — keyword-rich H1 for "RJU" and "Rajarshi Janak University" */}
             <h1 className="text-4xl md:text-7xl lg:text-8xl font-black mb-3 md:mb-6 leading-tight float-3d-slow">
               <span className="hero-title-gradient animated-underline text-sweep">RJU</span>
               <span className="text-foreground"> Notes</span>
             </h1>
+            <p className="sr-only">
+              RJU Notes Hub – Free study notes, old questions, syllabus and exam resources for Rajarshi Janak University (RJU), Janakpur, Nepal.
+            </p>
 
-            {/* Subtitle */}
+            {/* Subtitle — includes full university name for SEO entity matching */}
             <p className="text-base md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-10 leading-relaxed px-4">
-              Free access to <span className="text-electric-purple font-semibold">study materials</span>, 
+              Free <span className="text-electric-purple font-semibold">study materials</span>, 
               <span className="text-electric-cyan font-semibold"> old questions</span>, and 
-              <span className="text-electric-green font-semibold"> lecture notes</span>
+              <span className="text-electric-green font-semibold"> lecture notes</span> for
+              {' '}<strong className="text-foreground">Rajarshi Janak University</strong> students.
             </p>
 
             {/* Search Box - Working */}
