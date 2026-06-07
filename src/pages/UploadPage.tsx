@@ -104,14 +104,31 @@ export default function UploadPage() {
     }
   };
 
+  const getMimeFromExt = (ext: string): string => {
+    const map: Record<string, string> = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ppt: 'application/vnd.ms-powerpoint',
+      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      txt: 'text/plain',
+      jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp',
+      mp3: 'audio/mpeg', mp4: 'video/mp4', avi: 'video/x-msvideo', mov: 'video/quicktime',
+    };
+    return map[ext.toLowerCase()] || 'application/octet-stream';
+  };
+
   const uploadToSupabase = async (file: File) => {
-    const fileExt = file.name.split('.').pop();
+    const fileExt = (file.name.split('.').pop() || 'bin').toLowerCase();
     const fileName = `${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
     const filePath = `notes/${fileName}`;
+    const contentType = file.type || getMimeFromExt(fileExt);
 
     const { error: uploadError } = await supabase.storage
       .from('notes')
-      .upload(filePath, file);
+      .upload(filePath, file, { contentType, upsert: false });
 
     if (uploadError) throw uploadError;
 
@@ -119,7 +136,7 @@ export default function UploadPage() {
       .from('notes')
       .getPublicUrl(filePath);
 
-    return { publicUrl, fileName };
+    return { publicUrl, fileName, contentType };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -186,7 +203,7 @@ export default function UploadPage() {
       }
       
       for (const fileUpload of files) {
-        const { publicUrl, fileName } = await uploadToSupabase(fileUpload.file);
+        const { publicUrl, fileName, contentType } = await uploadToSupabase(fileUpload.file);
         
         // Insert note via edge function
         await callAdminApi({
@@ -200,7 +217,7 @@ export default function UploadPage() {
             file_url: publicUrl,
             file_name: fileName,
             file_size: fileUpload.file.size,
-            file_type: fileUpload.file.type,
+            file_type: contentType,
             uploader_name: formData.uploader_name,
             
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
@@ -227,15 +244,16 @@ export default function UploadPage() {
       
     } catch (error) {
       console.error('Upload error:', error);
-      let errorMessage = "Failed to upload files. Please try again.";
+      let errorMessage = error?.message || "Failed to upload files. Please try again.";
       
-      // Provide more specific error messages
       if (error.message?.includes('duplicate key')) {
         errorMessage = "Subject already exists. Please use a different name or code.";
-      } else if (error.message?.includes('permission')) {
+      } else if (error.message?.includes('permission') || error.message?.includes('row-level security')) {
         errorMessage = "Permission error. Please check your credentials.";
-      } else if (error.message?.includes('network')) {
+      } else if (error.message?.includes('network') || error.message?.includes('Failed to fetch')) {
         errorMessage = "Network error. Please check your connection.";
+      } else if (error.message?.includes('mime type') || error.message?.includes('not supported')) {
+        errorMessage = "File type not allowed by storage. Please contact admin.";
       }
       
       toast({
