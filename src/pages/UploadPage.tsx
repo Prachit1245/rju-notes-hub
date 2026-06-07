@@ -13,6 +13,7 @@ import { useFaculties, usePrograms, useSubjects } from '@/hooks/useSupabaseData'
 import AdminDashboard from '@/components/AdminDashboard';
 import ManagerPanel from '@/components/ManagerPanel';
 import AuditLog from '@/components/AuditLog';
+import DeleteRequestsPanel from '@/components/DeleteRequestsPanel';
 import { callAdminApi } from '@/lib/adminApi';
 import { SEO, SITE_URL } from '@/components/SEO';
 
