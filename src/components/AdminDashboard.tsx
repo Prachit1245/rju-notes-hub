@@ -313,14 +313,63 @@ export default function AdminDashboard({ adminEmail, adminPassword, adminRole = 
                       )}
                     </Button>
                     
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteNote(note.id, note.file_name)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
-                    </Button>
+                    {isAdmin ? (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteNote(note.id, note.file_name)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    ) : (
+                      <Dialog
+                        open={requestOpenId === note.id}
+                        onOpenChange={(open) => {
+                          setRequestOpenId(open ? note.id : null);
+                          if (!open) setRequestReason('');
+                        }}
+                      >
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Send className="h-4 w-4 mr-1" />
+                            Request Delete
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Request note deletion</DialogTitle>
+                            <DialogDescription>
+                              Your request will be sent to an admin for approval. The note will not be deleted until approved.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium">{note.title}</p>
+                            <Textarea
+                              placeholder="Reason (optional)"
+                              value={requestReason}
+                              onChange={(e) => setRequestReason(e.target.value)}
+                              rows={3}
+                            />
+                          </div>
+                          <DialogFooter>
+                            <Button
+                              variant="outline"
+                              onClick={() => { setRequestOpenId(null); setRequestReason(''); }}
+                              disabled={submittingRequest}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={() => submitDeleteRequest(note.id)}
+                              disabled={submittingRequest}
+                            >
+                              {submittingRequest ? 'Submitting...' : 'Submit request'}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    )}
                   </div>
                 </div>
               </CardContent>
