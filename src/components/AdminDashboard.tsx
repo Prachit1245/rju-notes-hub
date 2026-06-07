@@ -108,6 +108,34 @@ export default function AdminDashboard({ adminEmail, adminPassword, adminRole = 
     }
   };
 
+  const submitDeleteRequest = async (noteId: string) => {
+    setSubmittingRequest(true);
+    try {
+      await callAdminApi({
+        action: 'request_delete_note',
+        adminEmail,
+        adminPassword,
+        noteId,
+        reason: requestReason.trim() || undefined,
+      });
+      toast({
+        title: 'Request submitted',
+        description: 'An admin will review your delete request.',
+      });
+      setRequestOpenId(null);
+      setRequestReason('');
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to submit delete request',
+        variant: 'destructive',
+      });
+    } finally {
+      setSubmittingRequest(false);
+    }
+  };
+
+
   const togglePublic = async (noteId: string, currentStatus: boolean) => {
     try {
       await callAdminApi({
