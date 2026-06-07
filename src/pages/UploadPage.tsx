@@ -104,14 +104,31 @@ export default function UploadPage() {
     }
   };
 
+  const getMimeFromExt = (ext: string): string => {
+    const map: Record<string, string> = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ppt: 'application/vnd.ms-powerpoint',
+      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      txt: 'text/plain',
+      jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp',
+      mp3: 'audio/mpeg', mp4: 'video/mp4', avi: 'video/x-msvideo', mov: 'video/quicktime',
+    };
+    return map[ext.toLowerCase()] || 'application/octet-stream';
+  };
+
   const uploadToSupabase = async (file: File) => {
-    const fileExt = file.name.split('.').pop();
+    const fileExt = (file.name.split('.').pop() || 'bin').toLowerCase();
     const fileName = `${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
     const filePath = `notes/${fileName}`;
+    const contentType = file.type || getMimeFromExt(fileExt);
 
     const { error: uploadError } = await supabase.storage
       .from('notes')
-      .upload(filePath, file);
+      .upload(filePath, file, { contentType, upsert: false });
 
     if (uploadError) throw uploadError;
 
@@ -119,7 +136,7 @@ export default function UploadPage() {
       .from('notes')
       .getPublicUrl(filePath);
 
-    return { publicUrl, fileName };
+    return { publicUrl, fileName, contentType };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
