@@ -203,7 +203,7 @@ export default function UploadPage() {
       }
       
       for (const fileUpload of files) {
-        const { publicUrl, fileName } = await uploadToSupabase(fileUpload.file);
+        const { publicUrl, fileName, contentType } = await uploadToSupabase(fileUpload.file);
         
         // Insert note via edge function
         await callAdminApi({
@@ -217,7 +217,7 @@ export default function UploadPage() {
             file_url: publicUrl,
             file_name: fileName,
             file_size: fileUpload.file.size,
-            file_type: fileUpload.file.type,
+            file_type: contentType,
             uploader_name: formData.uploader_name,
             
             tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : []
