@@ -35,10 +35,14 @@ interface Note {
   };
 }
 
-export default function AdminDashboard({ adminEmail, adminPassword }: { adminEmail: string; adminPassword: string }) {
+export default function AdminDashboard({ adminEmail, adminPassword, adminRole = 'admin' }: { adminEmail: string; adminPassword: string; adminRole?: string }) {
   const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+  const [requestOpenId, setRequestOpenId] = useState<string | null>(null);
+  const [requestReason, setRequestReason] = useState('');
+  const [submittingRequest, setSubmittingRequest] = useState(false);
+  const isAdmin = adminRole === 'admin';
 
   const fetchNotes = async () => {
     try {
