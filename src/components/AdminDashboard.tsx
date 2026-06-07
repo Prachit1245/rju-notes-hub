@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Eye, EyeOff, Download, FileText, Image, FileAudio, FileVideo } from 'lucide-react';
+import { Trash2, Eye, EyeOff, Download, FileText, Image, FileAudio, FileVideo, Send } from 'lucide-react';
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
