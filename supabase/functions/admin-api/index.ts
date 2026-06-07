@@ -117,6 +117,13 @@ Deno.serve(async (req) => {
       }
 
       case "delete_note": {
+        // Only admins may delete directly; managers must request approval
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can delete notes directly. Please submit a delete request." }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
         const { error: storageError } = await supabase.storage
           .from("notes")
           .remove([`notes/${payload.fileName}`]);
@@ -131,6 +138,124 @@ Deno.serve(async (req) => {
         result = { success: true };
         break;
       }
+
+      // ── Delete request flow (managers request, admins approve) ──
+      case "request_delete_note": {
+        // Avoid duplicate pending request for same note by same manager
+        const { data: existing } = await supabase
+          .from("note_delete_requests")
+          .select("id")
+          .eq("note_id", payload.noteId)
+          .eq("requested_by", manager.id)
+          .eq("status", "pending")
+          .maybeSingle();
+        if (existing) {
+          return new Response(JSON.stringify({ error: "You already have a pending delete request for this note." }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const { data, error } = await supabase
+          .from("note_delete_requests")
+          .insert({
+            note_id: payload.noteId,
+            requested_by: manager.id,
+            requested_by_email: manager.email,
+            reason: payload.reason || null,
+          })
+          .select()
+          .single();
+        if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "request_delete_note", { noteId: payload.noteId, reason: payload.reason });
+        result = data;
+        break;
+      }
+
+      case "list_delete_requests": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can view delete requests" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const { data, error } = await supabase
+          .from("note_delete_requests")
+          .select("*, notes(id, title, file_name, file_type, file_size, uploader_name)")
+          .order("created_at", { ascending: false })
+          .limit(200);
+        if (error) throw error;
+        result = data;
+        break;
+      }
+
+      case "approve_delete_request": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can approve delete requests" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const { data: reqRow, error: reqErr } = await supabase
+          .from("note_delete_requests")
+          .select("*, notes(file_name)")
+          .eq("id", payload.requestId)
+          .single();
+        if (reqErr) throw reqErr;
+        if (reqRow.status !== "pending") {
+          return new Response(JSON.stringify({ error: "Request is not pending" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const fileName = reqRow.notes?.file_name;
+        if (fileName) {
+          const { error: storageError } = await supabase.storage
+            .from("notes")
+            .remove([`notes/${fileName}`]);
+          if (storageError) console.error("Storage delete error:", storageError);
+        }
+        const { error: delErr } = await supabase
+          .from("notes")
+          .delete()
+          .eq("id", reqRow.note_id);
+        if (delErr) throw delErr;
+        await supabase
+          .from("note_delete_requests")
+          .update({
+            status: "approved",
+            reviewed_by: manager.id,
+            reviewed_by_email: manager.email,
+            reviewed_at: new Date().toISOString(),
+          })
+          .eq("id", payload.requestId);
+        await logAction(supabase, manager.id, manager.email, "approve_delete_request", { requestId: payload.requestId, noteId: reqRow.note_id });
+        result = { success: true };
+        break;
+      }
+
+      case "reject_delete_request": {
+        if (manager.role !== "admin") {
+          return new Response(JSON.stringify({ error: "Only admins can reject delete requests" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const { error } = await supabase
+          .from("note_delete_requests")
+          .update({
+            status: "rejected",
+            reviewed_by: manager.id,
+            reviewed_by_email: manager.email,
+            reviewed_at: new Date().toISOString(),
+          })
+          .eq("id", payload.requestId)
+          .eq("status", "pending");
+        if (error) throw error;
+        await logAction(supabase, manager.id, manager.email, "reject_delete_request", { requestId: payload.requestId });
+        result = { success: true };
+        break;
+      }
+
 
       case "update_note": {
         const { error } = await supabase
