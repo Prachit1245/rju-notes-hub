@@ -325,11 +325,12 @@ export default function UploadPage() {
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className={`grid w-full ${adminAuth.role === 'admin' ? 'grid-cols-4' : 'grid-cols-2'}`}>
+          <TabsList className={`grid w-full ${adminAuth.role === 'admin' ? 'grid-cols-5' : 'grid-cols-2'}`}>
             <TabsTrigger value="upload">Upload Notes</TabsTrigger>
             <TabsTrigger value="manage">Manage Notes</TabsTrigger>
             {adminAuth.role === 'admin' && (
               <>
+                <TabsTrigger value="requests">Delete Requests</TabsTrigger>
                 <TabsTrigger value="managers">Managers</TabsTrigger>
                 <TabsTrigger value="activity">Activity Log</TabsTrigger>
               </>
