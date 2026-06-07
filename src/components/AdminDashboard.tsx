@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Eye, EyeOff, Download, FileText, Image, FileAudio, FileVideo } from 'lucide-react';
+import { Trash2, Eye, EyeOff, Download, FileText, Image, FileAudio, FileVideo, Send } from 'lucide-react';
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -31,10 +35,14 @@ interface Note {
   };
 }
 
-export default function AdminDashboard({ adminEmail, adminPassword }: { adminEmail: string; adminPassword: string }) {
+export default function AdminDashboard({ adminEmail, adminPassword, adminRole = 'admin' }: { adminEmail: string; adminPassword: string; adminRole?: string }) {
   const { toast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+  const [requestOpenId, setRequestOpenId] = useState<string | null>(null);
+  const [requestReason, setRequestReason] = useState('');
+  const [submittingRequest, setSubmittingRequest] = useState(false);
+  const isAdmin = adminRole === 'admin';
 
   const fetchNotes = async () => {
     try {
@@ -99,6 +107,34 @@ export default function AdminDashboard({ adminEmail, adminPassword }: { adminEma
       });
     }
   };
+
+  const submitDeleteRequest = async (noteId: string) => {
+    setSubmittingRequest(true);
+    try {
+      await callAdminApi({
+        action: 'request_delete_note',
+        adminEmail,
+        adminPassword,
+        noteId,
+        reason: requestReason.trim() || undefined,
+      });
+      toast({
+        title: 'Request submitted',
+        description: 'An admin will review your delete request.',
+      });
+      setRequestOpenId(null);
+      setRequestReason('');
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error?.message || 'Failed to submit delete request',
+        variant: 'destructive',
+      });
+    } finally {
+      setSubmittingRequest(false);
+    }
+  };
+
 
   const togglePublic = async (noteId: string, currentStatus: boolean) => {
     try {
@@ -277,14 +313,63 @@ export default function AdminDashboard({ adminEmail, adminPassword }: { adminEma
                       )}
                     </Button>
                     
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => deleteNote(note.id, note.file_name)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
-                    </Button>
+                    {isAdmin ? (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteNote(note.id, note.file_name)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    ) : (
+                      <Dialog
+                        open={requestOpenId === note.id}
+                        onOpenChange={(open) => {
+                          setRequestOpenId(open ? note.id : null);
+                          if (!open) setRequestReason('');
+                        }}
+                      >
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Send className="h-4 w-4 mr-1" />
+                            Request Delete
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Request note deletion</DialogTitle>
+                            <DialogDescription>
+                              Your request will be sent to an admin for approval. The note will not be deleted until approved.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-2">
+                            <p className="text-sm font-medium">{note.title}</p>
+                            <Textarea
+                              placeholder="Reason (optional)"
+                              value={requestReason}
+                              onChange={(e) => setRequestReason(e.target.value)}
+                              rows={3}
+                            />
+                          </div>
+                          <DialogFooter>
+                            <Button
+                              variant="outline"
+                              onClick={() => { setRequestOpenId(null); setRequestReason(''); }}
+                              disabled={submittingRequest}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={() => submitDeleteRequest(note.id)}
+                              disabled={submittingRequest}
+                            >
+                              {submittingRequest ? 'Submitting...' : 'Submit request'}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    )}
                   </div>
                 </div>
               </CardContent>

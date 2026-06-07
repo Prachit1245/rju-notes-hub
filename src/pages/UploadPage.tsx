@@ -13,6 +13,7 @@ import { useFaculties, usePrograms, useSubjects } from '@/hooks/useSupabaseData'
 import AdminDashboard from '@/components/AdminDashboard';
 import ManagerPanel from '@/components/ManagerPanel';
 import AuditLog from '@/components/AuditLog';
+import DeleteRequestsPanel from '@/components/DeleteRequestsPanel';
 import { callAdminApi } from '@/lib/adminApi';
 import { SEO, SITE_URL } from '@/components/SEO';
 
@@ -324,11 +325,12 @@ export default function UploadPage() {
         </div>
 
         <Tabs defaultValue="upload" className="w-full">
-          <TabsList className={`grid w-full ${adminAuth.role === 'admin' ? 'grid-cols-4' : 'grid-cols-2'}`}>
+          <TabsList className={`grid w-full ${adminAuth.role === 'admin' ? 'grid-cols-5' : 'grid-cols-2'}`}>
             <TabsTrigger value="upload">Upload Notes</TabsTrigger>
             <TabsTrigger value="manage">Manage Notes</TabsTrigger>
             {adminAuth.role === 'admin' && (
               <>
+                <TabsTrigger value="requests">Delete Requests</TabsTrigger>
                 <TabsTrigger value="managers">Managers</TabsTrigger>
                 <TabsTrigger value="activity">Activity Log</TabsTrigger>
               </>
@@ -626,11 +628,14 @@ export default function UploadPage() {
                 </div>
               </CardContent>
             </Card>
-            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} adminRole={adminAuth.role} />
           </TabsContent>
 
           {adminAuth.role === 'admin' && (
             <>
+              <TabsContent value="requests">
+                <DeleteRequestsPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
               <TabsContent value="managers">
                 <ManagerPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
               </TabsContent>

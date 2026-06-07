@@ -138,6 +138,67 @@ export type Database = {
           },
         ]
       }
+      note_delete_requests: {
+        Row: {
+          created_at: string
+          id: string
+          note_id: string
+          reason: string | null
+          requested_by: string
+          requested_by_email: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewed_by_email: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note_id: string
+          reason?: string | null
+          requested_by: string
+          requested_by_email: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_by_email?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note_id?: string
+          reason?: string | null
+          requested_by?: string
+          requested_by_email?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewed_by_email?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_delete_requests_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_delete_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "note_delete_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "managers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           created_at: string
