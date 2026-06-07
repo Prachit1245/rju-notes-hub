@@ -244,15 +244,16 @@ export default function UploadPage() {
       
     } catch (error) {
       console.error('Upload error:', error);
-      let errorMessage = "Failed to upload files. Please try again.";
+      let errorMessage = error?.message || "Failed to upload files. Please try again.";
       
-      // Provide more specific error messages
       if (error.message?.includes('duplicate key')) {
         errorMessage = "Subject already exists. Please use a different name or code.";
-      } else if (error.message?.includes('permission')) {
+      } else if (error.message?.includes('permission') || error.message?.includes('row-level security')) {
         errorMessage = "Permission error. Please check your credentials.";
-      } else if (error.message?.includes('network')) {
+      } else if (error.message?.includes('network') || error.message?.includes('Failed to fetch')) {
         errorMessage = "Network error. Please check your connection.";
+      } else if (error.message?.includes('mime type') || error.message?.includes('not supported')) {
+        errorMessage = "File type not allowed by storage. Please contact admin.";
       }
       
       toast({
