@@ -628,11 +628,14 @@ export default function UploadPage() {
                 </div>
               </CardContent>
             </Card>
-            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+            <AdminDashboard adminEmail={adminAuth.email} adminPassword={adminAuth.password} adminRole={adminAuth.role} />
           </TabsContent>
 
           {adminAuth.role === 'admin' && (
             <>
+              <TabsContent value="requests">
+                <DeleteRequestsPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
+              </TabsContent>
               <TabsContent value="managers">
                 <ManagerPanel adminEmail={adminAuth.email} adminPassword={adminAuth.password} />
               </TabsContent>
