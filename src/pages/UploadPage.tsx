@@ -122,21 +122,26 @@ export default function UploadPage() {
 
   const uploadToSupabase = async (file: File) => {
     const fileExt = (file.name.split('.').pop() || 'bin').toLowerCase();
-    const fileName = `${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `notes/${fileName}`;
     const contentType = file.type || getMimeFromExt(fileExt);
+
+    // Ask the secure edge function for a short-lived signed upload URL.
+    // Anonymous clients no longer have direct INSERT on the storage bucket.
+    const signed = await callAdminApi({
+      action: 'create_upload_url',
+      adminEmail: adminAuth.email,
+      adminPassword: adminAuth.password,
+      ext: fileExt,
+      contentType,
+      size: file.size,
+    });
 
     const { error: uploadError } = await supabase.storage
       .from('notes')
-      .upload(filePath, file, { contentType, upsert: false });
+      .uploadToSignedUrl(signed.path, signed.token, file, { contentType, upsert: false });
 
     if (uploadError) throw uploadError;
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('notes')
-      .getPublicUrl(filePath);
-
-    return { publicUrl, fileName, contentType };
+    return { publicUrl: signed.publicUrl, fileName: signed.fileName, contentType };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
