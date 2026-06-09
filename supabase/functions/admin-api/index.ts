@@ -100,12 +100,79 @@ Deno.serve(async (req) => {
 
     let result;
 
+    // ── Server-side validation helpers ──
+    const MAX_FILE_BYTES = 50 * 1024 * 1024; // 50 MB
+    const ALLOWED_MIME = new Set([
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/plain",
+      "image/jpeg", "image/png", "image/gif", "image/webp",
+    ]);
+    const ALLOWED_EXT = new Set(["pdf","doc","docx","ppt","pptx","xls","xlsx","txt","jpg","jpeg","png","gif","webp"]);
+    const safeFileName = (name: string) => /^[a-z0-9]{6,32}\.[a-z0-9]{1,5}$/.test(name);
+
     switch (action) {
+      // ── Issue a short-lived signed upload URL (managers + admins) ──
+      case "create_upload_url": {
+        const ext = String(payload.ext || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const size = Number(payload.size || 0);
+        const mime = String(payload.contentType || "");
+        if (!ALLOWED_EXT.has(ext)) {
+          return new Response(JSON.stringify({ error: "File extension not allowed" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        if (!ALLOWED_MIME.has(mime)) {
+          return new Response(JSON.stringify({ error: "File type not allowed" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        if (!size || size <= 0 || size > MAX_FILE_BYTES) {
+          return new Response(JSON.stringify({ error: `File too large (max ${MAX_FILE_BYTES / (1024*1024)}MB)` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        const rand = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
+        const fileName = `${rand}.${ext}`;
+        const path = `notes/${fileName}`;
+        const { data, error } = await supabase.storage.from("notes").createSignedUploadUrl(path);
+        if (error) throw error;
+        const { data: pub } = supabase.storage.from("notes").getPublicUrl(path);
+        await logAction(supabase, manager.id, manager.email, "create_upload_url", { fileName, mime, size });
+        result = { signedUrl: data.signedUrl, token: data.token, path, fileName, publicUrl: pub.publicUrl };
+        break;
+      }
+
       // ── Note operations (admin + manager) ──
       case "insert_note": {
+        const note = payload.note || {};
+        // Validate required fields and reject anything pointing outside our bucket
+        const required = ["subject_id", "title", "file_url", "file_name", "file_type", "file_size"];
+        for (const k of required) {
+          if (note[k] === undefined || note[k] === null || note[k] === "") {
+            return new Response(JSON.stringify({ error: `Missing field: ${k}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          }
+        }
+        if (!ALLOWED_MIME.has(String(note.file_type))) {
+          return new Response(JSON.stringify({ error: "File type not allowed" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        if (Number(note.file_size) <= 0 || Number(note.file_size) > MAX_FILE_BYTES) {
+          return new Response(JSON.stringify({ error: "Invalid file size" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        if (!safeFileName(String(note.file_name))) {
+          return new Response(JSON.stringify({ error: "Invalid file name" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        // Verify the file actually exists in our bucket (prevents linking to arbitrary URLs)
+        const { data: head } = await supabase.storage.from("notes").list("notes", { search: String(note.file_name), limit: 1 });
+        if (!head || head.length === 0) {
+          return new Response(JSON.stringify({ error: "Referenced file not found in storage" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        // Force file_url to the canonical bucket URL — never trust client-provided URL
+        const { data: pub } = supabase.storage.from("notes").getPublicUrl(`notes/${note.file_name}`);
+        note.file_url = pub.publicUrl;
+
         const { data, error } = await supabase
           .from("notes")
-          .insert(payload.note)
+          .insert(note)
           .select()
           .single();
         if (error) throw error;
