@@ -166,6 +166,7 @@ export default function FacultyPickerModal({ open, onClose }: FacultyPickerModal
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
