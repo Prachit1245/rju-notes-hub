@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Stethoscope, Scale, Cpu, Briefcase, X } from 'lucide-react';
