@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraduationCap, Stethoscope, Scale, Cpu, Briefcase, X } from 'lucide-react';
@@ -44,7 +45,17 @@ export default function FacultyPickerModal({ open, onClose }: FacultyPickerModal
     navigate('/notes');
   };
 
-  return (
+  // Lock background scroll while modal is open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -155,6 +166,7 @@ export default function FacultyPickerModal({ open, onClose }: FacultyPickerModal
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
