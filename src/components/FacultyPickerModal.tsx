@@ -45,7 +45,17 @@ export default function FacultyPickerModal({ open, onClose }: FacultyPickerModal
     navigate('/notes');
   };
 
-  return (
+  // Lock background scroll while modal is open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
